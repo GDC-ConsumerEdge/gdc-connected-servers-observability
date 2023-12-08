@@ -1,0 +1,8 @@
+combiner: OR
+enabled: false
+conditions:
+- conditionPrometheusQueryLanguage:
+    duration: 300s
+    query: histogram_quantile(0.9, sum by (cluster, configsync_sync_kind,configsync_sync_name, configsync_sync_namespace, le) (rate(external_googleapis_com:prometheus_config_sync_apply_duration_seconds_bucket{monitored_resource="k8s_container"}[5h]))) > 3600
+  displayName: Config Sync High Apply Duration
+displayName: Config Sync High Apply Duration

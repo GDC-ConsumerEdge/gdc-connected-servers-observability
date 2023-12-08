@@ -1,0 +1,8 @@
+combiner: OR
+enabled: false
+conditions:
+- conditionPrometheusQueryLanguage:
+    duration: 0s
+    query: time() - topk by (cluster, configsync_sync_kind, configsync_sync_name, configsync_sync_namespace) (1, external_googleapis_com:prometheus_config_sync_last_sync_timestamp{monitored_resource="k8s_container",status="success"}) > 7200
+  displayName: Config Sync Old Last Sync Timestamp
+displayName: Config Sync Old Last Sync Timestamp

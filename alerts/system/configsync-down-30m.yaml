@@ -1,0 +1,13 @@
+combiner: OR
+enabled: false
+conditions:
+- conditionAbsent:
+    duration: 1800s
+    aggregations:
+    - alignmentPeriod: 300s
+      perSeriesAligner: ALIGN_MEAN
+    filter: "resource.type = \"k8s_container\" AND metric.type = \"external.googleapis.com/prometheus/config_sync_resource_count\""
+    trigger:
+      percent: 100
+  displayName: ConfigSync is up
+displayName: ConfigSync down for 30 minutes (critical)

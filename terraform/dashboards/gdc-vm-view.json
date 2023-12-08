@@ -1,0 +1,625 @@
+{
+  "dashboardFilters": [],
+  "displayName": "GDC - VM status",
+  "labels": {},
+  "mosaicLayout": {
+    "columns": 48,
+    "tiles": [
+      {
+        "height": 16,
+        "widget": {
+          "title": "VM States",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "measures": [],
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesQueryLanguage": "fetch k8s_container\n| metric kubernetes.io/anthos/kubevirt_info\n| group_by [metadata.user.c'vm.kubevirt.io/name', metadata.system.state]\n| {ident; group_by sliding(24h)}\n| outer_join 0\n| value val(0)",
+                  "unitOverride": ""
+                }
+              }
+            ],
+            "thresholds": [],
+            "timeshiftDuration": "0s",
+            "yAxis": {
+              "label": "",
+              "scale": "LINEAR"
+            }
+          }
+        },
+        "width": 12,
+        "xPos": 12
+      },
+      {
+        "height": 16,
+        "widget": {
+          "title": "CPU usage per VM",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "measures": [],
+                "minAlignmentPeriod": "120s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "120s",
+                      "crossSeriesReducer": "REDUCE_MAX",
+                      "groupByFields": [
+                        "resource.label.\"cluster_name\"",
+                        "resource.label.\"location\"",
+                        "resource.label.\"node_name\"",
+                        "metric.label.\"kubernetes_vmi_label_kubevirt_vm\""
+                      ],
+                      "perSeriesAligner": "ALIGN_RATE"
+                    },
+                    "filter": "metric.type=\"kubernetes.io/anthos/kubevirt_vmi_vcpu_seconds\" resource.type=\"k8s_container\""
+                  }
+                }
+              }
+            ],
+            "thresholds": [],
+            "timeshiftDuration": "0s",
+            "yAxis": {
+              "label": "",
+              "scale": "LINEAR"
+            }
+          }
+        },
+        "width": 24,
+        "xPos": 24
+      },
+      {
+        "height": 16,
+        "widget": {
+          "title": "Network TX Bytes/s per VM per interface",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "measures": [],
+                "minAlignmentPeriod": "120s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "120s",
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "groupByFields": [
+                        "resource.label.\"cluster_name\"",
+                        "resource.label.\"location\"",
+                        "resource.label.\"node_name\"",
+                        "metric.label.\"kubernetes_vmi_label_kubevirt_vm\"",
+                        "metric.label.\"interface\""
+                      ],
+                      "perSeriesAligner": "ALIGN_RATE"
+                    },
+                    "filter": "metric.type=\"kubernetes.io/anthos/kubevirt_vmi_network_transmit_bytes_total\" resource.type=\"k8s_container\""
+                  }
+                }
+              }
+            ],
+            "thresholds": [],
+            "timeshiftDuration": "0s",
+            "yAxis": {
+              "label": "",
+              "scale": "LINEAR"
+            }
+          }
+        },
+        "width": 24,
+        "yPos": 16
+      },
+      {
+        "height": 16,
+        "widget": {
+          "title": "Network RX Bytes/s per VM per interface",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "measures": [],
+                "minAlignmentPeriod": "120s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "120s",
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "groupByFields": [
+                        "resource.label.\"cluster_name\"",
+                        "resource.label.\"location\"",
+                        "resource.label.\"node_name\"",
+                        "metric.label.\"kubernetes_vmi_label_kubevirt_vm\"",
+                        "metric.label.\"interface\""
+                      ],
+                      "perSeriesAligner": "ALIGN_RATE"
+                    },
+                    "filter": "metric.type=\"kubernetes.io/anthos/kubevirt_vmi_network_receive_bytes_total\" resource.type=\"k8s_container\""
+                  }
+                }
+              }
+            ],
+            "thresholds": [],
+            "timeshiftDuration": "0s",
+            "yAxis": {
+              "label": "",
+              "scale": "LINEAR"
+            }
+          }
+        },
+        "width": 24,
+        "xPos": 24,
+        "yPos": 16
+      },
+      {
+        "height": 16,
+        "widget": {
+          "title": "Network TX Errors/s per VM per interface",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "measures": [],
+                "minAlignmentPeriod": "120s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "120s",
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "groupByFields": [
+                        "resource.label.\"cluster_name\"",
+                        "resource.label.\"location\"",
+                        "resource.label.\"node_name\"",
+                        "metric.label.\"kubernetes_vmi_label_kubevirt_vm\"",
+                        "metric.label.\"interface\""
+                      ],
+                      "perSeriesAligner": "ALIGN_RATE"
+                    },
+                    "filter": "metric.type=\"kubernetes.io/anthos/kubevirt_vmi_network_transmit_errors_total\" resource.type=\"k8s_container\""
+                  }
+                }
+              }
+            ],
+            "thresholds": [],
+            "timeshiftDuration": "0s",
+            "yAxis": {
+              "label": "",
+              "scale": "LINEAR"
+            }
+          }
+        },
+        "width": 24,
+        "yPos": 32
+      },
+      {
+        "height": 16,
+        "widget": {
+          "title": "Network RX Errors/s per VM per interface",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "measures": [],
+                "minAlignmentPeriod": "120s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "120s",
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "groupByFields": [
+                        "resource.label.\"cluster_name\"",
+                        "resource.label.\"location\"",
+                        "resource.label.\"node_name\"",
+                        "metric.label.\"kubernetes_vmi_label_kubevirt_vm\"",
+                        "metric.label.\"interface\""
+                      ],
+                      "perSeriesAligner": "ALIGN_RATE"
+                    },
+                    "filter": "metric.type=\"kubernetes.io/anthos/kubevirt_vmi_network_receive_errors_total\" resource.type=\"k8s_container\""
+                  }
+                }
+              }
+            ],
+            "thresholds": [],
+            "timeshiftDuration": "0s",
+            "yAxis": {
+              "label": "",
+              "scale": "LINEAR"
+            }
+          }
+        },
+        "width": 24,
+        "xPos": 24,
+        "yPos": 32
+      },
+      {
+        "height": 16,
+        "widget": {
+          "title": "Network TX Packets/s per VM per interface",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "measures": [],
+                "minAlignmentPeriod": "120s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "120s",
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "groupByFields": [
+                        "resource.label.\"cluster_name\"",
+                        "resource.label.\"location\"",
+                        "resource.label.\"node_name\"",
+                        "metric.label.\"kubernetes_vmi_label_kubevirt_vm\"",
+                        "metric.label.\"interface\""
+                      ],
+                      "perSeriesAligner": "ALIGN_RATE"
+                    },
+                    "filter": "metric.type=\"kubernetes.io/anthos/kubevirt_vmi_network_transmit_packets_total\" resource.type=\"k8s_container\""
+                  }
+                }
+              }
+            ],
+            "thresholds": [],
+            "timeshiftDuration": "0s",
+            "yAxis": {
+              "label": "",
+              "scale": "LINEAR"
+            }
+          }
+        },
+        "width": 24,
+        "yPos": 48
+      },
+      {
+        "height": 16,
+        "widget": {
+          "title": "Network RX Packets/s per VM per interface",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "measures": [],
+                "minAlignmentPeriod": "120s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "120s",
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "groupByFields": [
+                        "resource.label.\"cluster_name\"",
+                        "resource.label.\"location\"",
+                        "resource.label.\"node_name\"",
+                        "metric.label.\"kubernetes_vmi_label_kubevirt_vm\"",
+                        "metric.label.\"interface\""
+                      ],
+                      "perSeriesAligner": "ALIGN_RATE"
+                    },
+                    "filter": "metric.type=\"kubernetes.io/anthos/kubevirt_vmi_network_receive_packets_total\" resource.type=\"k8s_container\""
+                  }
+                }
+              }
+            ],
+            "thresholds": [],
+            "timeshiftDuration": "0s",
+            "yAxis": {
+              "label": "",
+              "scale": "LINEAR"
+            }
+          }
+        },
+        "width": 24,
+        "xPos": 24,
+        "yPos": 48
+      },
+      {
+        "height": 16,
+        "widget": {
+          "title": "Network TX Packets dropped/s per VM per interface",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "measures": [],
+                "minAlignmentPeriod": "120s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "120s",
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "groupByFields": [
+                        "resource.label.\"cluster_name\"",
+                        "resource.label.\"location\"",
+                        "resource.label.\"node_name\"",
+                        "metric.label.\"kubernetes_vmi_label_kubevirt_vm\"",
+                        "metric.label.\"interface\""
+                      ],
+                      "perSeriesAligner": "ALIGN_RATE"
+                    },
+                    "filter": "metric.type=\"kubernetes.io/anthos/kubevirt_vmi_network_transmit_packets_dropped_total\" resource.type=\"k8s_container\""
+                  }
+                }
+              }
+            ],
+            "thresholds": [],
+            "timeshiftDuration": "0s",
+            "yAxis": {
+              "label": "",
+              "scale": "LINEAR"
+            }
+          }
+        },
+        "width": 24,
+        "yPos": 64
+      },
+      {
+        "height": 16,
+        "widget": {
+          "title": "Network RX Packets dropped/s per VM per interface",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "measures": [],
+                "minAlignmentPeriod": "120s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "120s",
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "groupByFields": [
+                        "resource.label.\"cluster_name\"",
+                        "resource.label.\"location\"",
+                        "resource.label.\"node_name\"",
+                        "metric.label.\"kubernetes_vmi_label_kubevirt_vm\"",
+                        "metric.label.\"interface\""
+                      ],
+                      "perSeriesAligner": "ALIGN_RATE"
+                    },
+                    "filter": "metric.type=\"kubernetes.io/anthos/kubevirt_vmi_network_receive_packets_dropped_total\" resource.type=\"k8s_container\""
+                  }
+                }
+              }
+            ],
+            "thresholds": [],
+            "timeshiftDuration": "0s",
+            "yAxis": {
+              "label": "",
+              "scale": "LINEAR"
+            }
+          }
+        },
+        "width": 24,
+        "xPos": 24,
+        "yPos": 64
+      },
+      {
+        "height": 16,
+        "widget": {
+          "title": "Storage write iops per VM per disk",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "measures": [],
+                "minAlignmentPeriod": "120s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "120s",
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "groupByFields": [
+                        "resource.label.\"cluster_name\"",
+                        "resource.label.\"location\"",
+                        "resource.label.\"node_name\"",
+                        "metric.label.\"kubernetes_vmi_label_kubevirt_vm\"",
+                        "metric.label.\"disk\""
+                      ],
+                      "perSeriesAligner": "ALIGN_RATE"
+                    },
+                    "filter": "metric.type=\"kubernetes.io/anthos/kubevirt_vmi_storage_iops_write_total\" resource.type=\"k8s_container\""
+                  }
+                }
+              }
+            ],
+            "thresholds": [],
+            "timeshiftDuration": "0s",
+            "yAxis": {
+              "label": "",
+              "scale": "LINEAR"
+            }
+          }
+        },
+        "width": 24,
+        "yPos": 80
+      },
+      {
+        "height": 16,
+        "widget": {
+          "title": "Storage read iops per VM per disk",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "measures": [],
+                "minAlignmentPeriod": "120s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "120s",
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "groupByFields": [
+                        "resource.label.\"cluster_name\"",
+                        "resource.label.\"location\"",
+                        "resource.label.\"node_name\"",
+                        "metric.label.\"kubernetes_vmi_label_kubevirt_vm\"",
+                        "metric.label.\"disk\""
+                      ],
+                      "perSeriesAligner": "ALIGN_RATE"
+                    },
+                    "filter": "metric.type=\"kubernetes.io/anthos/kubevirt_vmi_storage_iops_read_total\" resource.type=\"k8s_container\""
+                  }
+                }
+              }
+            ],
+            "thresholds": [],
+            "timeshiftDuration": "0s",
+            "yAxis": {
+              "label": "",
+              "scale": "LINEAR"
+            }
+          }
+        },
+        "width": 24,
+        "xPos": 24,
+        "yPos": 80
+      },
+      {
+        "height": 16,
+        "widget": {
+          "timeSeriesTable": {
+            "columnSettings": [
+              {
+                "column": "vm_name",
+                "visible": true
+              },
+              {
+                "column": "state",
+                "visible": true
+              },
+              {
+                "column": "value",
+                "visible": false
+              }
+            ],
+            "dataSets": [
+              {
+                "timeSeriesQuery": {
+                  "timeSeriesQueryLanguage": "fetch k8s_container\n| metric 'kubernetes.io/anthos/kubevirt_info'\n| group_by [vm_name: metadata.user.c'kubevirt/vm', state: metadata.system_labels.state]"
+                }
+              }
+            ],
+            "metricVisualization": "NUMBER"
+          },
+          "title": "VMs"
+        },
+        "width": 12
+      },
+      {
+        "height": 16,
+        "widget": {
+          "logsPanel": {
+            "filter": "resource.type=\"k8s_container\"\nresource.labels.cluster_name=\"clus-lab-1\"\nresource.labels.namespace_name=\"vm-workloads\"",
+            "resourceNames": [
+            ]
+          },
+          "title": "Nebula VM Logs"
+        },
+        "width": 24,
+        "yPos": 96
+      },
+      {
+        "height": 16,
+        "widget": {
+          "logsPanel": {
+            "filter": "resource.type=\"k8s_container\"\nresource.labels.cluster_name=\"clus-lab-2\"\nresource.labels.namespace_name=\"vm-workloads\"",
+            "resourceNames": [
+            ]
+          },
+          "title": "Captain America VM Logs"
+        },
+        "width": 24,
+        "xPos": 24,
+        "yPos": 96
+      },
+      {
+        "height": 16,
+        "widget": {
+          "incidentList": {
+            "monitoredResources": [],
+            "policyNames": [
+              "alertPolicies/8875308465663576159",
+              "alertPolicies/538578941852527739"
+            ]
+          },
+          "title": "Incidents"
+        },
+        "width": 24,
+        "yPos": 112
+      }
+    ]
+  }
+}

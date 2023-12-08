@@ -1,0 +1,17 @@
+combiner: OR
+conditions:
+- conditionMonitoringQueryLanguage:
+    duration: 0s
+    query: |-
+      fetch prometheus_target
+      | metric 'prometheus.googleapis.com/robin_node_state/gauge'
+      | filter (metric.node_role == 'MANAGER_MASTER')
+      | group_by 10m,
+         [value_robin_node_state_aggregate: aggregate(value.robin_node_state)]
+      | every 10m
+      | group_by [], [row_count: row_count()]
+      | condition val() < 1 '1'
+    trigger:
+      percent: 50
+  displayName:  Robin master not online more than 10 minutes
+displayName: Robin master not online for more than 10 minutes (critical)

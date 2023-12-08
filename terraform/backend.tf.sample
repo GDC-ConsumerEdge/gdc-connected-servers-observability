@@ -1,0 +1,6 @@
+terraform {
+  backend "gcs" {
+    bucket = "<TF state backend storage bucket>"
+    prefix = "alerting-terraform-state"
+  }
+}

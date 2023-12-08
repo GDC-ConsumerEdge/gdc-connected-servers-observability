@@ -1,0 +1,33 @@
+{
+  "displayName": "robin-node-not-online-30m",
+  "conditions": [
+    {
+      "displayName": "Prometheus Target - prometheus/robin_node_state/gauge",
+      "conditionThreshold": {
+        "aggregations": [
+          {
+            "alignmentPeriod": "1800s",
+            "crossSeriesReducer": "REDUCE_MEAN",
+            "groupByFields": [
+              "metric.label.service_name",
+              "metric.label.node_name"
+            ],
+            "perSeriesAligner": "ALIGN_MEAN"
+          }
+        ],
+        "comparison": "COMPARISON_LT",
+        "duration": "0s",
+        "filter": "resource.type = \"prometheus_target\" AND metric.type = \"prometheus.googleapis.com/robin_node_state/gauge\"",
+        "thresholdValue": 1,
+        "trigger": {
+          "percent": 50
+        }
+      }
+    }
+  ],
+  "alertStrategy": {
+    "autoClose": "604800s"
+  },
+  "combiner": "OR",
+  "enabled": true
+}

@@ -1,0 +1,16 @@
+combiner: OR
+conditions:
+- conditionMonitoringQueryLanguage:
+    duration: 300s
+    query: |-
+      fetch prometheus_target
+      | metric 'prometheus.googleapis.com/robin_disk_status/gauge'
+      | group_by 1m, [value_robin_disk_status_mean: mean(value.robin_disk_status)]
+      | every 1m
+      | group_by [metric.disk_wwn, metric.disk_state],
+          [value_robin_disk_status_mean_mean: mean(value_robin_disk_status_mean)]
+      | condition val() < 1 '1'
+    trigger:
+      percent: 50
+  displayName:  Robin disk no status more than 10 minutes
+displayName: Robin disk no status for more than 10 minutes (critical)

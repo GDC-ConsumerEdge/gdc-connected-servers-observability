@@ -1,0 +1,15 @@
+combiner: OR
+conditions:
+- conditionMonitoringQueryLanguage:
+    duration: 0s
+    query: |-
+      fetch k8s_container
+      | metric 'kubernetes.io/anthos/kubevirt_info'
+      | filter (metadata.system_labels.state != 'ACTIVE')
+      | group_by 10m, [value_kubevirt_info_mean: mean(value.kubevirt_info)]
+      | every 10m
+      | condition val() > 0 '1'
+    trigger:
+      percent: 50
+  displayName: VM is active
+displayName: VM inactive for greater than 5m (critical)

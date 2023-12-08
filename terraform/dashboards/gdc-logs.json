@@ -1,0 +1,139 @@
+{
+  "dashboardFilters": [],
+  "displayName": "GDC - Logs",
+  "labels": {},
+  "mosaicLayout": {
+    "columns": 48,
+    "tiles": [
+      {
+        "height": 41,
+        "widget": {
+          "collapsibleGroup": {
+            "collapsed": false
+          },
+          "title": "VMRuntime Logs"
+        },
+        "width": 48
+      },
+      {
+        "height": 17,
+        "widget": {
+          "logsPanel": {
+            "filter": "resource.type=\"k8s_container\"\nlabels.\"k8s-pod/kubevirt.io\"=\"virt-launcher\"",
+            "resourceNames": []
+          },
+          "title": "virt-launcher logs"
+        },
+        "width": 47
+      },
+      {
+        "height": 24,
+        "widget": {
+          "logsPanel": {
+            "filter": "resource.type=\"k8s_container\"\nlabels.\"k8s-pod/kubevirt.io\"!=\"virt-launcher\"",
+            "resourceNames": []
+          },
+          "title": "Other virt-* container logs"
+        },
+        "width": 47,
+        "yPos": 17
+      },
+      {
+        "height": 35,
+        "widget": {
+          "collapsibleGroup": {
+            "collapsed": false
+          },
+          "title": "Kube-system Logs"
+        },
+        "width": 48,
+        "yPos": 58
+      },
+      {
+        "height": 19,
+        "widget": {
+          "logsPanel": {
+            "filter": "resource.labels.namespace_name=\"kube-system\"\nlabels.\"k8s-pod/tier\"=\"control-plane\"",
+            "resourceNames": []
+          },
+          "title": "Control Plane Logs"
+        },
+        "width": 47,
+        "yPos": 58
+      },
+      {
+        "height": 16,
+        "widget": {
+          "logsPanel": {
+            "filter": "resource.labels.namespace_name=\"kube-system\"\nlabels.\"k8s-pod/app\"=\"metallb\"",
+            "resourceNames": []
+          },
+          "title": "Metallb Logs"
+        },
+        "width": 24,
+        "yPos": 77
+      },
+      {
+        "height": 24,
+        "widget": {
+          "collapsibleGroup": {
+            "collapsed": true
+          },
+          "title": "GCP Logs"
+        },
+        "width": 48,
+        "yPos": 93
+      },
+      {
+        "height": 24,
+        "widget": {
+          "logsPanel": {
+            "filter": "protoPayload.@type=\"type.googleapis.com/google.cloud.audit.AuditLog\"\n-protoPayload.authenticationInfo.principalEmail=~\"^(system).*\"\n-protoPayload.authenticationInfo.principalEmail=\"kubernetes-admin\"\n-protoPayload.authenticationInfo.principalEmail=\"\"",
+            "resourceNames": []
+          },
+          "title": "Cloud Audit Logs"
+        },
+        "width": 46,
+        "xPos": 1,
+        "yPos": 93
+      },
+      {
+        "height": 16,
+        "widget": {
+          "logsPanel": {
+            "filter": "labels.\"k8s-app\"=\"kube-dns\"",
+            "resourceNames": []
+          },
+          "title": "CoreDNS Logs"
+        },
+        "width": 24,
+        "xPos": 24,
+        "yPos": 77
+      },
+      {
+        "height": 17,
+        "widget": {
+          "collapsibleGroup": {
+            "collapsed": false
+          },
+          "title": "Robin Logs"
+        },
+        "width": 48,
+        "yPos": 41
+      },
+      {
+        "height": 17,
+        "widget": {
+          "logsPanel": {
+            "filter": "resource.labels.namespace_name=\"robinio\"",
+            "resourceNames": []
+          },
+          "title": "Robin Namespace Logs"
+        },
+        "width": 47,
+        "xPos": 1,
+        "yPos": 41
+      }
+    ]
+  }
+}

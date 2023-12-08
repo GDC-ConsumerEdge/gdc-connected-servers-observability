@@ -1,0 +1,18 @@
+combiner: OR
+conditions:
+- conditionMonitoringQueryLanguage:
+    duration: 0s
+    query: |-
+      fetch k8s_container
+      | metric 'kubernetes.io/anthos/kubevirt_vmi_network_transmit_bytes_total'
+      | align rate(3m)
+      | every 3m
+      | group_by [metric.kubernetes_vmi_label_kubevirt_vm],
+          [value_kubevirt_vmi_network_transmit_bytes_total:
+            aggregate(value.kubevirt_vmi_network_transmit_bytes_total)]
+      | condition value_kubevirt_vmi_network_transmit_bytes_total = cast_units(0, 'By/s')
+      | val(0)
+    trigger:
+      percent: 50
+  displayName: VM has no network traffic
+displayName: VM has no network traffic for greater than 5m (critical)

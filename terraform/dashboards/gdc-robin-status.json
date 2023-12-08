@@ -1,0 +1,329 @@
+{
+  "dashboardFilters": [],
+  "displayName": "GDC - Robin Status",
+  "labels": {},
+  "mosaicLayout": {
+    "columns": 48,
+    "tiles": [
+      {
+        "height": 16,
+        "widget": {
+          "title": "Robin Node State - ONLINE & READY",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "measures": [],
+                "minAlignmentPeriod": "60s",
+                "plotType": "STACKED_AREA",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "crossSeriesReducer": "REDUCE_MEAN",
+                      "groupByFields": [
+                        "metric.label.\"node_name\""
+                      ],
+                      "perSeriesAligner": "ALIGN_MEAN"
+                    },
+                    "filter": "metric.type=\"prometheus.googleapis.com/robin_node_state/gauge\" resource.type=\"prometheus_target\" metric.label.\"node_state\"=\"ONLINE\" metric.label.\"node_status\"=\"Ready\""
+                  }
+                }
+              }
+            ],
+            "thresholds": [],
+            "yAxis": {
+              "label": "",
+              "scale": "LINEAR"
+            }
+          }
+        },
+        "width": 24
+      },
+      {
+        "height": 16,
+        "widget": {
+          "title": "Robin Disk State - ONLINE & READY",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "measures": [],
+                "minAlignmentPeriod": "60s",
+                "plotType": "STACKED_AREA",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "crossSeriesReducer": "REDUCE_MEAN",
+                      "groupByFields": [
+                        "metric.label.\"node_name\""
+                      ],
+                      "perSeriesAligner": "ALIGN_MEAN"
+                    },
+                    "filter": "metric.type=\"prometheus.googleapis.com/robin_disk_status/gauge\" resource.type=\"prometheus_target\" metric.label.\"disk_state\"=\"READY\" metric.label.\"disk_status\"=\"ONLINE\""
+                  }
+                }
+              }
+            ],
+            "thresholds": [],
+            "yAxis": {
+              "label": "",
+              "scale": "LINEAR"
+            }
+          }
+        },
+        "width": 24,
+        "xPos": 24
+      },
+      {
+        "height": 19,
+        "widget": {
+          "logsPanel": {
+            "filter": "resource.type=\"k8s_container\"\nresource.labels.cluster_name=\"cnuc-1\"\nresource.labels.namespace_name=\"default\"\nresource.labels.container_name=\"robin-event-scraper\"",
+            "resourceNames": []
+          },
+          "title": "Robin Event Logs"
+        },
+        "width": 48,
+        "yPos": 42
+      },
+      {
+        "height": 15,
+        "widget": {
+          "timeSeriesTable": {
+            "columnSettings": [
+              {
+                "column": "service_state",
+                "visible": true
+              },
+              {
+                "column": "service_name",
+                "visible": true
+              },
+              {
+                "column": "value",
+                "visible": false
+              }
+            ],
+            "dataSets": [
+              {
+                "minAlignmentPeriod": "60s",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "crossSeriesReducer": "REDUCE_MEAN",
+                      "groupByFields": [
+                        "metric.label.\"service_state\"",
+                        "metric.label.\"service_name\""
+                      ],
+                      "perSeriesAligner": "ALIGN_MEAN"
+                    },
+                    "filter": "metric.type=\"prometheus.googleapis.com/robin_service_status/gauge\" resource.type=\"prometheus_target\" metric.label.\"node_name\"=\"cnuc-1\" metric.label.\"service_state\"!=\"UP\""
+                  }
+                }
+              }
+            ],
+            "metricVisualization": "NUMBER"
+          },
+          "title": "Node 1 - UNHEALTHY Services"
+        },
+        "width": 16,
+        "yPos": 27
+      },
+      {
+        "height": 15,
+        "widget": {
+          "timeSeriesTable": {
+            "columnSettings": [
+              {
+                "column": "service_state",
+                "visible": true
+              },
+              {
+                "column": "service_name",
+                "visible": true
+              },
+              {
+                "column": "value",
+                "visible": false
+              }
+            ],
+            "dataSets": [
+              {
+                "minAlignmentPeriod": "60s",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "crossSeriesReducer": "REDUCE_MEAN",
+                      "groupByFields": [
+                        "metric.label.\"service_state\"",
+                        "metric.label.\"service_name\""
+                      ],
+                      "perSeriesAligner": "ALIGN_MEAN"
+                    },
+                    "filter": "metric.type=\"prometheus.googleapis.com/robin_service_status/gauge\" resource.type=\"prometheus_target\" metric.label.\"node_name\"=\"edge-2\" metric.label.\"service_state\"!=\"UP\""
+                  }
+                }
+              }
+            ],
+            "metricVisualization": "NUMBER"
+          },
+          "title": "Node 2 - UNHEALTHY Services"
+        },
+        "width": 16,
+        "xPos": 16,
+        "yPos": 27
+      },
+      {
+        "height": 15,
+        "widget": {
+          "timeSeriesTable": {
+            "columnSettings": [
+              {
+                "column": "service_state",
+                "visible": true
+              },
+              {
+                "column": "service_name",
+                "visible": true
+              },
+              {
+                "column": "value",
+                "visible": false
+              }
+            ],
+            "dataSets": [
+              {
+                "minAlignmentPeriod": "60s",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "crossSeriesReducer": "REDUCE_MEAN",
+                      "groupByFields": [
+                        "metric.label.\"service_state\"",
+                        "metric.label.\"service_name\""
+                      ],
+                      "perSeriesAligner": "ALIGN_MEAN"
+                    },
+                    "filter": "metric.type=\"prometheus.googleapis.com/robin_service_status/gauge\" resource.type=\"prometheus_target\" metric.label.\"node_name\"=\"edge-3\" metric.label.\"service_state\"!=\"UP\""
+                  }
+                }
+              }
+            ],
+            "metricVisualization": "NUMBER"
+          },
+          "title": "Node 3 - UNHEALTHY Services"
+        },
+        "width": 16,
+        "xPos": 32,
+        "yPos": 27
+      },
+      {
+        "height": 16,
+        "widget": {
+          "logsPanel": {
+            "filter": "resource.labels.namespace_name=\"robinio\"",
+            "resourceNames": []
+          },
+          "title": "RobinIO Namespace Logs"
+        },
+        "width": 24,
+        "yPos": 61
+      },
+      {
+        "height": 16,
+        "widget": {
+          "incidentList": {
+            "monitoredResources": [
+              {
+                "labels": {},
+                "type": "k8s_cluster"
+              },
+              {
+                "labels": {},
+                "type": "k8s_container"
+              },
+              {
+                "labels": {},
+                "type": "k8s_node"
+              },
+              {
+                "labels": {},
+                "type": "k8s_pod"
+              }
+            ],
+            "policyNames": []
+          },
+          "title": "Incidents"
+        },
+        "width": 24,
+        "xPos": 24,
+        "yPos": 61
+      },
+      {
+        "height": 11,
+        "widget": {
+          "title": "prometheus/robin_service_status/gauge [COUNT]",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "minAlignmentPeriod": "60s",
+                "plotType": "LINE",
+                "targetAxis": "Y2",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "crossSeriesReducer": "REDUCE_COUNT",
+                      "groupByFields": [
+                        "metric.label.\"service_state\"",
+                        "metric.label.\"service_name\""
+                      ],
+                      "perSeriesAligner": "ALIGN_MEAN"
+                    },
+                    "filter": "metric.type=\"prometheus.googleapis.com/robin_service_status/gauge\" resource.type=\"prometheus_target\"",
+                    "pickTimeSeriesFilter": {
+                      "direction": "TOP",
+                      "numTimeSeries": 30,
+                      "rankingMethod": "METHOD_MAX"
+                    }
+                  }
+                }
+              }
+            ],
+            "thresholds": [
+              {
+                "label": "",
+                "targetAxis": "Y2",
+                "value": 0
+              }
+            ],
+            "y2Axis": {
+              "label": "",
+              "scale": "LINEAR"
+            }
+          }
+        },
+        "width": 48,
+        "yPos": 16
+      }
+    ]
+  }
+}
