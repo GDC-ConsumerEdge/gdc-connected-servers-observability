@@ -1,21 +1,22 @@
 {
-  "dashboardFilters": [],
   "displayName": "GDC - Daily Report",
-  "labels": {},
+  "dashboardFilters": [],
   "mosaicLayout": {
     "columns": 48,
     "tiles": [
       {
+        "width": 48,
         "height": 21,
         "widget": {
+          "title": "Availability",
           "collapsibleGroup": {
             "collapsed": false
-          },
-          "title": "Availability"
-        },
-        "width": 48
+          }
+        }
       },
       {
+        "xPos": 1,
+        "width": 47,
         "height": 10,
         "widget": {
           "title": "Node Availability",
@@ -42,11 +43,12 @@
               "scale": "LINEAR"
             }
           }
-        },
-        "width": 47,
-        "xPos": 1
+        }
       },
       {
+        "xPos": 1,
+        "yPos": 10,
+        "width": 47,
         "height": 11,
         "widget": {
           "title": "VM Availability",
@@ -73,23 +75,22 @@
               "scale": "LINEAR"
             }
           }
-        },
-        "width": 47,
-        "xPos": 1,
-        "yPos": 10
+        }
       },
       {
+        "yPos": 21,
+        "width": 48,
         "height": 45,
         "widget": {
+          "title": "Peformance",
           "collapsibleGroup": {
             "collapsed": false
-          },
-          "title": "Peformance"
-        },
-        "width": 48,
-        "yPos": 21
+          }
+        }
       },
       {
+        "yPos": 21,
+        "width": 24,
         "height": 9,
         "widget": {
           "title": "Node CPU Utilization",
@@ -122,11 +123,11 @@
               "scale": "LINEAR"
             }
           }
-        },
-        "width": 24,
-        "yPos": 21
+        }
       },
       {
+        "yPos": 30,
+        "width": 24,
         "height": 9,
         "widget": {
           "title": "Node Memory Utilization",
@@ -159,11 +160,11 @@
               "scale": "LINEAR"
             }
           }
-        },
-        "width": 24,
-        "yPos": 30
+        }
       },
       {
+        "yPos": 39,
+        "width": 24,
         "height": 8,
         "widget": {
           "title": "Node Received Bytes",
@@ -190,11 +191,11 @@
               "scale": "LINEAR"
             }
           }
-        },
-        "width": 24,
-        "yPos": 39
+        }
       },
       {
+        "yPos": 47,
+        "width": 24,
         "height": 10,
         "widget": {
           "title": "Node Sent Bytes",
@@ -221,11 +222,12 @@
               "scale": "LINEAR"
             }
           }
-        },
-        "width": 24,
-        "yPos": 47
+        }
       },
       {
+        "xPos": 24,
+        "yPos": 21,
+        "width": 24,
         "height": 9,
         "widget": {
           "title": "VM CPU Utilization",
@@ -235,13 +237,10 @@
             },
             "dataSets": [
               {
-                "breakdowns": [],
-                "dimensions": [],
-                "measures": [],
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "timeSeriesQueryLanguage": "fetch k8s_container\n| metric 'kubernetes.io/anthos/container/cpu/request_utilization'\n| filter resource.pod_name =~ '(virt-launcher).*'\n| group_by [resource.pod_name], [value_request_utilization_mean: mean(value.request_utilization)]\n#| group_by [metadata.user.c'vm.kubevirt.io/name'], [value_request_utilization_mean: mean(value.request_utilization)]\n| every 1m\n| scale '%'",
+                  "timeSeriesQueryLanguage": "fetch k8s_container\n| metric 'kubernetes.io/anthos/container/cpu/request_utilization'\n| filter resource.pod_name =~ '(virt-launcher).*' && resource.container_name == 'compute'\n| group_by [resource.pod_name], [value_request_utilization_mean: mean(value.request_utilization)]\n#| group_by [metadata.user.c'vm.kubevirt.io/name'], [value_request_utilization_mean: mean(value.request_utilization)]\n| every 1m\n| scale '%'",
                   "unitOverride": ""
                 }
               }
@@ -258,12 +257,12 @@
               "scale": "LINEAR"
             }
           }
-        },
-        "width": 24,
-        "xPos": 24,
-        "yPos": 21
+        }
       },
       {
+        "xPos": 24,
+        "yPos": 30,
+        "width": 24,
         "height": 9,
         "widget": {
           "title": "VM Memory Utilization",
@@ -273,13 +272,10 @@
             },
             "dataSets": [
               {
-                "breakdowns": [],
-                "dimensions": [],
-                "measures": [],
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "timeSeriesQueryLanguage": "fetch k8s_container\n| metric 'kubernetes.io/anthos/container/memory/limit_utilization'\n| filter resource.pod_name =~ '(virt-launcher).*'\n| group_by [resource.pod_name], [value_limit_utilization_mean: mean(value.limit_utilization)]\n#| group_by [metadata.user.c'vm.kubevirt.io/name'], [value_limit_utilization_mean: mean(value.limit_utilization)]\n| every 1m\n| scale '%'",
+                  "prometheusQuery": "# Memory utilization requires VMs have the virtio drivers installed to report correctly.\n# If a VM does not appear on this graph, confirm driver installation. \n(1 - \n(sum by (pod_name) (avg_over_time(kubernetes_io:anthos_kubevirt_vmi_memory_unused_bytes{monitored_resource=\"k8s_container\"}[2m]))\n /\n sum by (pod_name) (avg_over_time(kubernetes_io:anthos_container_memory_limit_bytes{monitored_resource=\"k8s_container\",container_name=\"compute\"}[2m]))\n)) * 100",
                   "unitOverride": ""
                 }
               }
@@ -296,12 +292,12 @@
               "scale": "LINEAR"
             }
           }
-        },
-        "width": 24,
-        "xPos": 24,
-        "yPos": 30
+        }
       },
       {
+        "xPos": 24,
+        "yPos": 39,
+        "width": 24,
         "height": 8,
         "widget": {
           "title": "VM Received Bytes (Per Interface)",
@@ -328,12 +324,12 @@
               "scale": "LINEAR"
             }
           }
-        },
-        "width": 24,
-        "xPos": 24,
-        "yPos": 39
+        }
       },
       {
+        "xPos": 24,
+        "yPos": 47,
+        "width": 24,
         "height": 10,
         "widget": {
           "title": "VM Sent Bytes (Per Interface)",
@@ -360,12 +356,12 @@
               "scale": "LINEAR"
             }
           }
-        },
-        "width": 24,
-        "xPos": 24,
-        "yPos": 47
+        }
       },
       {
+        "xPos": 24,
+        "yPos": 57,
+        "width": 24,
         "height": 9,
         "widget": {
           "title": "Storage Write iops (Per VM)",
@@ -402,12 +398,11 @@
               "scale": "LINEAR"
             }
           }
-        },
-        "width": 24,
-        "xPos": 24,
-        "yPos": 57
+        }
       },
       {
+        "yPos": 57,
+        "width": 24,
         "height": 9,
         "widget": {
           "title": "Storage Read iops (Per VM)",
@@ -444,10 +439,9 @@
               "scale": "LINEAR"
             }
           }
-        },
-        "width": 24,
-        "yPos": 57
+        }
       }
     ]
-  }
+  },
+  "labels": {}
 }

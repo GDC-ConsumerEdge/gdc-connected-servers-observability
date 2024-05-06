@@ -1,453 +1,447 @@
 {
-    "dashboardFilters": [],
-    "displayName": "GDC - Daily Report",
-    "labels": {},
-    "mosaicLayout": {
-      "columns": 48,
-      "tiles": [
-        {
-          "height": 21,
-          "widget": {
-            "collapsibleGroup": {
-              "collapsed": false
-            },
-            "title": "Availability"
-          },
-          "width": 48
-        },
-        {
-          "height": 10,
-          "widget": {
-            "title": "Node Availability",
-            "xyChart": {
-              "chartOptions": {
-                "mode": "COLOR"
-              },
-              "dataSets": [
-                {
-                  "breakdowns": [],
-                  "dimensions": [],
-                  "measures": [],
-                  "plotType": "STACKED_AREA",
-                  "targetAxis": "Y1",
-                  "timeSeriesQuery": {
-                    "timeSeriesQueryLanguage": "{ fetch k8s_node\n  | metric 'kubernetes.io/anthos/node/cpu/core_usage_time'\n|  filter true() \n  | group_by 1m,\n      [value_core_usage_time_mean: mean(value.core_usage_time)]\n  | every 1m\n; fetch k8s_node\n  | metric 'kubernetes.io/anthos/node/cpu/allocatable_cores'\n|  filter true() \n  | group_by 1m, [value_allocatable_core_mean: mean(value.allocatable_cores)]\n  | every 1m }\n| join\n| value [scaled_util: val(0) / val(1)]\n| condition val() > 0\n| group_by [resource.node_name], [value_has_cpu: aggregate(val(0))]",
-                    "unitOverride": ""
-                  }
-                }
-              ],
-              "thresholds": [],
-              "yAxis": {
-                "label": "",
-                "scale": "LINEAR"
-              }
-            }
-          },
-          "width": 47,
-          "xPos": 1
-        },
-        {
-          "height": 11,
-          "widget": {
-            "title": "VM Availability",
-            "xyChart": {
-              "chartOptions": {
-                "mode": "COLOR"
-              },
-              "dataSets": [
-                {
-                  "breakdowns": [],
-                  "dimensions": [],
-                  "measures": [],
-                  "plotType": "STACKED_AREA",
-                  "targetAxis": "Y1",
-                  "timeSeriesQuery": {
-                    "timeSeriesQueryLanguage": "fetch k8s_container\n| metric 'kubernetes.io/anthos/kubevirt_vmi_network_transmit_bytes_total'\n| align rate(2m)\n| every 1m\n| group_by [metric.kubernetes_vmi_label_kubevirt_vm],\n    [value_kubevirt_vmi_network_transmit_bytes_total:\n       aggregate(value.kubevirt_vmi_network_transmit_bytes_total)]\n| condition value_kubevirt_vmi_network_transmit_bytes_total > cast_units(0, 'By/s')\n| val(0)",
-                    "unitOverride": ""
-                  }
-                }
-              ],
-              "thresholds": [],
-              "yAxis": {
-                "label": "",
-                "scale": "LINEAR"
-              }
-            }
-          },
-          "width": 47,
-          "xPos": 1,
-          "yPos": 10
-        },
-        {
-          "height": 45,
-          "widget": {
-            "collapsibleGroup": {
-              "collapsed": false
-            },
-            "title": "Peformance"
-          },
-          "width": 48,
-          "yPos": 21
-        },
-        {
-          "height": 9,
-          "widget": {
-            "title": "Node CPU Utilization",
-            "xyChart": {
-              "chartOptions": {
-                "mode": "COLOR"
-              },
-              "dataSets": [
-                {
-                  "breakdowns": [],
-                  "dimensions": [],
-                  "measures": [],
-                  "plotType": "LINE",
-                  "targetAxis": "Y1",
-                  "timeSeriesQuery": {
-                    "timeSeriesQueryLanguage": "fetch k8s_node\n| metric 'kubernetes.io/anthos/node/cpu/allocatable_utilization'\n| group_by 1m,    [value_allocatable_utilization_mean: mean(value.allocatable_utilization)]\n| every 1m\n| scale '%'",
-                    "unitOverride": ""
-                  }
-                }
-              ],
-              "thresholds": [
-                {
-                  "label": "",
-                  "targetAxis": "Y1",
-                  "value": 25
-                }
-              ],
-              "yAxis": {
-                "label": "",
-                "scale": "LINEAR"
-              }
-            }
-          },
-          "width": 24,
-          "yPos": 21
-        },
-        {
-          "height": 9,
-          "widget": {
-            "title": "Node Memory Utilization",
-            "xyChart": {
-              "chartOptions": {
-                "mode": "COLOR"
-              },
-              "dataSets": [
-                {
-                  "breakdowns": [],
-                  "dimensions": [],
-                  "measures": [],
-                  "plotType": "LINE",
-                  "targetAxis": "Y1",
-                  "timeSeriesQuery": {
-                    "timeSeriesQueryLanguage": "fetch k8s_node\n| metric 'kubernetes.io/anthos/node/memory/allocatable_utilization'\n| group_by 1m,\n    [value_allocatable_utilization_mean: mean(value.allocatable_utilization)]\n| every 1m\n| group_by [resource.node_name],\n    [value_allocatable_utilization_mean_aggregate:\n       aggregate(value_allocatable_utilization_mean)]\n| scale '%'",
-                    "unitOverride": ""
-                  }
-                }
-              ],
-              "thresholds": [
-                {
-                  "label": "",
-                  "targetAxis": "Y1",
-                  "value": 65
-                }
-              ],
-              "yAxis": {
-                "label": "",
-                "scale": "LINEAR"
-              }
-            }
-          },
-          "width": 24,
-          "yPos": 30
-        },
-        {
-          "height": 8,
-          "widget": {
-            "title": "Node Received Bytes",
-            "xyChart": {
-              "chartOptions": {
-                "mode": "COLOR"
-              },
-              "dataSets": [
-                {
-                  "breakdowns": [],
-                  "dimensions": [],
-                  "measures": [],
-                  "plotType": "STACKED_AREA",
-                  "targetAxis": "Y1",
-                  "timeSeriesQuery": {
-                    "timeSeriesQueryLanguage": "fetch k8s_node\n| metric 'kubernetes.io/anthos/node/network/received_bytes_count'\n| align rate(1m)\n| every 1m\n| group_by [resource.node_name],\n    [value_received_bytes_count_aggregate:\n       aggregate(value.received_bytes_count)]",
-                    "unitOverride": ""
-                  }
-                }
-              ],
-              "thresholds": [],
-              "yAxis": {
-                "label": "",
-                "scale": "LINEAR"
-              }
-            }
-          },
-          "width": 24,
-          "yPos": 39
-        },
-        {
-          "height": 10,
-          "widget": {
-            "title": "Node Sent Bytes",
-            "xyChart": {
-              "chartOptions": {
-                "mode": "COLOR"
-              },
-              "dataSets": [
-                {
-                  "breakdowns": [],
-                  "dimensions": [],
-                  "measures": [],
-                  "plotType": "STACKED_AREA",
-                  "targetAxis": "Y1",
-                  "timeSeriesQuery": {
-                    "timeSeriesQueryLanguage": "fetch k8s_node\n| metric 'kubernetes.io/anthos/node/network/sent_bytes_count'\n| align rate(1m)\n| every 1m\n| group_by [resource.node_name],\n    [value_sent_bytes_count_aggregate:\n       aggregate(value.sent_bytes_count)]",
-                    "unitOverride": ""
-                  }
-                }
-              ],
-              "thresholds": [],
-              "yAxis": {
-                "label": "",
-                "scale": "LINEAR"
-              }
-            }
-          },
-          "width": 24,
-          "yPos": 47
-        },
-        {
-          "height": 9,
-          "widget": {
-            "title": "VM CPU Utilization",
-            "xyChart": {
-              "chartOptions": {
-                "mode": "COLOR"
-              },
-              "dataSets": [
-                {
-                  "breakdowns": [],
-                  "dimensions": [],
-                  "measures": [],
-                  "plotType": "LINE",
-                  "targetAxis": "Y1",
-                  "timeSeriesQuery": {
-                    "timeSeriesQueryLanguage": "fetch k8s_container\n| metric 'kubernetes.io/anthos/container/cpu/request_utilization'\n| filter resource.pod_name =~ '(virt-launcher).*'\n| group_by [resource.pod_name], [value_request_utilization_mean: mean(value.request_utilization)]\n#| group_by [metadata.user.c'vm.kubevirt.io/name'], [value_request_utilization_mean: mean(value.request_utilization)]\n| every 1m\n| scale '%'",
-                    "unitOverride": ""
-                  }
-                }
-              ],
-              "thresholds": [
-                {
-                  "label": "",
-                  "targetAxis": "Y1",
-                  "value": 25
-                }
-              ],
-              "yAxis": {
-                "label": "",
-                "scale": "LINEAR"
-              }
-            }
-          },
-          "width": 24,
-          "xPos": 24,
-          "yPos": 21
-        },
-        {
-          "height": 9,
-          "widget": {
-            "title": "VM Memory Utilization",
-            "xyChart": {
-              "chartOptions": {
-                "mode": "COLOR"
-              },
-              "dataSets": [
-                {
-                  "breakdowns": [],
-                  "dimensions": [],
-                  "measures": [],
-                  "plotType": "LINE",
-                  "targetAxis": "Y1",
-                  "timeSeriesQuery": {
-                    "timeSeriesQueryLanguage": "fetch k8s_container\n| metric 'kubernetes.io/anthos/container/memory/limit_utilization'\n| filter resource.pod_name =~ '(virt-launcher).*'\n| group_by [resource.pod_name], [value_limit_utilization_mean: mean(value.limit_utilization)]\n#| group_by [metadata.user.c'vm.kubevirt.io/name'], [value_limit_utilization_mean: mean(value.limit_utilization)]\n| every 1m\n| scale '%'",
-                    "unitOverride": ""
-                  }
-                }
-              ],
-              "thresholds": [
-                {
-                  "label": "",
-                  "targetAxis": "Y1",
-                  "value": 40
-                }
-              ],
-              "yAxis": {
-                "label": "",
-                "scale": "LINEAR"
-              }
-            }
-          },
-          "width": 24,
-          "xPos": 24,
-          "yPos": 30
-        },
-        {
-          "height": 8,
-          "widget": {
-            "title": "VM Received Bytes (Per Interface)",
-            "xyChart": {
-              "chartOptions": {
-                "mode": "COLOR"
-              },
-              "dataSets": [
-                {
-                  "breakdowns": [],
-                  "dimensions": [],
-                  "measures": [],
-                  "plotType": "STACKED_AREA",
-                  "targetAxis": "Y1",
-                  "timeSeriesQuery": {
-                    "timeSeriesQueryLanguage": "fetch k8s_container\n| metric 'kubernetes.io/anthos/kubevirt_vmi_network_receive_bytes_total'\n| align rate(1m)\n| every 1m\n| group_by [metric.kubernetes_vmi_label_kubevirt_vm, metric.interface],\n    [value_kubevirt_vmi_network_receive_bytes_total:\n       aggregate(value.kubevirt_vmi_network_receive_bytes_total)]",
-                    "unitOverride": ""
-                  }
-                }
-              ],
-              "thresholds": [],
-              "yAxis": {
-                "label": "",
-                "scale": "LINEAR"
-              }
-            }
-          },
-          "width": 24,
-          "xPos": 24,
-          "yPos": 39
-        },
-        {
-          "height": 10,
-          "widget": {
-            "title": "VM Sent Bytes (Per Interface)",
-            "xyChart": {
-              "chartOptions": {
-                "mode": "COLOR"
-              },
-              "dataSets": [
-                {
-                  "breakdowns": [],
-                  "dimensions": [],
-                  "measures": [],
-                  "plotType": "STACKED_AREA",
-                  "targetAxis": "Y1",
-                  "timeSeriesQuery": {
-                    "timeSeriesQueryLanguage": "fetch k8s_container\n| metric 'kubernetes.io/anthos/kubevirt_vmi_network_transmit_bytes_total'\n| align rate(1m)\n| every 1m\n| group_by [metric.kubernetes_vmi_label_kubevirt_vm, metric.interface],\n    [value_kubevirt_vmi_network_transmit_bytes_total:\n       aggregate(value.kubevirt_vmi_network_transmit_bytes_total)]",
-                    "unitOverride": ""
-                  }
-                }
-              ],
-              "thresholds": [],
-              "yAxis": {
-                "label": "",
-                "scale": "LINEAR"
-              }
-            }
-          },
-          "width": 24,
-          "xPos": 24,
-          "yPos": 47
-        },
-        {
-          "height": 9,
-          "widget": {
-            "title": "Storage Write iops (Per VM)",
-            "xyChart": {
-              "chartOptions": {
-                "mode": "COLOR"
-              },
-              "dataSets": [
-                {
-                  "breakdowns": [],
-                  "dimensions": [],
-                  "measures": [],
-                  "minAlignmentPeriod": "60s",
-                  "plotType": "LINE",
-                  "targetAxis": "Y1",
-                  "timeSeriesQuery": {
-                    "timeSeriesFilter": {
-                      "aggregation": {
-                        "alignmentPeriod": "60s",
-                        "crossSeriesReducer": "REDUCE_SUM",
-                        "groupByFields": [
-                          "metric.label.\"kubernetes_vmi_label_kubevirt_vm\""
-                        ],
-                        "perSeriesAligner": "ALIGN_RATE"
-                      },
-                      "filter": "metric.type=\"kubernetes.io/anthos/kubevirt_vmi_storage_iops_write_total\" resource.type=\"k8s_container\""
-                    }
-                  }
-                }
-              ],
-              "thresholds": [],
-              "yAxis": {
-                "label": "",
-                "scale": "LINEAR"
-              }
-            }
-          },
-          "width": 24,
-          "xPos": 24,
-          "yPos": 57
-        },
-        {
-          "height": 9,
-          "widget": {
-            "title": "Storage Read iops (Per VM)",
-            "xyChart": {
-              "chartOptions": {
-                "mode": "COLOR"
-              },
-              "dataSets": [
-                {
-                  "breakdowns": [],
-                  "dimensions": [],
-                  "measures": [],
-                  "minAlignmentPeriod": "60s",
-                  "plotType": "LINE",
-                  "targetAxis": "Y1",
-                  "timeSeriesQuery": {
-                    "timeSeriesFilter": {
-                      "aggregation": {
-                        "alignmentPeriod": "60s",
-                        "crossSeriesReducer": "REDUCE_SUM",
-                        "groupByFields": [
-                          "metric.label.\"kubernetes_vmi_label_kubevirt_vm\""
-                        ],
-                        "perSeriesAligner": "ALIGN_RATE"
-                      },
-                      "filter": "metric.type=\"kubernetes.io/anthos/kubevirt_vmi_storage_iops_read_total\" resource.type=\"k8s_container\""
-                    }
-                  }
-                }
-              ],
-              "thresholds": [],
-              "yAxis": {
-                "label": "",
-                "scale": "LINEAR"
-              }
-            }
-          },
-          "width": 24,
-          "yPos": 57
+  "displayName": "GDC - Daily Report",
+  "dashboardFilters": [],
+  "mosaicLayout": {
+    "columns": 48,
+    "tiles": [
+      {
+        "width": 48,
+        "height": 21,
+        "widget": {
+          "title": "Availability",
+          "collapsibleGroup": {
+            "collapsed": false
+          }
         }
-      ]
-    }
-  }
+      },
+      {
+        "xPos": 1,
+        "width": 47,
+        "height": 10,
+        "widget": {
+          "title": "Node Availability",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "measures": [],
+                "plotType": "STACKED_AREA",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesQueryLanguage": "{ fetch k8s_node\n  | metric 'kubernetes.io/anthos/node/cpu/core_usage_time'\n|  filter true() \n  | group_by 1m,\n      [value_core_usage_time_mean: mean(value.core_usage_time)]\n  | every 1m\n; fetch k8s_node\n  | metric 'kubernetes.io/anthos/node/cpu/allocatable_cores'\n|  filter true() \n  | group_by 1m, [value_allocatable_core_mean: mean(value.allocatable_cores)]\n  | every 1m }\n| join\n| value [scaled_util: val(0) / val(1)]\n| condition val() > 0\n| group_by [resource.node_name], [value_has_cpu: aggregate(val(0))]",
+                  "unitOverride": ""
+                }
+              }
+            ],
+            "thresholds": [],
+            "yAxis": {
+              "label": "",
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 1,
+        "yPos": 10,
+        "width": 47,
+        "height": 11,
+        "widget": {
+          "title": "VM Availability",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "measures": [],
+                "plotType": "STACKED_AREA",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesQueryLanguage": "fetch k8s_container\n| metric 'kubernetes.io/anthos/kubevirt_vmi_network_transmit_bytes_total'\n| align rate(2m)\n| every 1m\n| group_by [metric.kubernetes_vmi_label_kubevirt_vm],\n    [value_kubevirt_vmi_network_transmit_bytes_total:\n       aggregate(value.kubevirt_vmi_network_transmit_bytes_total)]\n| condition value_kubevirt_vmi_network_transmit_bytes_total > cast_units(0, 'By/s')\n| val(0)",
+                  "unitOverride": ""
+                }
+              }
+            ],
+            "thresholds": [],
+            "yAxis": {
+              "label": "",
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "yPos": 21,
+        "width": 48,
+        "height": 45,
+        "widget": {
+          "title": "Peformance",
+          "collapsibleGroup": {
+            "collapsed": false
+          }
+        }
+      },
+      {
+        "yPos": 21,
+        "width": 24,
+        "height": 9,
+        "widget": {
+          "title": "Node CPU Utilization",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "measures": [],
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesQueryLanguage": "fetch k8s_node\n| metric 'kubernetes.io/anthos/node/cpu/allocatable_utilization'\n| group_by 1m,    [value_allocatable_utilization_mean: mean(value.allocatable_utilization)]\n| every 1m\n| scale '%'",
+                  "unitOverride": ""
+                }
+              }
+            ],
+            "thresholds": [
+              {
+                "label": "",
+                "targetAxis": "Y1",
+                "value": 25
+              }
+            ],
+            "yAxis": {
+              "label": "",
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "yPos": 30,
+        "width": 24,
+        "height": 9,
+        "widget": {
+          "title": "Node Memory Utilization",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "measures": [],
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesQueryLanguage": "fetch k8s_node\n| metric 'kubernetes.io/anthos/node/memory/allocatable_utilization'\n| group_by 1m,\n    [value_allocatable_utilization_mean: mean(value.allocatable_utilization)]\n| every 1m\n| group_by [resource.node_name],\n    [value_allocatable_utilization_mean_aggregate:\n       aggregate(value_allocatable_utilization_mean)]\n| scale '%'",
+                  "unitOverride": ""
+                }
+              }
+            ],
+            "thresholds": [
+              {
+                "label": "",
+                "targetAxis": "Y1",
+                "value": 65
+              }
+            ],
+            "yAxis": {
+              "label": "",
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "yPos": 39,
+        "width": 24,
+        "height": 8,
+        "widget": {
+          "title": "Node Received Bytes",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "measures": [],
+                "plotType": "STACKED_AREA",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesQueryLanguage": "fetch k8s_node\n| metric 'kubernetes.io/anthos/node/network/received_bytes_count'\n| align rate(1m)\n| every 1m\n| group_by [resource.node_name],\n    [value_received_bytes_count_aggregate:\n       aggregate(value.received_bytes_count)]",
+                  "unitOverride": ""
+                }
+              }
+            ],
+            "thresholds": [],
+            "yAxis": {
+              "label": "",
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "yPos": 47,
+        "width": 24,
+        "height": 10,
+        "widget": {
+          "title": "Node Sent Bytes",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "measures": [],
+                "plotType": "STACKED_AREA",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesQueryLanguage": "fetch k8s_node\n| metric 'kubernetes.io/anthos/node/network/sent_bytes_count'\n| align rate(1m)\n| every 1m\n| group_by [resource.node_name],\n    [value_sent_bytes_count_aggregate:\n       aggregate(value.sent_bytes_count)]",
+                  "unitOverride": ""
+                }
+              }
+            ],
+            "thresholds": [],
+            "yAxis": {
+              "label": "",
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 24,
+        "yPos": 21,
+        "width": 24,
+        "height": 9,
+        "widget": {
+          "title": "VM CPU Utilization",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesQueryLanguage": "fetch k8s_container\n| metric 'kubernetes.io/anthos/container/cpu/request_utilization'\n| filter resource.pod_name =~ '(virt-launcher).*' && resource.container_name == 'compute'\n| group_by [resource.pod_name], [value_request_utilization_mean: mean(value.request_utilization)]\n#| group_by [metadata.user.c'vm.kubevirt.io/name'], [value_request_utilization_mean: mean(value.request_utilization)]\n| every 1m\n| scale '%'",
+                  "unitOverride": ""
+                }
+              }
+            ],
+            "thresholds": [
+              {
+                "label": "",
+                "targetAxis": "Y1",
+                "value": 25
+              }
+            ],
+            "yAxis": {
+              "label": "",
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 24,
+        "yPos": 30,
+        "width": 24,
+        "height": 9,
+        "widget": {
+          "title": "VM Memory Utilization",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "# Memory utilization requires VMs have the virtio drivers installed to report correctly.\n# If a VM does not appear on this graph, confirm driver installation. \n(1 - \n(sum by (pod_name) (avg_over_time(kubernetes_io:anthos_kubevirt_vmi_memory_unused_bytes{monitored_resource=\"k8s_container\"}[2m]))\n /\n sum by (pod_name) (avg_over_time(kubernetes_io:anthos_container_memory_limit_bytes{monitored_resource=\"k8s_container\",container_name=\"compute\"}[2m]))\n)) * 100",
+                  "unitOverride": ""
+                }
+              }
+            ],
+            "thresholds": [
+              {
+                "label": "",
+                "targetAxis": "Y1",
+                "value": 40
+              }
+            ],
+            "yAxis": {
+              "label": "",
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 24,
+        "yPos": 39,
+        "width": 24,
+        "height": 8,
+        "widget": {
+          "title": "VM Received Bytes (Per Interface)",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "measures": [],
+                "plotType": "STACKED_AREA",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesQueryLanguage": "fetch k8s_container\n| metric 'kubernetes.io/anthos/kubevirt_vmi_network_receive_bytes_total'\n| align rate(1m)\n| every 1m\n| group_by [metric.kubernetes_vmi_label_kubevirt_vm, metric.interface],\n    [value_kubevirt_vmi_network_receive_bytes_total:\n       aggregate(value.kubevirt_vmi_network_receive_bytes_total)]",
+                  "unitOverride": ""
+                }
+              }
+            ],
+            "thresholds": [],
+            "yAxis": {
+              "label": "",
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 24,
+        "yPos": 47,
+        "width": 24,
+        "height": 10,
+        "widget": {
+          "title": "VM Sent Bytes (Per Interface)",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "measures": [],
+                "plotType": "STACKED_AREA",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesQueryLanguage": "fetch k8s_container\n| metric 'kubernetes.io/anthos/kubevirt_vmi_network_transmit_bytes_total'\n| align rate(1m)\n| every 1m\n| group_by [metric.kubernetes_vmi_label_kubevirt_vm, metric.interface],\n    [value_kubevirt_vmi_network_transmit_bytes_total:\n       aggregate(value.kubevirt_vmi_network_transmit_bytes_total)]",
+                  "unitOverride": ""
+                }
+              }
+            ],
+            "thresholds": [],
+            "yAxis": {
+              "label": "",
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 24,
+        "yPos": 57,
+        "width": 24,
+        "height": 9,
+        "widget": {
+          "title": "Storage Write iops (Per VM)",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "measures": [],
+                "minAlignmentPeriod": "60s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "groupByFields": [
+                        "metric.label.\"kubernetes_vmi_label_kubevirt_vm\""
+                      ],
+                      "perSeriesAligner": "ALIGN_RATE"
+                    },
+                    "filter": "metric.type=\"kubernetes.io/anthos/kubevirt_vmi_storage_iops_write_total\" resource.type=\"k8s_container\""
+                  }
+                }
+              }
+            ],
+            "thresholds": [],
+            "yAxis": {
+              "label": "",
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "yPos": 57,
+        "width": 24,
+        "height": 9,
+        "widget": {
+          "title": "Storage Read iops (Per VM)",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "measures": [],
+                "minAlignmentPeriod": "60s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "groupByFields": [
+                        "metric.label.\"kubernetes_vmi_label_kubevirt_vm\""
+                      ],
+                      "perSeriesAligner": "ALIGN_RATE"
+                    },
+                    "filter": "metric.type=\"kubernetes.io/anthos/kubevirt_vmi_storage_iops_read_total\" resource.type=\"k8s_container\""
+                  }
+                }
+              }
+            ],
+            "thresholds": [],
+            "yAxis": {
+              "label": "",
+              "scale": "LINEAR"
+            }
+          }
+        }
+      }
+    ]
+  },
+  "labels": {}
+}
