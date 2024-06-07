@@ -180,7 +180,7 @@
                 "plotType": "STACKED_AREA",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "timeSeriesQueryLanguage": "fetch k8s_node\n| metric 'kubernetes.io/anthos/node/network/received_bytes_count'\n| align rate(1m)\n| every 1m\n| group_by [resource.node_name],\n    [value_received_bytes_count_aggregate:\n       aggregate(value.received_bytes_count)]",
+                  "timeSeriesQueryLanguage": "fetch k8s_node\n| metric 'kubernetes.io/anthos/node/network/received_bytes_count'\n| filter (metric.interface =~ 'enp81s0f.*')\n|align rate(1m)\n| every 1m\n| group_by [resource.node_name],\n    [value_received_bytes_count_aggregate:\n       aggregate(value.received_bytes_count)]",
                   "unitOverride": ""
                 }
               }
@@ -211,7 +211,7 @@
                 "plotType": "STACKED_AREA",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "timeSeriesQueryLanguage": "fetch k8s_node\n| metric 'kubernetes.io/anthos/node/network/sent_bytes_count'\n| align rate(1m)\n| every 1m\n| group_by [resource.node_name],\n    [value_sent_bytes_count_aggregate:\n       aggregate(value.sent_bytes_count)]",
+                  "timeSeriesQueryLanguage": "fetch k8s_node\n| metric 'kubernetes.io/anthos/node/network/sent_bytes_count'\n|filter (metric.interface =~ 'enp81s0f.*')\n| align rate(1m)\n| every 1m\n| group_by [resource.node_name],\n    [value_sent_bytes_count_aggregate:\n       aggregate(value.sent_bytes_count)]",
                   "unitOverride": ""
                 }
               }
