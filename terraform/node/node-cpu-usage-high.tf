@@ -7,28 +7,28 @@ resource "google_monitoring_alert_policy" "node-cpu-usage-high-alert" {
       query = <<EOL
       { t_0:
           { t_0:
-              fetch k8s_container
-              | metric 'kubernetes.io/anthos/kube_node_status_allocatable'
+              fetch prometheus_target
+              | metric 'kubernetes.io/anthos/kube_node_status_allocatable/gauge'
               | filter (metric.resource == 'cpu')
               | group_by 1m,
                   [value_kube_node_status_allocatable_mean:
-                     mean(value.kube_node_status_allocatable)]
+                     mean(value.gauge)]
               | every 1m
               | group_by
-                  [resource.cluster_name, metric.node, resource.location,
+                  [resource.cluster, metric.node, resource.location,
                    resource.project_id],
                   [value_kube_node_status_allocatable_mean_aggregate:
                      aggregate(value_kube_node_status_allocatable_mean)]
           ; t_1:
-              fetch k8s_container
-              | metric 'kubernetes.io/anthos/kube_node_status_capacity'
+              fetch prometheus_target
+              | metric 'kubernetes.io/anthos/kube_node_status_capacity/gauge'
               | filter (metric.resource == 'cpu')
               | group_by 1m,
                   [value_kube_node_status_capacity_mean:
-                     mean(value.kube_node_status_capacity)]
+                     mean(value.gauge)]
               | every 1m
               | group_by
-                  [metric.node, resource.cluster_name, resource.project_id,
+                  [metric.node, resource.cluster, resource.project_id,
                    resource.location],
                   [value_kube_node_status_capacity_mean_aggregate:
                      aggregate(value_kube_node_status_capacity_mean)] }

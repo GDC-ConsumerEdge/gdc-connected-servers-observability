@@ -4,16 +4,16 @@ conditions:
     duration: 900s
     query: |-
       { t_0:
-          fetch k8s_container
-          | metric 'kubernetes.io/anthos/kube_pod_container_status_restarts_total'
+          fetch prometheus_target
+          | metric 'kubernetes.io/anthos/kube_pod_container_status_restarts_total/counter'
           | filter (metric.pod !~ '^(bm-system|robin-prejob).*')
           | align delta(15m)
           | every 15m
           | group_by
-              [resource.project_id, resource.location, resource.cluster_name,
-               metric.namespace, metric.container],
+              [resource.project_id, resource.location, resource.cluster,
+               resource.namespace, metric.container],
               [value_kube_pod_container_status_restarts_total_aggregate:
-                 aggregate(value.kube_pod_container_status_restarts_total)]
+                 aggregate(value.counter)]
       ; t_1:
           fetch k8s_container::kubernetes.io/anthos/anthos_cluster_info
           | filter (metric.anthos_distribution = 'baremetal')

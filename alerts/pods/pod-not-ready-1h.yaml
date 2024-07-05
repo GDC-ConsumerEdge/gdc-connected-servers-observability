@@ -4,16 +4,16 @@ conditions:
     duration: 3600s
     query: |-
       { t_0:
-          fetch k8s_container
-          | metric 'kubernetes.io/anthos/kube_pod_status_phase'
+          fetch prometheus_target
+          | metric 'kubernetes.io/anthos/kube_pod_status_phase/gauge'
           | filter (metric.phase =~ 'Pending|Unknown|Failed')
-          | filter (resource.pod_name !~ '^(bm-system||robin-prejob).*')
+          | filter (metric.pod !~ '^(bm-system||robin-prejob).*')
           | group_by 1m,
-              [value_kube_pod_status_phase_mean: mean(value.kube_pod_status_phase)]
+              [value_kube_pod_status_phase_mean: mean(value.gauge)]
           | every 1m
           | group_by
-              [resource.project_id, resource.location, resource.cluster_name,
-               metric.namespace, metric.pod],
+              [resource.project_id, resource.location, resource.cluster,
+               resource.namespace, metric.pod],
               [value_kube_pod_status_phase_mean_aggregate:
                  aggregate(value_kube_pod_status_phase_mean)]
       ; t_1:

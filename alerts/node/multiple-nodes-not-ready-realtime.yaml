@@ -4,12 +4,12 @@ conditions:
     duration: 60s
     query: |-
       { t_0:
-          fetch k8s_container
-          | metric 'kubernetes.io/anthos/kube_node_status_condition'
+          fetch prometheus_target
+          | metric 'kubernetes.io/anthos/kube_node_status_condition/gauge'
           | filter (metric.condition == 'Ready' && metric.status != 'true')
           | group_by 1m,
               [value_kube_node_status_condition_mean:
-                 mean(value.kube_node_status_condition)]
+                 mean(value.gauge)]
           | every 1m
           | group_by [resource.project_id, resource.location, resource.cluster_name],
               [value_kube_node_status_condition_mean_aggregate:

@@ -6,26 +6,26 @@ resource "google_monitoring_alert_policy" "node-memory-usage-high-alert" {
     condition_monitoring_query_language {
       query = <<EOL
       { t_0:
-          fetch k8s_node
-          | metric 'kubernetes.io/anthos/node_memory_MemAvailable_bytes'
+          fetch prometheus_target
+          | metric 'kubernetes.io/anthos/node_memory_MemAvailable_bytes/gauge'
           | group_by 1m,
               [value_node_memory_MemAvailable_bytes_mean:
-                 mean(value.node_memory_MemAvailable_bytes)]
+                 mean(value.gauge)]
           | every 1m
           | group_by
-              [resource.cluster_name, resource.node_name, resource.location,
+              [resource.cluster, resource.instance, resource.location,
                resource.project_id],
               [value_node_memory_MemAvailable_bytes_mean_aggregate:
                  aggregate(value_node_memory_MemAvailable_bytes_mean)]
       ; t_1:
-          fetch k8s_node
-          | metric 'kubernetes.io/anthos/node_memory_MemTotal_bytes'
+          fetch prometheus_target
+          | metric 'kubernetes.io/anthos/node_memory_MemTotal_bytes/gauge'
           | group_by 1m,
               [value_node_memory_MemTotal_bytes_mean:
-                 mean(value.node_memory_MemTotal_bytes)]
+                 mean(value.gauge)]
           | every 1m
           | group_by
-              [resource.node_name, resource.cluster_name, resource.project_id,
+              [resource.instance, resource.cluster, resource.project_id,
                resource.location],
               [value_node_memory_MemTotal_bytes_mean_aggregate:
                  aggregate(value_node_memory_MemTotal_bytes_mean)] }
