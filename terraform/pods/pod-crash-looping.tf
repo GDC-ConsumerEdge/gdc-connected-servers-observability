@@ -20,7 +20,7 @@ resource "google_monitoring_alert_policy" "pod-crash-looping-alert" {
           fetch k8s_container::kubernetes.io/anthos/anthos_cluster_info
           | filter (metric.anthos_distribution = 'baremetal')
           | align mean_aligner()
-          | group_by [resource.project_id, resource.location, resource.cluster_name],
+          | group_by [resource.project_id, resource.location, cluster: resource.cluster_name],
               [value_anthos_cluster_info_aggregate:
                  aggregate(value.anthos_cluster_info)]
           | every 15m }
