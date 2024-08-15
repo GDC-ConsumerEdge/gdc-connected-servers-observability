@@ -31,6 +31,7 @@ Dashboards are stored in the dashboards folder and can be manually deployed.
 | GDC VM Status        | ![dashboard](https://screenshot.googleplex.com/Bzwxw8kX5pmUp8b.png) | Dashboard showing GDC VM information                                                                             | http://shortn/_Vlfh4TeYlG |
 | GDC Robin Status     | ![dashboard](https://screenshot.googleplex.com/8grZWZsgZDzdzRW.png) | Dashboard to deep-dive into robin metrics. Note: this dashboard requires the use of the robin-health application | http://shortn/_K3mEEncvls |
 | GDC External Secrets | ![dashboard](https://screenshot.googleplex.com/4YEWwskAhBAGQCf.png) | Dashboard showing External Secrets operational information                                                       | http://shortn/_ZikQEfILoq |
+| GDC VM Distribution  | ![dashboard](https://screenshot.googleplex.com/B6BQgdPdHeFVhZS.png) | Dashboard showing VM distribution by node                                                       |  |
 
 
 ## Alerts

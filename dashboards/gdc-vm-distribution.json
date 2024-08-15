@@ -1,0 +1,244 @@
+{
+    "displayName": "GDC - VM Distribution",
+    "mosaicLayout": {
+      "columns": 48,
+      "tiles": [
+        {
+          "yPos": 22,
+          "width": 48,
+          "height": 15,
+          "widget": {
+            "title": "VMs",
+            "collapsibleGroup": {
+              "collapsed": false
+            },
+            "id": ""
+          }
+        },
+        {
+          "xPos": 1,
+          "width": 46,
+          "height": 22,
+          "widget": {
+            "title": "Usage Instructions",
+            "text": {
+              "content": "The following graphs display the workloads running on each node of a particular cluster. This dashboard is intended to look at a single cluster at a time, so please be sure to apply the cluster filter above before proceeding.\n\n## FAQ\n\n### Why do I see no data in all the graphs?\n\nEnsure you are using the correct cluster name in the cluster filter. Using the wildcard '*', will return no results. Beyond that, ensure that the cluster in online and connected to the internet.\n\n### Why do I see no data in some graphs?\n\nIf there is not a VM or robin-master scheduled on a particular node, then that graph will return with 'No Data'\n\n### Why do I see the same VM on different at the same time?\n\nThis can be a result of LiveMigration. During this process, a copy of the VM is made on a new node until all memory has been copied over. At that point a \"cutover\" happens where the new node's VM becomes active and the old VM is now torn down. While the copying process is in-progress (and this can take several minutes), you will see the VM itself be represented on both nodes.\n\n### Why do I see robin-master on multiple nodes?\n\nSimilar to live migration, if there is an event that drains the node, then robin-master will create a second instance on the new node. Only once the new instance is deemed healthy and operation will the old instance be terminated. During the time period from the second instance being scheduled until it becomes healthy, you will see multiple robin-masters. ",
+              "format": "MARKDOWN",
+              "style": {
+                "backgroundColor": "#FFFFFF",
+                "fontSize": "FS_LARGE",
+                "horizontalAlignment": "H_LEFT",
+                "padding": "P_EXTRA_SMALL",
+                "pointerLocation": "POINTER_LOCATION_UNSPECIFIED",
+                "textColor": "#212121",
+                "verticalAlignment": "V_TOP"
+              }
+            }
+          }
+        },
+        {
+          "yPos": 22,
+          "width": 16,
+          "height": 15,
+          "widget": {
+            "title": "Node 1",
+            "xyChart": {
+              "chartOptions": {
+                "mode": "COLOR"
+              },
+              "dataSets": [
+                {
+                  "plotType": "STACKED_AREA",
+                  "targetAxis": "Y1",
+                  "timeSeriesQuery": {
+                    "timeSeriesQueryLanguage": "{ t_0 : fetch prometheus_target\n  | metric 'kubernetes.io/anthos/kube_pod_status_phase/gauge'\n  | filter resource.cluster='${cluster_name.value}'\n  | filter\n      metric.phase == 'Running' && (metric.pod =~ '(virt-launcher).*')\n  | group_by 1m, [value_gauge_mean: mean(value.gauge)]\n  | every 1m\n  | group_by [metric.phase, metric.pod],\n      [value_gauge_mean_aggregate: min(value_gauge_mean)];\nt_1: fetch prometheus_target\n  | metric 'kubernetes.io/anthos/kube_pod_info/gauge'\n  | filter resource.cluster = \"${cluster_name.value}\"\n  | filter metric.pod =~ '(virt-launcher).*'\n  | filter metric.node =~ '.*01.ba.l.google.com$$'\n  }\n| join\n| filter t_0.value_gauge_mean_aggregate > 0\n| group_by 5m, [value_gauge_mean: mean(value.gauge)]\n| every 5m\n| group_by [metric.created_by_name]",
+                    "unitOverride": ""
+                  }
+                }
+              ],
+              "thresholds": [],
+              "yAxis": {
+                "label": "",
+                "scale": "LINEAR"
+              }
+            }
+          }
+        },
+        {
+          "xPos": 16,
+          "yPos": 22,
+          "width": 16,
+          "height": 15,
+          "widget": {
+            "title": "Node 2",
+            "xyChart": {
+              "chartOptions": {
+                "mode": "COLOR"
+              },
+              "dataSets": [
+                {
+                  "plotType": "STACKED_AREA",
+                  "targetAxis": "Y1",
+                  "timeSeriesQuery": {
+                    "timeSeriesQueryLanguage": "{ t_0 : fetch prometheus_target\n  | metric 'kubernetes.io/anthos/kube_pod_status_phase/gauge'\n  | filter resource.cluster='${cluster_name.value}'\n  | filter\n      metric.phase == 'Running' && (metric.pod =~ '(virt-launcher).*')\n  | group_by 1m, [value_gauge_mean: mean(value.gauge)]\n  | every 1m\n  | group_by [metric.phase, metric.pod],\n      [value_gauge_mean_aggregate: min(value_gauge_mean)];\nt_1: fetch prometheus_target\n  | metric 'kubernetes.io/anthos/kube_pod_info/gauge'\n  | filter resource.cluster = \"${cluster_name.value}\"\n  | filter metric.pod =~ '(virt-launcher).*'\n  | filter metric.node =~ '.*02.ba.l.google.com$$'\n  }\n| join\n| filter t_0.value_gauge_mean_aggregate > 0\n| group_by 5m, [value_gauge_mean: mean(value.gauge)]\n| every 5m\n| group_by [metric.created_by_name]",
+                    "unitOverride": ""
+                  }
+                }
+              ],
+              "thresholds": [],
+              "yAxis": {
+                "label": "",
+                "scale": "LINEAR"
+              }
+            }
+          }
+        },
+        {
+          "xPos": 32,
+          "yPos": 22,
+          "width": 16,
+          "height": 15,
+          "widget": {
+            "title": "Node 3",
+            "xyChart": {
+              "chartOptions": {
+                "mode": "COLOR"
+              },
+              "dataSets": [
+                {
+                  "plotType": "STACKED_AREA",
+                  "targetAxis": "Y1",
+                  "timeSeriesQuery": {
+                    "timeSeriesQueryLanguage": "{ t_0 : fetch prometheus_target\n  | metric 'kubernetes.io/anthos/kube_pod_status_phase/gauge'\n  | filter resource.cluster='${cluster_name.value}'\n  | filter\n      metric.phase == 'Running' && (metric.pod =~ '(virt-launcher).*')\n  | group_by 1m, [value_gauge_mean: mean(value.gauge)]\n  | every 1m\n  | group_by [metric.phase, metric.pod],\n      [value_gauge_mean_aggregate: min(value_gauge_mean)];\nt_1: fetch prometheus_target\n  | metric 'kubernetes.io/anthos/kube_pod_info/gauge'\n  | filter resource.cluster = \"${cluster_name.value}\"\n  | filter metric.pod =~ '(virt-launcher).*'\n  | filter metric.node =~ '.*03.ba.l.google.com$$'\n  }\n| join\n| filter t_0.value_gauge_mean_aggregate > 0\n| group_by 5m, [value_gauge_mean: mean(value.gauge)]\n| every 5m\n| group_by [metric.created_by_name]",
+                    "unitOverride": ""
+                  }
+                }
+              ],
+              "thresholds": [],
+              "yAxis": {
+                "label": "",
+                "scale": "LINEAR"
+              }
+            }
+          }
+        },
+        {
+          "yPos": 37,
+          "width": 48,
+          "height": 15,
+          "widget": {
+            "title": "Robin Master",
+            "collapsibleGroup": {
+              "collapsed": false
+            }
+          }
+        },
+        {
+          "yPos": 37,
+          "width": 16,
+          "height": 15,
+          "widget": {
+            "title": "Node 1",
+            "xyChart": {
+              "chartOptions": {
+                "mode": "COLOR"
+              },
+              "dataSets": [
+                {
+                  "plotType": "STACKED_AREA",
+                  "targetAxis": "Y1",
+                  "timeSeriesQuery": {
+                    "timeSeriesQueryLanguage": "{ t_0 : fetch prometheus_target\n  | metric 'kubernetes.io/anthos/kube_pod_status_phase/gauge'\n  | filter resource.cluster='${cluster_name.value}'\n  | filter\n      metric.phase == 'Running' && (metric.pod =~ '(robin-master).*')\n  | group_by 1m, [value_gauge_mean: mean(value.gauge)]\n  | every 1m\n  | group_by [metric.phase, metric.pod],\n      [value_gauge_mean_aggregate: min(value_gauge_mean)];\nt_1: fetch prometheus_target\n  | metric 'kubernetes.io/anthos/kube_pod_info/gauge'\n  | filter resource.cluster = \"${cluster_name.value}\"\n  | filter metric.pod =~ '(robin-master).*'\n  | filter metric.node =~ '.*01.ba.l.google.com$$'\n  }\n| join\n| filter t_0.value_gauge_mean_aggregate > 0\n| group_by 5m, [value_gauge_mean: mean(value.gauge)]\n| every 5m\n| group_by [metric.pod]",
+                    "unitOverride": ""
+                  }
+                }
+              ],
+              "thresholds": [],
+              "yAxis": {
+                "label": "",
+                "scale": "LINEAR"
+              }
+            }
+          }
+        },
+        {
+          "xPos": 16,
+          "yPos": 37,
+          "width": 16,
+          "height": 15,
+          "widget": {
+            "title": "Node 2",
+            "xyChart": {
+              "chartOptions": {
+                "mode": "COLOR"
+              },
+              "dataSets": [
+                {
+                  "plotType": "STACKED_AREA",
+                  "targetAxis": "Y1",
+                  "timeSeriesQuery": {
+                    "timeSeriesQueryLanguage": "{ t_0 : fetch prometheus_target\n  | metric 'kubernetes.io/anthos/kube_pod_status_phase/gauge'\n  | filter resource.cluster='${cluster_name.value}'\n  | filter\n      metric.phase == 'Running' && (metric.pod =~ '(robin-master).*')\n  | group_by 1m, [value_gauge_mean: mean(value.gauge)]\n  | every 1m\n  | group_by [metric.phase, metric.pod],\n      [value_gauge_mean_aggregate: min(value_gauge_mean)];\nt_1: fetch prometheus_target\n  | metric 'kubernetes.io/anthos/kube_pod_info/gauge'\n  | filter resource.cluster = \"${cluster_name.value}\"\n  | filter metric.pod =~ '(robin-master).*'\n  | filter metric.node =~ '.*02.ba.l.google.com$$'\n  }\n| join\n| filter t_0.value_gauge_mean_aggregate > 0\n| group_by 5m, [value_gauge_mean: mean(value.gauge)]\n| every 5m\n| group_by [metric.pod]",
+                    "unitOverride": ""
+                  }
+                }
+              ],
+              "thresholds": [],
+              "yAxis": {
+                "label": "",
+                "scale": "LINEAR"
+              }
+            }
+          }
+        },
+        {
+          "xPos": 32,
+          "yPos": 37,
+          "width": 16,
+          "height": 15,
+          "widget": {
+            "title": "Node 3",
+            "xyChart": {
+              "chartOptions": {
+                "mode": "COLOR"
+              },
+              "dataSets": [
+                {
+                  "plotType": "STACKED_AREA",
+                  "targetAxis": "Y1",
+                  "timeSeriesQuery": {
+                    "timeSeriesQueryLanguage": "{ t_0 : fetch prometheus_target\n  | metric 'kubernetes.io/anthos/kube_pod_status_phase/gauge'\n  | filter resource.cluster='${cluster_name.value}'\n  | filter\n      metric.phase == 'Running' && (metric.pod =~ '(robin-master).*')\n  | group_by 1m, [value_gauge_mean: mean(value.gauge)]\n  | every 1m\n  | group_by [metric.phase, metric.pod],\n      [value_gauge_mean_aggregate: min(value_gauge_mean)];\nt_1: fetch prometheus_target\n  | metric 'kubernetes.io/anthos/kube_pod_info/gauge'\n  | filter resource.cluster = \"${cluster_name.value}\"\n  | filter metric.pod =~ '(robin-master).*'\n  | filter metric.node =~ '.*03.ba.l.google.com$$'\n  }\n| join\n| filter t_0.value_gauge_mean_aggregate > 0\n| group_by 5m, [value_gauge_mean: mean(value.gauge)]\n| every 5m\n| group_by [metric.pod]",
+                    "unitOverride": ""
+                  }
+                }
+              ],
+              "thresholds": [],
+              "yAxis": {
+                "label": "",
+                "scale": "LINEAR"
+              }
+            }
+          }
+        },
+        {
+          "width": 48,
+          "height": 22,
+          "widget": {
+            "title": "Dashboard Instructions",
+            "collapsibleGroup": {
+              "collapsed": true
+            }
+          }
+        }
+      ]
+    },
+    "dashboardFilters": [
+      {
+        "labelKey": "cluster_name",
+        "templateVariable": "cluster_name",
+        "stringValue": "",
+        "filterType": "RESOURCE_LABEL",
+        "valueType": "STRING"
+      }
+    ],
+    "labels": {}
+  }
