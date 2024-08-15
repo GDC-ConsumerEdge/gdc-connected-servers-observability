@@ -389,13 +389,10 @@
             },
             "dataSets": [
               {
-                "breakdowns": [],
-                "dimensions": [],
-                "measures": [],
                 "plotType": "LINE",
                 "targetAxis": "Y2",
                 "timeSeriesQuery": {
-                  "timeSeriesQueryLanguage": "{fetch prometheus_target\n| metric 'prometheus.googleapis.com/robin_disk_nslices/unknown'\n| filter (metric.wwn =~ '.*(robin--lvm).*')\n| ${project_id}\n| ${cluster_name}\n| group_by [node_name],   [value_robin_disk_rawused_sum: mul(sum(value.robin_disk_nslices), 1073741824)]\n| every 1m\n;\nfetch prometheus_target\n| metric 'prometheus.googleapis.com/robin_disk_size/unknown'\n| filter (metric.wwn =~ '.*(robin--lvm).*')\n| ${project_id}\n| ${cluster_name}\n| group_by [node_name],   [value_robin_disk_size_mean: sum(value.robin_disk_size)]\n| every 1m\n}\n| join\n| value [v_0: 1 - div(t_0.value_robin_disk_rawused_sum, t_1.value_robin_disk_size_mean)]",
+                  "timeSeriesQueryLanguage": "{fetch k8s_container\n| metric 'external.googleapis.com/prometheus/robin_disk_nslices'\n| ${project_id}\n| ${cluster_name}\n| group_by [node_name],   [value_robin_disk_rawused_sum: mul(sum(value.robin_disk_nslices), 1073741824)]\n| every 1m\n;\nfetch k8s_container\n| metric 'external.googleapis.com/prometheus/robin_disk_size'\n| ${project_id}\n| ${cluster_name}\n| group_by [node_name],   [value_robin_disk_size_mean: sum(value.robin_disk_size)]\n| every 1m\n}\n| join\n| value [v_0: 1 - div(t_0.value_robin_disk_rawused_sum, t_1.value_robin_disk_size_mean)]",
                   "unitOverride": ""
                 }
               }
@@ -419,24 +416,24 @@
       {
         "height": 16,
         "widget": {
+          "title": "Free Robin Disk Space % per Node",
           "timeSeriesTable": {
-            "columnSettings": [
-              {
-                "column": "value",
-                "visible": false
-              }
-            ],
             "dataSets": [
               {
                 "timeSeriesQuery": {
                   "outputFullDuration": true,
-                  "timeSeriesQueryLanguage": "{fetch prometheus_target\n| metric 'prometheus.googleapis.com/robin_disk_nslices/unknown'\n| filter (metric.wwn =~ '.*(robin--lvm).*')\n| ${project_id}\n| ${cluster_name}\n| group_by [Node: node_name],   [value_robin_disk_rawused_sum: mul(sum(value.robin_disk_nslices), 1073741824)]\n| every 1m\n;\nfetch prometheus_target\n| metric 'prometheus.googleapis.com/robin_disk_size/unknown'\n| filter (metric.wwn =~ '.*(robin--lvm).*')\n| ${project_id}\n| ${cluster_name}\n| group_by [Node: node_name],   [value_robin_disk_size_mean: mean(value.robin_disk_size)]\n| every 1m\n}\n| join\n| value [Disk_Free: cast_units(t_1.value_robin_disk_size_mean - t_0.value_robin_disk_rawused_sum, 'By')]"
+                  "timeSeriesQueryLanguage": "{fetch k8s_container\n| metric 'external.googleapis.com/prometheus/robin_disk_nslices'\n| ${project_id}\n| ${cluster_name}\n| group_by [Node: node_name],   [value_robin_disk_rawused_sum: mul(sum(value.robin_disk_nslices), 1073741824)]\n| every 1m\n;\nfetch k8s_container\n| metric 'external.googleapis.com/prometheus/robin_disk_size'\n| ${project_id}\n| ${cluster_name}\n| group_by [Node: node_name],   [value_robin_disk_size_mean: mean(value.robin_disk_size)]\n| every 1m\n}\n| join\n| value [Disk_Free: cast_units(t_1.value_robin_disk_size_mean - t_0.value_robin_disk_rawused_sum, 'By')]"
                 }
               }
             ],
-            "metricVisualization": "NUMBER"
-          },
-          "title": "Free Robin Disk Space % per Node"
+            "displayColumnType": false,
+            "metricVisualization": "NUMBER",
+            "opsAnalyticsSettings": {
+              "maxRows": "0",
+              "pageSize": "0",
+              "showFilterBar": false
+            }
+          }
         },
         "width": 24,
         "xPos": 24,
