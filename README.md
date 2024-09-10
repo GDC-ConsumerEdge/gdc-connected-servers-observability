@@ -25,7 +25,7 @@ Dashboards are stored in the dashboards folder and can be manually deployed.
 
 | Dashboard Name       | Screenshot                                                          | Description                                                                                                      | json                      |
 | :------------------- | :------------------------------------------------------------------ | :--------------------------------------------------------------------------------------------------------------- | :------------------------ |
-| GDC Daily Report     | ![dashboard](https://screenshot.googleplex.com/88LfuskJEZEsCT.png)  | Dashboard showing node/VM availability and utilization based metrics                                             | http://shortn/_VIqO4f1jcR |
+| GDC Daily Report     | ![dashboard](https://screenshot.googleplex.com/88LfuskJEZEsCTR.png)  | Dashboard showing node/VM availability and utilization based metrics                                             | http://shortn/_VIqO4f1jcR |
 | GDC Logs             | ![dashboard](https://screenshot.googleplex.com/8qfZ5nZRFj6A5vL.png) | Dashboard with example Cloud Logging queries                                                                     | http://shortn/_fPNHz5DCwU |
 | GDC Node View        | ![dashboard](https://screenshot.googleplex.com/4dRntZGgHvTgTNN.png) | Dashboard showing GDC node information                                                                           | http://shortn/_LtfVMTWAIj |
 | GDC VM Status        | ![dashboard](https://screenshot.googleplex.com/Bzwxw8kX5pmUp8b.png) | Dashboard showing GDC VM information                                                                             | http://shortn/_Vlfh4TeYlG |
