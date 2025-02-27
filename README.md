@@ -59,3 +59,9 @@ Dashboards are stored in the dashboards folder and can be manually deployed.
 | vmruntime-vm-no-network-traffic-5m   | VMRuntime       | Alert if there is no network activity from a VM                   | http://shortn/_5Igz1mccVb |
 | externalsecrets-down-30m             | ExternalSecrets | Alert if External Secrets is down                                 | http://shortn/_C11FLfAeXz |
 | externalsecrets-sync-error           | ExternalSecrets | Alert if any ExternalSecret resources have sync errors            | http://shortn/_6H3GMemc85 |
+
+## Disclaimer
+
+This project is not an official Google project. It is not supported by
+Google and Google specifically disclaims all warranties as to its quality,
+merchantability, or fitness for a particular purpose.
