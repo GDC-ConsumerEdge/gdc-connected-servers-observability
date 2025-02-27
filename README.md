@@ -1,12 +1,12 @@
-# GDCE Enterprise Observability
+# GDC Connected Servers Enterprise Observability
 
 ## Overview
 
-This project contains predefined dashboards and alerts for enterprise workloads running on GDCE.
-
-[Catalog of metrics and alerts](https://docs.google.com/spreadsheets/d/1_C7lXjgDT5ZzhzaWtXm2yp-WevAJk2RexE61veblGt8/edit?resourcekey=0-SvI4CbMsSMwz-ypTlgt5Mg#gid=356051654)
+This project contains predefined dashboards and alerts for enterprise workloads running on GDC Connected Servers. 
 
 ## Deployment Quickstart
+
+Dashboards and alerts can be deployed through the following methods:
 
 ### Option 1 - Scripted deployment
 
