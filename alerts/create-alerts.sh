@@ -6,18 +6,17 @@ for alert in $(gcloud alpha monitoring policies list --uri --filter='user_labels
 done
 
 
-# Logic to add notification channel with alerts. Commented out so we don't add
-# the oncall email address into test projects. 
-# NOTIFICATION_CHANNEL_ID=$(gcloud beta monitoring channels list --filter='displayName="Google Alert"' --format="value(name)")
+# Logic to add notification channel with alerts.
+# NOTIFICATION_CHANNEL_ID=$(gcloud beta monitoring channels list --filter='displayName="Platform Alert"' --format="value(name)")
 
 # if [ -z "$NOTIFICATION_CHANNEL_ID" ]; then
 #   # Creating notification channel
 #   gcloud beta monitoring channels create \
-#     --display-name="Google Alert" \
-#     --description="Primary google contact for alerts" \
-#     --type=email --channel-labels=email_address=gdc-hypercare-oncall-external@google.com
+#     --display-name="Platform Alert" \
+#     --description="Primary contact for alerts" \
+#     --type=email --channel-labels=email_address=example@google.com
 
-#   NOTIFICATION_CHANNEL_ID=$(gcloud beta monitoring channels list --filter='displayName="Google Alert"' --format="value(name)")
+#   NOTIFICATION_CHANNEL_ID=$(gcloud beta monitoring channels list --filter='displayName="Platform Alert"' --format="value(name)")
 # fi
 
 for dir in ./control-plane ./node ./pods ./system ./vm-workload; do
