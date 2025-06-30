@@ -1,0 +1,16 @@
+combiner: OR
+conditions:
+- conditionMonitoringQueryLanguage:
+    duration: 300s
+    query: |-
+      fetch k8s_container
+      | metric 'kubernetes.io/anthos/gdc_backup_backups_completed'
+      | filter (metric.success == 'SUCCESS')
+      | align rate(1m)
+      | every 1m
+      | group_by [], [row_count: row_count()]
+      | condition val()  < 3 '1'
+    trigger:
+      count: 1
+  displayName:  GDC Backups Daily total less than expected
+displayName: GDC Backups Daily total less than expected (warning)

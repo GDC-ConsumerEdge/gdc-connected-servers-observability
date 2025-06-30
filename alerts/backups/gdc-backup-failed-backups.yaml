@@ -1,0 +1,16 @@
+combiner: OR
+conditions:
+- conditionMonitoringQueryLanguage:
+    duration: 300s
+    query: |-
+      fetch k8s_container
+      | metric 'kubernetes.io/anthos/gdc_backup_restores_completed'
+      | filter (metric.success == 'FAILURE')
+      | align rate(1m)
+      | every 1m
+      | group_by [metric.restorePlan], [row_count: row_count()]
+      | condition val() >= 1 '1'
+    trigger:
+      percent: 50
+  displayName:  GDC Backup Failed Backup 
+displayName: GDC Backup Failed Backup  (warning)

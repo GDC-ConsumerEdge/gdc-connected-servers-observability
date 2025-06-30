@@ -1,0 +1,471 @@
+{
+    "displayName": "GDC - Backup View",
+    "mosaicLayout": {
+        "columns": 48,
+        "tiles": [
+            {
+                "xPos": 24,
+                "yPos": 24,
+                "width": 24,
+                "height": 16,
+                "widget": {
+                    "title": "GDC Backup Repository Status",
+                    "xyChart": {
+                        "chartOptions": {
+                            "mode": "COLOR"
+                        },
+                        "dataSets": [
+                            {
+                                "plotType": "LINE",
+                                "targetAxis": "Y1",
+                                "timeSeriesQuery": {
+                                    "timeSeriesQueryLanguage": "fetch k8s_container\n| metric 'kubernetes.io/anthos/gdc_backup_backup_repositories_attached'\n| group_by 1m,\n    [value_gdc_backup_backup_repositories_attached_mean:\n       mean(value.gdc_backup_backup_repositories_attached)]\n| every 1m\n| group_by [metric.repoName, metric.importStatus],\n    [value_gdc_backup_backup_repositories_attached_mean_aggregate:\n       aggregate(value_gdc_backup_backup_repositories_attached_mean)]",
+                                    "unitOverride": ""
+                                }
+                            }
+                        ],
+                        "thresholds": [],
+                        "yAxis": {
+                            "label": "",
+                            "scale": "LINEAR"
+                        }
+                    }
+                }
+            },
+            {
+                "yPos": 112,
+                "width": 24,
+                "height": 16,
+                "widget": {
+                    "title": "GDC Restore Failures",
+                    "xyChart": {
+                        "chartOptions": {
+                            "mode": "COLOR"
+                        },
+                        "dataSets": [
+                            {
+                                "plotType": "LINE",
+                                "targetAxis": "Y1",
+                                "timeSeriesQuery": {
+                                    "timeSeriesQueryLanguage": "fetch k8s_container\n| metric 'kubernetes.io/anthos/gdc_backup_restores_completed'\n| filter (metric.success == 'FAILURE')\n| align rate(1m)\n| every 1m\n| group_by [metric.restorePlan], [row_count: row_count()]",
+                                    "unitOverride": ""
+                                }
+                            }
+                        ],
+                        "thresholds": [],
+                        "yAxis": {
+                            "label": "",
+                            "scale": "LINEAR"
+                        }
+                    }
+                }
+            },
+            {
+                "yPos": 24,
+                "width": 24,
+                "height": 16,
+                "widget": {
+                    "xyChart": {
+                        "dataSets": [
+                            {
+                                "timeSeriesQuery": {
+                                    "timeSeriesQueryLanguage": "fetch k8s_container\n| metric 'kubernetes.io/anthos/gdc_backup_controlplane_live'\n| group_by 1m,\n    [value_gdc_backup_controlplane_live_mean:\n       mean(value.gdc_backup_controlplane_live)]\n| every 1m\n| group_by [resource.cluster_name],\n    [value_gdc_backup_controlplane_live_mean_aggregate:\n       aggregate(value_gdc_backup_controlplane_live_mean)]",
+                                    "unitOverride": "",
+                                    "outputFullDuration": false
+                                },
+                                "plotType": "LINE",
+                                "legendTemplate": "",
+                                "targetAxis": "Y1",
+                                "dimensions": [],
+                                "measures": [],
+                                "breakdowns": []
+                            }
+                        ],
+                        "thresholds": [
+                            {
+                                "label": "",
+                                "value": 0,
+                                "color": "COLOR_UNSPECIFIED",
+                                "direction": "DIRECTION_UNSPECIFIED",
+                                "targetAxis": "Y1"
+                            }
+                        ],
+                        "yAxis": {
+                            "label": "",
+                            "scale": "LINEAR"
+                        },
+                        "chartOptions": {
+                            "mode": "COLOR",
+                            "showLegend": false,
+                            "displayHorizontal": false
+                        }
+                    },
+                    "title": "GDC Backup CP Status",
+                    "id": ""
+                }
+            },
+            {
+                "yPos": 76,
+                "width": 24,
+                "height": 16,
+                "widget": {
+                    "xyChart": {
+                        "dataSets": [
+                            {
+                                "timeSeriesQuery": {
+                                    "timeSeriesQueryLanguage": "fetch k8s_container\n| metric 'kubernetes.io/anthos/gdc_backup_backups_completed'\n| filter (metric.success == 'FAILURE')\n| align rate(1m)\n| every 1m\n| group_by 1m,\n    [value_gdc_backup_backups_completed_mean:\n       count(value.gdc_backup_backups_completed)]\n",
+                                    "unitOverride": "",
+                                    "outputFullDuration": false
+                                },
+                                "plotType": "STACKED_BAR",
+                                "legendTemplate": "",
+                                "targetAxis": "Y1",
+                                "dimensions": [],
+                                "measures": [],
+                                "breakdowns": []
+                            }
+                        ],
+                        "thresholds": [],
+                        "yAxis": {
+                            "label": "",
+                            "scale": "LINEAR"
+                        },
+                        "chartOptions": {
+                            "mode": "COLOR",
+                            "showLegend": false,
+                            "displayHorizontal": false
+                        }
+                    },
+                    "title": "GDC Backup Failures by plan",
+                    "id": ""
+                }
+            },
+            {
+                "yPos": 60,
+                "width": 24,
+                "height": 16,
+                "widget": {
+                    "xyChart": {
+                        "dataSets": [
+                            {
+                                "timeSeriesQuery": {
+                                    "timeSeriesQueryLanguage": "fetch k8s_container\n| metric 'kubernetes.io/anthos/gdc_backup_backups_completed'\n| filter (metric.success == 'SUCCESS')\n| align rate(12h)\n| every 12h\n| group_by [metric.backupPlan], [row_count: row_count()]",
+                                    "unitOverride": "",
+                                    "outputFullDuration": false
+                                },
+                                "plotType": "STACKED_BAR",
+                                "legendTemplate": "",
+                                "targetAxis": "Y1",
+                                "dimensions": [],
+                                "measures": [],
+                                "breakdowns": []
+                            }
+                        ],
+                        "thresholds": [],
+                        "yAxis": {
+                            "label": "",
+                            "scale": "LINEAR"
+                        },
+                        "chartOptions": {
+                            "mode": "COLOR",
+                            "showLegend": false,
+                            "displayHorizontal": false
+                        }
+                    },
+                    "title": "Number of successful backups",
+                    "id": ""
+                }
+            },
+            {
+                "xPos": 24,
+                "yPos": 60,
+                "width": 24,
+                "height": 16,
+                "widget": {
+                    "title": "Backup Latency(Upload in minutes)",
+                    "xyChart": {
+                        "chartOptions": {
+                            "mode": "COLOR"
+                        },
+                        "dataSets": [
+                            {
+                                "plotType": "LINE",
+                                "targetAxis": "Y1",
+                                "timeSeriesQuery": {
+                                    "timeSeriesQueryLanguage": "fetch k8s_container\n| metric 'kubernetes.io/anthos/gdc_backup_backups_latency'\n| align delta(1m)\n| every 1m\n| group_by [metric.backupPlan],\n    [value_gdc_backup_backups_latency_mean:\n       mean(value.gdc_backup_backups_latency)]",
+                                    "unitOverride": ""
+                                }
+                            }
+                        ],
+                        "thresholds": [],
+                        "yAxis": {
+                            "label": "",
+                            "scale": "LINEAR"
+                        }
+                    }
+                }
+            },
+            {
+                "xPos": 24,
+                "yPos": 76,
+                "width": 24,
+                "height": 16,
+                "widget": {
+                    "xyChart": {
+                        "dataSets": [
+                            {
+                                "timeSeriesQuery": {
+                                    "timeSeriesQueryLanguage": "fetch k8s_container\n| metric 'kubernetes.io/anthos/gdc_backup_backups_pile_up'\n| group_by 1m,\n    [value_gdc_backup_backups_pile_up_mean:\n       mean(value.gdc_backup_backups_pile_up)]\n| every 1m\n| group_by [metric.backupPlan],\n    [value_gdc_backup_backups_pile_up_mean_aggregate:\n       aggregate(value_gdc_backup_backups_pile_up_mean)]",
+                                    "unitOverride": "",
+                                    "outputFullDuration": false
+                                },
+                                "plotType": "STACKED_BAR",
+                                "legendTemplate": "",
+                                "targetAxis": "Y1",
+                                "dimensions": [],
+                                "measures": [],
+                                "breakdowns": []
+                            }
+                        ],
+                        "thresholds": [],
+                        "yAxis": {
+                            "label": "",
+                            "scale": "LINEAR"
+                        },
+                        "chartOptions": {
+                            "mode": "COLOR",
+                            "showLegend": false,
+                            "displayHorizontal": false
+                        }
+                    },
+                    "title": "In progress Backups",
+                    "id": ""
+                }
+            },
+            {
+                "yPos": 40,
+                "width": 24,
+                "height": 16,
+                "widget": {
+                    "xyChart": {
+                        "dataSets": [
+                            {
+                                "timeSeriesQuery": {
+                                    "timeSeriesQueryLanguage": "fetch gcs_bucket\n| metric 'storage.googleapis.com/storage/object_count'\n| filter (resource.bucket_name == 'cloud-alchemists-sandbox-vm-backup')\n| group_by 1m, [value_object_count_mean: mean(value.object_count)]\n| every 1m\n| group_by [],\n    [value_object_count_mean_aggregate: aggregate(value_object_count_mean)]",
+                                    "unitOverride": "",
+                                    "outputFullDuration": false
+                                },
+                                "plotType": "LINE",
+                                "legendTemplate": "",
+                                "targetAxis": "Y1",
+                                "dimensions": [],
+                                "measures": [],
+                                "breakdowns": []
+                            },
+                            {
+                                "timeSeriesQuery": {
+                                    "timeSeriesQueryLanguage": "fetch gcs_bucket\n| metric 'storage.googleapis.com/storage/v2/total_bytes'\n| filter\n    (resource.bucket_name == 'cloud-alchemists-sandbox-vm-backup')\n    && (metric.type == 'live-object')\n| group_by 1m, [value_total_bytes_mean: mean(value.total_bytes)]\n| every 1m\n| group_by [],\n    [value_total_bytes_mean_aggregate: aggregate(value_total_bytes_mean)]",
+                                    "unitOverride": "",
+                                    "outputFullDuration": false
+                                },
+                                "plotType": "LINE",
+                                "legendTemplate": "",
+                                "targetAxis": "Y2",
+                                "dimensions": [],
+                                "measures": [],
+                                "breakdowns": []
+                            }
+                        ],
+                        "thresholds": [],
+                        "yAxis": {
+                            "label": "",
+                            "scale": "LINEAR"
+                        },
+                        "y2Axis": {
+                            "label": "",
+                            "scale": "LINEAR"
+                        },
+                        "chartOptions": {
+                            "mode": "COLOR",
+                            "showLegend": false,
+                            "displayHorizontal": false
+                        }
+                    },
+                    "title": "Den84 VM Bucket Live Object",
+                    "id": ""
+                }
+            },
+            {
+                "yPos": 128,
+                "width": 24,
+                "height": 16,
+                "widget": {
+                    "xyChart": {
+                        "dataSets": [
+                            {
+                                "timeSeriesQuery": {
+                                    "timeSeriesQueryLanguage": "fetch k8s_container\n| metric 'kubernetes.io/anthos/gdc_backup_volume_restores_completed'\n| align rate(1m)\n| every 1m\n| group_by [metric.restorePlan, resource.cluster_name, metric.success],\n    [value_gdc_backup_volume_restores_completed_aggregate:\n       aggregate(value.gdc_backup_volume_restores_completed)]",
+                                    "unitOverride": "",
+                                    "outputFullDuration": false
+                                },
+                                "plotType": "LINE",
+                                "legendTemplate": "",
+                                "targetAxis": "Y1",
+                                "dimensions": [],
+                                "measures": [],
+                                "breakdowns": []
+                            }
+                        ],
+                        "thresholds": [],
+                        "yAxis": {
+                            "label": "",
+                            "scale": "LINEAR"
+                        },
+                        "chartOptions": {
+                            "mode": "COLOR",
+                            "showLegend": false,
+                            "displayHorizontal": false
+                        }
+                    },
+                    "title": "Local Volume Restore Status",
+                    "id": ""
+                }
+            },
+            {
+                "yPos": 56,
+                "width": 48,
+                "height": 4,
+                "widget": {
+                    "title": "BACKUPS",
+                    "text": {
+                        "content": "",
+                        "format": "MARKDOWN",
+                        "style": {
+                            "backgroundColor": "#FFFFFF",
+                            "textColor": "#212121",
+                            "horizontalAlignment": "H_CENTER",
+                            "verticalAlignment": "V_CENTER",
+                            "padding": "P_EXTRA_SMALL",
+                            "fontSize": "FS_LARGE",
+                            "pointerLocation": "POINTER_LOCATION_UNSPECIFIED"
+                        }
+                    },
+                    "id": ""
+                }
+            },
+            {
+                "yPos": 92,
+                "width": 48,
+                "height": 4,
+                "widget": {
+                    "title": "Restores",
+                    "text": {
+                        "content": "",
+                        "format": "MARKDOWN",
+                        "style": {
+                            "backgroundColor": "#FFFFFF",
+                            "textColor": "#212121",
+                            "horizontalAlignment": "H_CENTER",
+                            "verticalAlignment": "V_CENTER",
+                            "padding": "P_EXTRA_SMALL",
+                            "fontSize": "FS_LARGE",
+                            "pointerLocation": "POINTER_LOCATION_UNSPECIFIED"
+                        }
+                    },
+                    "id": ""
+                }
+            },
+            {
+                "yPos": 20,
+                "width": 48,
+                "height": 4,
+                "widget": {
+                    "title": "Backup Setup Status",
+                    "text": {
+                        "content": "",
+                        "format": "MARKDOWN",
+                        "style": {
+                            "backgroundColor": "#FFFFFF",
+                            "textColor": "#212121",
+                            "horizontalAlignment": "H_CENTER",
+                            "verticalAlignment": "V_CENTER",
+                            "padding": "P_EXTRA_SMALL",
+                            "fontSize": "FS_LARGE",
+                            "pointerLocation": "POINTER_LOCATION_UNSPECIFIED"
+                        }
+                    },
+                    "id": ""
+                }
+            },
+            {
+                "yPos": 96,
+                "width": 24,
+                "height": 16,
+                "widget": {
+                    "title": "GDC Restore Success",
+                    "xyChart": {
+                        "chartOptions": {
+                            "mode": "COLOR"
+                        },
+                        "dataSets": [
+                            {
+                                "plotType": "STACKED_BAR",
+                                "targetAxis": "Y1",
+                                "timeSeriesQuery": {
+                                    "timeSeriesQueryLanguage": "fetch k8s_container\n| metric 'kubernetes.io/anthos/gdc_backup_restores_completed'\n| filter (metric.success == 'SUCCESS')\n| align rate(1m)\n| every 1m\n| group_by [metric.restorePlan], [row_count: row_count()]",
+                                    "unitOverride": ""
+                                }
+                            }
+                        ],
+                        "thresholds": [],
+                        "yAxis": {
+                            "label": "",
+                            "scale": "LINEAR"
+                        }
+                    }
+                }
+            },
+            {
+                "width": 48,
+                "height": 20,
+                "widget": {
+                    "title": "Instruction",
+                    "text": {
+                        "content": "The following dashboard is used give a overview/status on backups (BART) via gdc_backup_* metrics. This dashboard is intended to look at a single cluster at a time, so please be sure to apply the cluster filter above before proceeding.\n\nThis chart is set in UTC, so update it to reflect your timezone.\n\n# CP/Setup Status\n- Per `GDC Backup CP Status`, Backup Control Plane(CP) should always be apart of all clusters, even if its not being used.\n- Per `GDC Backup Repository Status`, Each cluster should only have a maximum of 1 backuprepositories setup.\n- Edit `Den84 VM Bucket Live Object` to reflect your exact cluster's bucket.\n\n# Backups Status\n- Per `GDC Backup Failures by plan`, this ideally should not fail, but this graph will highlight which plans have failed\n- Per `Number of successful backups`, will give the total number of successful backups. If there are 3 VMs, doing 1 scheduled backup a day, then there should be 3 a day or 21 in a week.\n- Per `In progress Backups`, tells you which backups are in progress.\n\n# Restore Status\n- Per `GDC Restore Failures`, will show the failed restores on aggregate. Restoreplan is not visible.\n- Per `Local Volume Restore Status`,will show the failed restores based on the exact restoreplan.\n\n## FAQ\n\n### \n\n",
+                        "format": "MARKDOWN",
+                        "style": {
+                            "backgroundColor": "#FFFFFF",
+                            "textColor": "#212121",
+                            "horizontalAlignment": "H_LEFT",
+                            "verticalAlignment": "V_TOP",
+                            "padding": "P_EXTRA_SMALL",
+                            "fontSize": "FS_LARGE",
+                            "pointerLocation": "POINTER_LOCATION_UNSPECIFIED"
+                        }
+                    },
+                    "id": ""
+                }
+            },
+            {
+                "width": 48,
+                "height": 20,
+                "widget": {
+                    "title": "Dashboard Instructions",
+                    "collapsibleGroup": {
+                        "collapsed": true
+                    },
+                    "id": ""
+                }
+            }
+        ]
+    },
+    "dashboardFilters": [
+        {
+            "labelKey": "cluster_name",
+            "templateVariable": "",
+            "filterType": "RESOURCE_LABEL",
+            "valueType": "STRING"
+        }
+    ],
+    "labels": {}
+}

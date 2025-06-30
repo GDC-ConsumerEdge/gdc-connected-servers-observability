@@ -1,0 +1,19 @@
+combiner: OR
+conditions:
+- conditionMonitoringQueryLanguage:
+    duration: 300s
+    query: |-
+      fetch k8s_container
+      | metric 'kubernetes.io/anthos/gdc_backup_controlplane_live'
+      | group_by 1m,
+          [value_gdc_backup_controlplane_live_mean:
+            mean(value.gdc_backup_controlplane_live)]
+      | every 1m
+      | group_by [resource.cluster_name],
+          [value_gdc_backup_controlplane_live_mean_aggregate:
+            count(value_gdc_backup_controlplane_live_mean)]
+      | absent_for 300s
+    trigger:
+      count: 1
+  displayName:  GDC Backup CP Failure
+displayName: GDC Backup CP Failure (warning)
