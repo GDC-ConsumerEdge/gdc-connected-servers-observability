@@ -1,0 +1,19 @@
+combiner: OR
+conditions:
+- conditionMonitoringQueryLanguage:
+    duration: 300s
+    query: |-
+      fetch k8s_container
+      | metric 'kubernetes.io/anthos/gdc_backup_backup_repositories_attached'
+      | group_by 1m,
+          [value_gdc_backup_backup_repositories_attached_mean:
+            mean(value.gdc_backup_backup_repositories_attached)]
+      | every 1m
+      | group_by [resource.cluster_name],
+          [value_gdc_backup_backup_repositories_attached_mean_aggregate:
+            aggregate(value_gdc_backup_backup_repositories_attached_mean)]
+      | absent_for 300s 
+    trigger:
+      count: 1
+  displayName:  GDC Backup Repository Missing
+displayName: GDC Backup Repository Missing (warning)
