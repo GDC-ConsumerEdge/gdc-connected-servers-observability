@@ -10,7 +10,7 @@ This document lists Monitoring Query Language (MQL) queries found in the reposit
 | `alerts/control-plane/apiserver-down.yaml`                 | Yes           | `conditionMonitoringQueryLanguage` used.                              | WIP               |
 | `alerts/control-plane/controller-manager-down.yaml`        | Yes           | `conditionMonitoringQueryLanguage` used.                              | WIP               |
 | `alerts/control-plane/scheduler-down.yaml`                 | Yes           | `conditionMonitoringQueryLanguage` used.                              | TBD               |
-| `alerts/node/multiple-nodes-not-ready-realtime.yaml`       | Yes           | `conditionMonitoringQueryLanguage` used.                              | TBD               |
+| `alerts/node/multiple-nodes-not-ready-realtime.yaml`       | Yes           | `conditionMonitoringQueryLanguage` used.                              | WIP               |
 | `alerts/node/node-cpu-usage-high.yaml`                     | Yes           | `conditionMonitoringQueryLanguage` used.                              | TBD               |
 | `alerts/node/node-memory-usage-high.yaml`                  | Yes           | `conditionMonitoringQueryLanguage` used.                              | TBD               |
 | `alerts/node/node-not-ready-30m.yaml`                      | Yes           | `conditionMonitoringQueryLanguage` used.                              | TBD               |
@@ -186,6 +186,47 @@ kubernetes_io:anthos_anthos_cluster_info{anthos_distribution="baremetal", monito
 3.  The right side selects the `kubernetes_io:anthos_container_uptime` metric for the `kube-controller-manager`.
 4.  The `unless` operator returns a result only when a baremetal cluster exists on the left side but does *not* have a corresponding uptime metric on the right side, correctly identifying when the controller manager is down.
 5.  The `duration` of `300s` is applied to the alert policy itself, completing the `absent_for` logic.
+
+---
+
+### `alerts/node/multiple-nodes-not-ready-realtime.yaml`
+
+**MQL Query:**
+```mql
+{ t_0:
+    fetch prometheus_target
+    | metric 'kubernetes.io/anthos/kube_node_status_condition/gauge'
+    | filter (metric.condition == 'Ready' && metric.status != 'true')
+    | group_by [resource.project_id, resource.location, resource.cluster],
+        [value_kube_node_status_condition_mean:
+           mean(value.gauge)]
+    | every 1m
+; t_1:
+    fetch k8s_container::kubernetes.io/anthos/anthos_cluster_info
+    | filter (metric.anthos_distribution = 'baremetal')
+    | align mean_aligner()
+    | group_by [resource.project_id, resource.location, cluster: resource.cluster_name],
+        [value_anthos_cluster_info_aggregate:
+           aggregate(value.anthos_cluster_info)]
+    | every 1m }
+| join
+| value [t_0.value_kube_node_status_condition_mean]
+| window 1m
+| condition t_0.value_kube_node_status_condition_mean > 0 '1'
+```
+
+**PromQL Query:**
+```promql
+sum by (project_id, location, cluster) (kube_node_status_condition{condition="Ready", status="true"} == 0)
+* on(project_id, location, cluster) group_left() (kubernetes_io:anthos_anthos_cluster_info{anthos_distribution="baremetal", monitored_resource="k8s_container"})
+> 1
+```
+
+**Reasoning:**
+1.  The MQL `fetch` and `metric` are converted to the PromQL metric name `kube_node_status_condition`.
+2.  The MQL `filter` for nodes that are not ready (`metric.condition == 'Ready' && metric.status != 'true'`) is translated to the PromQL label selector `{condition="Ready", status="true"} == 0`.
+3.  The MQL `trigger` count of 2 is achieved by summing the nodes that are not ready and alerting when the sum is greater than 1.
+4.  The `join` with `anthos_cluster_info` is converted to a multiplication (`*`) with an `on(...) group_left()` clause to ensure the alert only fires on baremetal clusters.
 
 ---
 This concludes the exhaustive list.
