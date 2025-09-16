@@ -17,6 +17,6 @@ conditions:
 - conditionPrometheusQueryLanguage:
     duration: 300s
     query: |-
-      kubernetes_io:anthos_anthos_cluster_info{anthos_distribution="baremetal", monitored_resource="k8s_container"} unless on(project_id, location, cluster_name) kubernetes_io:anthos_container_uptime{container_name=~"kube-apiserver"}
-  displayName: API server is up - PromQL
-displayName: API server down (critical) - converted to PromQL
+      kubernetes_io:anthos_anthos_cluster_info{anthos_distribution="baremetal", monitored_resource="k8s_container"} unless on(project_id, location, cluster_name) kubernetes_io:anthos_container_uptime{container_name=~"kube-controller-manager"}
+  displayName: Controller manager is up - PromQL
+displayName: Controller manager down (critical) - converted to PromQL
