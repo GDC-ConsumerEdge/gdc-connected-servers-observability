@@ -9,7 +9,7 @@ This document lists Monitoring Query Language (MQL) queries found in the reposit
 | `alerts/control-plane/api-server-error-ratio-5-percent.yaml` | Yes           | `conditionMonitoringQueryLanguage` used.                              | WIP               |
 | `alerts/control-plane/apiserver-down.yaml`                 | Yes           | `conditionMonitoringQueryLanguage` used.                              | WIP               |
 | `alerts/control-plane/controller-manager-down.yaml`        | Yes           | `conditionMonitoringQueryLanguage` used.                              | WIP               |
-| `alerts/control-plane/scheduler-down.yaml`                 | Yes           | `conditionMonitoringQueryLanguage` used.                              | TBD               |
+| `alerts/control-plane/scheduler-down.yaml`                 | Yes           | `conditionMonitoringQueryLanguage` used.                              | WIP               |
 | `alerts/node/multiple-nodes-not-ready-realtime.yaml`       | Yes           | `conditionMonitoringQueryLanguage` used.                              | WIP               |
 | `alerts/node/node-cpu-usage-high.yaml`                     | Yes           | `conditionMonitoringQueryLanguage` used.                              | TBD               |
 | `alerts/node/node-memory-usage-high.yaml`                  | Yes           | `conditionMonitoringQueryLanguage` used.                              | TBD               |
@@ -217,8 +217,9 @@ kubernetes_io:anthos_anthos_cluster_info{anthos_distribution="baremetal", monito
 
 **PromQL Query:**
 ```promql
-sum by (project_id, location, cluster) (kube_node_status_condition{condition="Ready", status="true"} == 0)
-* on(project_id, location, cluster) group_left() (kubernetes_io:anthos_anthos_cluster_info{anthos_distribution="baremetal", monitored_resource="k8s_container"})
+sum by (project_id, location, cluster_name) (kube_node_status_condition{condition="Ready", status="true"} == 0)
+* on(project_id, location, cluster_name) group_left()
+(max by (project_id, location, cluster_name) (kubernetes_io:anthos_anthos_cluster_info{anthos_distribution="baremetal", monitored_resource="k8s_container"}))
 > 1
 ```
 
@@ -226,7 +227,48 @@ sum by (project_id, location, cluster) (kube_node_status_condition{condition="Re
 1.  The MQL `fetch` and `metric` are converted to the PromQL metric name `kube_node_status_condition`.
 2.  The MQL `filter` for nodes that are not ready (`metric.condition == 'Ready' && metric.status != 'true'`) is translated to the PromQL label selector `{condition="Ready", status="true"} == 0`.
 3.  The MQL `trigger` count of 2 is achieved by summing the nodes that are not ready and alerting when the sum is greater than 1.
-4.  The `join` with `anthos_cluster_info` is converted to a multiplication (`*`) with an `on(...) group_left()` clause to ensure the alert only fires on baremetal clusters.
+4.  The `join` with `anthos_cluster_info` is converted to a multiplication (`*`). To prevent a "duplicate series" error, the right-hand side is aggregated with `max by (...)` to ensure a one-to-one match for each cluster. The `on(...) group_left()` clause ensures the labels are preserved correctly.
+
+---
+
+### `alerts/control-plane/scheduler-down.yaml`
+
+**MQL Query:**
+```mql
+{ t_0:
+    fetch k8s_container
+    | metric 'kubernetes.io/anthos/container/uptime'
+    | filter (resource.container_name =~ 'kube-scheduler')
+    | align mean_aligner()
+    | group_by 1m, [value_up_mean: mean(value.uptime)]
+    | every 1m
+    | group_by [resource.project_id, resource.location, resource.cluster_name],
+        [value_up_mean_aggregate: aggregate(value_up_mean)]
+; t_1:
+    fetch k8s_container::kubernetes.io/anthos/anthos_cluster_info
+    | filter (metric.anthos_distribution = 'baremetal')
+    | align mean_aligner()
+    | group_by [resource.project_id, resource.location, resource.cluster_name],
+        [value_anthos_cluster_info_aggregate:
+           aggregate(value.anthos_cluster_info)]
+    | every 1m }
+| join
+| value [t_0.value_up_mean_aggregate]
+| window 1m
+| absent_for 300s
+```
+
+**PromQL Query:**
+```promql
+kubernetes_io:anthos_anthos_cluster_info{anthos_distribution="baremetal", monitored_resource="k8s_container"} unless on(project_id, location, cluster_name) kubernetes_io:anthos_container_uptime{container_name=~"kube-scheduler"}
+```
+
+**Reasoning:**
+1.  The MQL `absent_for` logic is best translated using the PromQL `unless` operator to avoid false positives.
+2.  The left side of the `unless` operator selects all time series that identify a baremetal cluster via the `kubernetes_io:anthos_anthos_cluster_info` metric.
+3.  The right side selects the `kubernetes_io:anthos_container_uptime` metric for the `kube-scheduler`.
+4.  The `unless` operator returns a result only when a baremetal cluster exists on the left side but does *not* have a corresponding uptime metric on the right side, correctly identifying when the scheduler is down.
+5.  The `duration` of `300s` is applied to the alert policy itself, completing the `absent_for` logic.
 
 ---
 This concludes the exhaustive list.
