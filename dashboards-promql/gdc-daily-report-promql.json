@@ -1,5 +1,5 @@
 {
-  "displayName": "GDC - Daily Report - Github + PromQL",
+  "displayName": "GDC - Daily Report - PromQL",
   "dashboardFilters": [
     {
       "filterType": "RESOURCE_LABEL",
@@ -14,13 +14,12 @@
       "templateVariable": "market"
     }
   ],
-  "labels": {},
   "mosaicLayout": {
     "columns": 48,
     "tiles": [
       {
-        "height": 21,
         "width": 48,
+        "height": 21,
         "widget": {
           "title": "Availability",
           "collapsibleGroup": {
@@ -30,8 +29,8 @@
       },
       {
         "xPos": 1,
-        "height": 10,
         "width": 47,
+        "height": 10,
         "widget": {
           "title": "Node Availability - PromQL",
           "xyChart": {
@@ -43,8 +42,7 @@
                 "plotType": "STACKED_AREA",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "group by (node_name) (rate(kubernetes_io:anthos_node_cpu_core_usage_time{${cluster_name}, cluster_name=~\"${market.value}.*\", monitored_resource=\"k8s_node\"}[1m]) / avg_over_time(kubernetes_io:anthos_node_cpu_allocatable_cores{${cluster_name}, cluster_name=~\"${market.value}.*\", monitored_resource=\"k8s_node\"}[1m]) > 0)",
-                  "unitOverride": ""
+                  "prometheusQuery": "group by (node_name) (rate(kubernetes_io:anthos_node_cpu_core_usage_time{${cluster_name}, cluster_name=~\"${market.value}.*\", monitored_resource=\"k8s_node\"}[1m]) / avg_over_time(kubernetes_io:anthos_node_cpu_allocatable_cores{${cluster_name}, cluster_name=~\"${market.value}.*\", monitored_resource=\"k8s_node\"}[1m]) > 0)"
                 }
               }
             ],
@@ -57,10 +55,10 @@
         }
       },
       {
-        "yPos": 10,
         "xPos": 1,
-        "height": 11,
+        "yPos": 10,
         "width": 47,
+        "height": 11,
         "widget": {
           "title": "VM Availability - PromQL",
           "xyChart": {
@@ -72,8 +70,7 @@
                 "plotType": "STACKED_AREA",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "group by (kubernetes_vmi_label_kubevirt_vm) (rate(kubernetes_io:anthos_kubevirt_vmi_network_transmit_bytes_total{${cluster_name}, cluster_name=~\"${market.value}.*\", monitored_resource=\"k8s_container\"}[2m])) > 0",
-                  "unitOverride": ""
+                  "prometheusQuery": "group by (kubernetes_vmi_label_kubevirt_vm) (rate(kubernetes_io:anthos_kubevirt_vmi_network_transmit_bytes_total{${cluster_name}, cluster_name=~\"${market.value}.*\", monitored_resource=\"k8s_container\"}[2m])) > 0"
                 }
               }
             ],
@@ -87,8 +84,8 @@
       },
       {
         "yPos": 21,
-        "height": 45,
         "width": 48,
+        "height": 45,
         "widget": {
           "title": "Peformance",
           "collapsibleGroup": {
@@ -98,8 +95,8 @@
       },
       {
         "yPos": 21,
-        "height": 9,
         "width": 24,
+        "height": 9,
         "widget": {
           "title": "Node CPU Utilization - PromQL",
           "xyChart": {
@@ -111,43 +108,7 @@
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "avg by (node_name) (kubernetes_io:anthos_node_cpu_allocatable_utilization{${cluster_name}, cluster_name=~\"${market.value}.*\", monitored_resource=\"k8s_node\"}) * 100",
-                  "unitOverride": ""
-                }
-              }
-            ],
-            "thresholds": [
-              {
-                "label": "",
-                "targetAxis": "Y1",
-                "value": 25
-              }
-            ],
-            "yAxis": {
-              "label": "",
-              "scale": "LINEAR"
-            }
-          }
-        }
-      },
-      {
-        "yPos": 21,
-        "xPos": 24,
-        "height": 9,
-        "width": 24,
-        "widget": {
-          "title": "VM CPU Utilization - PromQL",
-          "xyChart": {
-            "chartOptions": {
-              "mode": "COLOR"
-            },
-            "dataSets": [
-              {
-                "plotType": "LINE",
-                "targetAxis": "Y1",
-                "timeSeriesQuery": {
-                  "prometheusQuery": "avg by (pod_name) (kubernetes_io:anthos_container_cpu_request_utilization{${cluster_name}, cluster_name=~\"${market.value}.*\", monitored_resource=\"k8s_container\", pod_name=~\"(virt-launcher).*\", container_name=\"compute\"}) * 100",
-                  "unitOverride": ""
+                  "prometheusQuery": "avg by (node_name) (kubernetes_io:anthos_node_cpu_allocatable_utilization{${cluster_name}, cluster_name=~\"${market.value}.*\", monitored_resource=\"k8s_node\"}) * 100"
                 }
               }
             ],
@@ -167,8 +128,8 @@
       },
       {
         "yPos": 30,
-        "height": 9,
         "width": 24,
+        "height": 9,
         "widget": {
           "title": "Node Memory Utilization - PromQL",
           "xyChart": {
@@ -180,8 +141,7 @@
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "avg by (node_name) (kubernetes_io:anthos_node_memory_allocatable_utilization{${cluster_name}, cluster_name=~\"${market.value}.*\", monitored_resource=\"k8s_node\"}) * 100",
-                  "unitOverride": ""
+                  "prometheusQuery": "avg by (node_name) (kubernetes_io:anthos_node_memory_allocatable_utilization{${cluster_name}, cluster_name=~\"${market.value}.*\", monitored_resource=\"k8s_node\"}) * 100"
                 }
               }
             ],
@@ -200,10 +160,98 @@
         }
       },
       {
-        "yPos": 30,
-        "xPos": 24,
-        "height": 9,
+        "yPos": 39,
         "width": 24,
+        "height": 8,
+        "widget": {
+          "title": "Node Received Bytes - PromQL",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "STACKED_AREA",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum by (node_name) (rate(kubernetes_io:anthos_node_network_received_bytes_count{${cluster_name}, cluster_name=~\"${market.value}.*\", monitored_resource=\"k8s_node\", interface=~\"enp81s0f.*\"}[1m]))"
+                }
+              }
+            ],
+            "thresholds": [],
+            "yAxis": {
+              "label": "",
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "yPos": 47,
+        "width": 24,
+        "height": 10,
+        "widget": {
+          "title": "Node Sent Bytes - PromQL",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "STACKED_AREA",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum by (node_name) (rate(kubernetes_io:anthos_node_network_sent_bytes_count{${cluster_name}, cluster_name=~\"${market.value}.*\", monitored_resource=\"k8s_node\", interface=~\"enp81s0f.*\"}[1m]))"
+                }
+              }
+            ],
+            "thresholds": [],
+            "yAxis": {
+              "label": "",
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 24,
+        "yPos": 21,
+        "width": 24,
+        "height": 9,
+        "widget": {
+          "title": "VM CPU Utilization - PromQL",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "avg by (pod_name) (kubernetes_io:anthos_container_cpu_request_utilization{${cluster_name}, cluster_name=~\"${market.value}.*\", monitored_resource=\"k8s_container\", pod_name=~\"(virt-launcher).*\", container_name=\"compute\"}) * 100"
+                }
+              }
+            ],
+            "thresholds": [
+              {
+                "label": "",
+                "targetAxis": "Y1",
+                "value": 25
+              }
+            ],
+            "yAxis": {
+              "label": "",
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 24,
+        "yPos": 30,
+        "width": 24,
+        "height": 9,
         "widget": {
           "title": "VM Memory Utilization - PromQL",
           "xyChart": {
@@ -216,8 +264,7 @@
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
                   "prometheusQuery": "# Memory utilization requires VMs have the virtio drivers installed to report correctly.\n# If a VM does not appear on this graph, confirm driver installation. \n(1 - \n(sum by (pod_name) (avg_over_time(kubernetes_io:anthos_kubevirt_vmi_memory_unused_bytes{monitored_resource=\"k8s_container\",${cluster_name},cluster_name=~\"${market.value}.*\"}[2m]))\n /\n sum by (pod_name) (avg_over_time(kubernetes_io:anthos_container_memory_limit_bytes{monitored_resource=\"k8s_container\",container_name=\"compute\",${cluster_name},cluster_name=~\"${market.value}.*\"}[2m]))
-)) * 100",
-                  "unitOverride": ""
+)) * 100"
                 }
               }
             ],
@@ -236,38 +283,10 @@
         }
       },
       {
-        "yPos": 39,
-        "height": 8,
-        "width": 24,
-        "widget": {
-          "title": "Node Received Bytes - PromQL",
-          "xyChart": {
-            "chartOptions": {
-              "mode": "COLOR"
-            },
-            "dataSets": [
-              {
-                "plotType": "STACKED_AREA",
-                "targetAxis": "Y1",
-                "timeSeriesQuery": {
-                  "prometheusQuery": "sum by (node_name) (rate(kubernetes_io:anthos_node_network_received_bytes_count{${cluster_name}, cluster_name=~\"${market.value}.*\", monitored_resource=\"k8s_node\", interface=~\"enp81s0f.*\"}[1m]))",
-                  "unitOverride": ""
-                }
-              }
-            ],
-            "thresholds": [],
-            "yAxis": {
-              "label": "",
-              "scale": "LINEAR"
-            }
-          }
-        }
-      },
-      {
-        "yPos": 39,
         "xPos": 24,
-        "height": 8,
+        "yPos": 39,
         "width": 24,
+        "height": 8,
         "widget": {
           "title": "VM Received Bytes (Per Interface) - PromQL",
           "xyChart": {
@@ -282,8 +301,7 @@
                 "plotType": "STACKED_AREA",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "sum by (kubernetes_vmi_label_kubevirt_vm, interface) (rate(kubernetes_io:anthos_kubevirt_vmi_network_receive_bytes_total{monitored_resource=\"k8s_container\"}[1m]))",
-                  "unitOverride": ""
+                  "prometheusQuery": "sum by (kubernetes_vmi_label_kubevirt_vm, interface) (rate(kubernetes_io:anthos_kubevirt_vmi_network_receive_bytes_total{monitored_resource=\"k8s_container\"}[1m]))"
                 }
               }
             ],
@@ -296,11 +314,43 @@
         }
       },
       {
+        "xPos": 24,
         "yPos": 47,
+        "width": 24,
+        "height": 10,
+        "widget": {
+          "title": "VM Sent Bytes (Per Interface) - PromQL",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "measures": [],
+                "plotType": "STACKED_AREA",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum by (kubernetes_vmi_label_kubevirt_vm, interface) (rate(kubernetes_io:anthos_kubevirt_vmi_network_transmit_bytes_total{monitored_resource=\"k8s_container\"}[1m]))"
+                }
+              }
+            ],
+            "thresholds": [],
+            "yAxis": {
+              "label": "",
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "xPos": 24,
+        "yPos": 57,
         "height": 9,
         "width": 24,
         "widget": {
-          "title": "Storage Read iops (Per VM) - PromQL",
+          "title": "Storage Write iops (Per VM) - PromQL",
           "xyChart": {
             "chartOptions": {
               "mode": "COLOR"
@@ -310,8 +360,7 @@
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "sum by (kubernetes_vmi_label_kubevirt_vm)(rate(kubernetes_io:anthos_kubevirt_vmi_storage_iops_read_total{monitored_resource=\"k8s_container\",${cluster_name},cluster_name=~\"${market.value}.*\"}[2m]))",
-                  "unitOverride": ""
+                  "prometheusQuery": "sum by (kubernetes_vmi_label_kubevirt_vm)(rate(kubernetes_io:anthos_kubevirt_vmi_storage_iops_write_total{monitored_resource=\"k8s_container\",${cluster_name},cluster_name=~\"${market.value}.*\"}[2m]))"
                 }
               }
             ],
@@ -326,11 +375,10 @@
       },
       {
         "yPos": 57,
-        "xPos": 24,
         "height": 9,
         "width": 24,
         "widget": {
-          "title": "Storage Write iops (Per VM) - PromQL",
+          "title": "Storage Read iops (Per VM) - PromQL",
           "xyChart": {
             "chartOptions": {
               "mode": "COLOR"
@@ -340,8 +388,7 @@
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "sum by (kubernetes_vmi_label_kubevirt_vm)(rate(kubernetes_io:anthos_kubevirt_vmi_storage_iops_write_total{monitored_resource=\"k8s_container\",${cluster_name},cluster_name=~\"${market.value}.*\"}[2m]))",
-                  "unitOverride": ""
+                  "prometheusQuery": "sum by (kubernetes_vmi_label_kubevirt_vm)(rate(kubernetes_io:anthos_kubevirt_vmi_storage_iops_read_total{monitored_resource=\"k8s_container\",${cluster_name},cluster_name=~\"${market.value}.*\"}[2m]))"
                 }
               }
             ],
@@ -355,5 +402,6 @@
         }
       }
     ]
-  }
+  },
+  "labels": {}
 }

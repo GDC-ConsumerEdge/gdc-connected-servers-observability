@@ -448,4 +448,181 @@ kubernetes_io:anthos_anthos_cluster_info{anthos_distribution="baremetal", monito
    ```
 
 ---
+
+## Dashboards
+
+### `dashboards/gdc-daily-report.json`
+
+**1. Widget: "Node Availability"**
+   **MQL Query (`timeSeriesQueryLanguage`):**
+   ```mql
+   { fetch k8s_node
+     | metric 'kubernetes.io/anthos/node/cpu/core_usage_time'
+   |  filter true()
+   | ${cluster_name}
+   | filter resource.cluster_name=~"${market.value}.*"
+     | group_by 1m, [value_core_usage_time_mean: mean(value.core_usage_time)]
+     | every 1m
+   ; fetch k8s_node
+     | metric 'kubernetes.io/anthos/node/cpu/allocatable_cores'
+   |  filter true()
+   | ${cluster_name}
+   | filter resource.cluster_name=~"${market.value}.*"
+     | group_by 1m, [value_allocatable_core_mean: mean(value.allocatable_cores)]
+     | every 1m }
+   | join
+   | value [scaled_util: val(0) / val(1)]
+   | condition val() > 0
+   | group_by [resource.node_name], [value_has_cpu: aggregate(val(0))]
+   ```
+   **PromQL Query:**
+   ```promql
+    group by (node_name) (rate(kubernetes_io:anthos_node_cpu_core_usage_time{${cluster_name}, cluster_name=~"${market.value}.*", monitored_resource="k8s_node"}[1m]) / avg_over_time(kubernetes_io:anthos_node_cpu_allocatable_cores{${cluster_name}, cluster_name=~"${market.value}.*", monitored_resource="k8s_node"}[1m]) > 0)
+   ```
+
+**2. Widget: "VM Availability"**
+   **MQL Query (`timeSeriesQueryLanguage`):**
+   ```mql
+   fetch k8s_container
+   | metric 'kubernetes.io/anthos/kubevirt_vmi_network_transmit_bytes_total'
+   | ${cluster_name}
+   | filter resource.cluster_name=~"${market.value}.*"
+   | align rate(2m)
+   | every 1m
+   | group_by [metric.kubernetes_vmi_label_kubevirt_vm],
+       [value_kubevirt_vmi_network_transmit_bytes_total:
+          aggregate(value.kubevirt_vmi_network_transmit_bytes_total)]
+   | condition value_kubevirt_vmi_network_transmit_bytes_total > cast_units(0, 'By/s')
+   | val(0)
+   ```
+   **PromQL Query:**
+   ```promql
+   group by (kubernetes_vmi_label_kubevirt_vm) (rate(kubernetes_io:anthos_kubevirt_vmi_network_transmit_bytes_total{${cluster_name}, cluster_name=~"${market.value}.*", monitored_resource="k8s_container"}[2m])) > 0
+   ```
+
+**3. Widget: "Node CPU Utilization"**
+   **MQL Query (`timeSeriesQueryLanguage`):**
+   ```mql
+   fetch k8s_node
+   | metric 'kubernetes.io/anthos/node/cpu/allocatable_utilization'
+   | ${cluster_name}
+   | filter resource.cluster_name=~"${market.value}.*"
+   | group_by 1m,    [value_allocatable_utilization_mean: mean(value.allocatable_utilization)]
+   | every 1m
+   | scale '%'
+   ```
+   **PromQL Query:**
+   ```promql
+   avg by (node_name) (kubernetes_io:anthos_node_cpu_allocatable_utilization{${cluster_name}, cluster_name=~"${market.value}.*", monitored_resource="k8s_node"}) * 100
+   ```
+
+**4. Widget: "Node Memory Utilization"**
+   **MQL Query (`timeSeriesQueryLanguage`):**
+   ```mql
+   fetch k8s_node
+   | metric 'kubernetes.io/anthos/node/memory/allocatable_utilization'
+   | ${cluster_name}
+   | filter resource.cluster_name=~"${market.value}.*"
+   | group_by 1m,
+       [value_allocatable_utilization_mean: mean(value.allocatable_utilization)]
+   | every 1m
+   | group_by [resource.node_name],
+       [value_allocatable_utilization_mean_aggregate:
+          aggregate(value_allocatable_utilization_mean)]
+   | scale '%'
+   ```
+   **PromQL Query:**
+   ```promql
+   avg by (node_name) (kubernetes_io:anthos_node_memory_allocatable_utilization{${cluster_name}, cluster_name=~"${market.value}.*", monitored_resource="k8s_node"}) * 100
+   ```
+
+**5. Widget: "Node Received Bytes"**
+   **MQL Query (`timeSeriesQueryLanguage`):**
+   ```mql
+   fetch k8s_node
+   | metric 'kubernetes.io/anthos/node/network/received_bytes_count'
+   | ${cluster_name}
+   | filter resource.cluster_name=~"${market.value}.*"
+   | filter (metric.interface =~ 'enp81s0f.*')
+   |align rate(1m)
+   | every 1m
+   | group_by [resource.node_name],
+       [value_received_bytes_count_aggregate:
+          aggregate(value.received_bytes_count)]
+   ```
+   **PromQL Query:**
+   ```promql
+   sum by (node_name) (rate(kubernetes_io:anthos_node_network_received_bytes_count{${cluster_name}, cluster_name=~"${market.value}.*", monitored_resource="k8s_node", interface=~"enp81s0f.*"}[1m]))
+   ```
+
+**6. Widget: "Node Sent Bytes"**
+   **MQL Query (`timeSeriesQueryLanguage`):**
+   ```mql
+   fetch k8s_node
+   | metric 'kubernetes.io/anthos/node/network/sent_bytes_count'
+   | ${cluster_name}
+   | filter resource.cluster_name=~"${market.value}.*"
+   |filter (metric.interface =~ 'enp81s0f.*')
+   | align rate(1m)
+   | every 1m
+   | group_by [resource.node_name],
+       [value_sent_bytes_count_aggregate:
+          aggregate(value.sent_bytes_count)]
+   ```
+   **PromQL Query:**
+   ```promql
+   sum by (node_name) (rate(kubernetes_io:anthos_node_network_sent_bytes_count{${cluster_name}, cluster_name=~"${market.value}.*", monitored_resource="k8s_node", interface=~"enp81s0f.*"}[1m]))
+   ```
+
+**7. Widget: "VM CPU Utilization"**
+   **MQL Query (`timeSeriesQueryLanguage`):**
+   ```mql
+   fetch k8s_container
+   | metric 'kubernetes.io/anthos/container/cpu/request_utilization'
+   | ${cluster_name}
+   | filter resource.cluster_name=~"${market.value}.*"
+   | filter resource.pod_name =~ '(virt-launcher).*' && resource.container_name == 'compute'
+   | group_by [resource.pod_name], [value_request_utilization_mean: mean(value.request_utilization)]
+   #| group_by [metadata.user.c'vm.kubevirt.io/name'], [value_request_utilization_mean: mean(value.request_utilization)]
+   | every 1m
+   | scale '%'
+   ```
+   **PromQL Query:**
+   ```promql
+   avg by (pod_name) (kubernetes_io:anthos_container_cpu_request_utilization{${cluster_name}, cluster_name=~"${market.value}.*", monitored_resource="k8s_container", pod_name=~"(virt-launcher).*", container_name="compute"}) * 100
+   ```
+
+**8. Widget: "VM Received Bytes (Per Interface)"**
+   **MQL Query (`timeSeriesQueryLanguage`):**
+   ```mql
+   fetch k8s_container
+   | metric 'kubernetes.io/anthos/kubevirt_vmi_network_receive_bytes_total'
+   | align rate(1m)
+   | every 1m
+   | group_by [metric.kubernetes_vmi_label_kubevirt_vm, metric.interface],
+       [value_kubevirt_vmi_network_receive_bytes_total:
+          aggregate(value.kubevirt_vmi_network_receive_bytes_total)]
+   ```
+   **PromQL Query:**
+   ```promql
+   sum by (kubernetes_vmi_label_kubevirt_vm, interface) (rate(kubernetes_io:anthos_kubevirt_vmi_network_receive_bytes_total{monitored_resource="k8s_container"}[1m]))
+   ```
+
+**9. Widget: "VM Sent Bytes (Per Interface)"**
+   **MQL Query (`timeSeriesQueryLanguage`):**
+   ```mql
+   fetch k8s_container
+   | metric 'kubernetes.io/anthos/kubevirt_vmi_network_transmit_bytes_total'
+   | align rate(1m)
+   | every 1m
+   | group_by [metric.kubernetes_vmi_label_kubevirt_vm, metric.interface],
+       [value_kubevirt_vmi_network_transmit_bytes_total:
+          aggregate(value.kubevirt_vmi_network_transmit_bytes_total)]
+   ```
+   **PromQL Query:**
+   ```promql
+   sum by (kubernetes_vmi_label_kubevirt_vm, interface) (rate(kubernetes_io:anthos_kubevirt_vmi_network_transmit_bytes_total{monitored_resource="k8s_container"}[1m]))
+   ```
+
+---
 This concludes the exhaustive list.
