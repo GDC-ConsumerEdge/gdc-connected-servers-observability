@@ -42,7 +42,7 @@
      *   Record all details (group, title, input type, source query, reasoning, output type, output PromQL, comments) for the CSV row data structure.
      *   Prepare the modified `timeSeriesQuery` object (containing only `prometheusQuery`) and the updated widget title for the output JSON.
  4.  Before writing the output PromQL queries in the output file, propose it to the Google Engineer to ask confirmation that this is the right approach. If in some cases, there are multiple options possible, please propose the top 2 options for selection by the Google Engineer.
- 5.  Once confirmed by the Google Engineer, Generate the `output_companion.md` file using the collected details in the mapping table (quoting all fields, doubling internal quotes, using CRLF for row terminators).
+ 5.  Once confirmed by the Google Engineer, Generate the `output_companion.md` file using the collected details in the mapping table (quoting all fields, doubling internal quotes, using CRLF for row terminators). Please write all the conversion rules or instruction into the **same** companion file rather and one file per JSON or YAML file.
  6.  Generate the `output_dashboard.json` or `output_alert.yaml` file by reconstructing the input JSON or YAML structure but substituting the modified `timeSeriesQuery` objects, widget titles, and the main `displayName`. Strive to maintain original formatting and line count.
 
  **Provide the generated MD content and the generated JSON or YAML content.**
