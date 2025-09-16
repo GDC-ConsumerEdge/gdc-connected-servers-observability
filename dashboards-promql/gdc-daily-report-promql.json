@@ -47,6 +47,7 @@
               }
             ],
             "thresholds": [],
+            "timeshiftDuration": "0s",
             "yAxis": {
               "label": "",
               "scale": "LINEAR"
@@ -75,6 +76,7 @@
               }
             ],
             "thresholds": [],
+            "timeshiftDuration": "0s",
             "yAxis": {
               "label": "",
               "scale": "LINEAR"
@@ -119,6 +121,7 @@
                 "value": 25
               }
             ],
+            "timeshiftDuration": "0s",
             "yAxis": {
               "label": "",
               "scale": "LINEAR"
@@ -152,6 +155,7 @@
                 "value": 65
               }
             ],
+            "timeshiftDuration": "0s",
             "yAxis": {
               "label": "",
               "scale": "LINEAR"
@@ -179,6 +183,7 @@
               }
             ],
             "thresholds": [],
+            "timeshiftDuration": "0s",
             "yAxis": {
               "label": "",
               "scale": "LINEAR"
@@ -206,6 +211,7 @@
               }
             ],
             "thresholds": [],
+            "timeshiftDuration": "0s",
             "yAxis": {
               "label": "",
               "scale": "LINEAR"
@@ -240,6 +246,7 @@
                 "value": 25
               }
             ],
+            "timeshiftDuration": "0s",
             "yAxis": {
               "label": "",
               "scale": "LINEAR"
@@ -275,6 +282,7 @@
                 "value": 40
               }
             ],
+            "timeshiftDuration": "0s",
             "yAxis": {
               "label": "",
               "scale": "LINEAR"
@@ -306,6 +314,7 @@
               }
             ],
             "thresholds": [],
+            "timeshiftDuration": "0s",
             "yAxis": {
               "label": "",
               "scale": "LINEAR"
@@ -337,6 +346,7 @@
               }
             ],
             "thresholds": [],
+            "timeshiftDuration": "0s",
             "yAxis": {
               "label": "",
               "scale": "LINEAR"
