@@ -7,7 +7,7 @@ This document lists Monitoring Query Language (MQL) queries found in the reposit
 | File Path                                                  | Contains MQL? | Notes                                                                 | Convertion Status |
 | :--------------------------------------------------------- | :------------ | :-------------------------------------------------------------------- | :---------------- |
 | `alerts/control-plane/api-server-error-ratio-5-percent.yaml` | Yes           | `conditionMonitoringQueryLanguage` used.                              | WIP               |
-| `alerts/control-plane/apiserver-down.yaml`                 | Yes           | `conditionMonitoringQueryLanguage` used.                              | TBD               |
+| `alerts/control-plane/apiserver-down.yaml`                 | Yes           | `conditionMonitoringQueryLanguage` used.                              | WIP               |
 | `alerts/control-plane/controller-manager-down.yaml`        | Yes           | `conditionMonitoringQueryLanguage` used.                              | TBD               |
 | `alerts/control-plane/scheduler-down.yaml`                 | Yes           | `conditionMonitoringQueryLanguage` used.                              | TBD               |
 | `alerts/node/multiple-nodes-not-ready-realtime.yaml`       | Yes           | `conditionMonitoringQueryLanguage` used.                              | TBD               |
@@ -104,6 +104,46 @@ sum by(project_id, location, cluster_name) (increase(kubernetes_io:anthos_apiser
 3.  The MQL `align delta(5m)` and `group_by` are converted to `sum by(...) (increase(...[5m]))`.
 4.  The division of the two time series is performed with the `/` operator.
 5.  The final `join` to filter for baremetal clusters is done with an `* on(...) group_left()` to multiply by a boolean info metric, ensuring the alert only fires on baremetal clusters.
+
+---
+
+### `alerts/control-plane/apiserver-down.yaml`
+
+**MQL Query:**
+```mql
+{ t_0:
+    fetch k8s_container
+    | metric 'kubernetes.io/anthos/container/uptime'
+    | filter (resource.container_name =~ 'kube-apiserver')
+    | align mean_aligner()
+    | group_by 1m, [value_up_mean: mean(value.uptime)]
+    | every 1m
+    | group_by [resource.project_id, resource.location, resource.cluster_name],
+        [value_up_mean_aggregate: aggregate(value_up_mean)]
+; t_1:
+    fetch k8s_container::kubernetes.io/anthos/anthos_cluster_info
+    | filter (metric.anthos_distribution = 'baremetal')
+    | align mean_aligner()
+    | group_by [resource.project_id, resource.location, resource.cluster_name],
+        [value_anthos_cluster_info_aggregate:
+           aggregate(value.anthos_cluster_info)]
+    | every 1m }
+| join
+| value [t_0.value_up_mean_aggregate]
+| window 1m
+| absent_for 300s
+```
+
+**PromQL Query:**
+```promql
+absent(kubernetes_io:anthos_container_uptime{container_name=~"kube-apiserver"} * on(project_id, location, cluster_name) group_left() (kubernetes_io:anthos_anthos_cluster_info{anthos_distribution="baremetal", monitored_resource="k8s_container"}))
+```
+
+**Reasoning:**
+1.  The MQL `fetch` and `metric` are converted to the PromQL metric name `kubernetes_io:anthos_container_uptime`.
+2.  The MQL `filter` on `resource.container_name` is converted to a PromQL label selector `{container_name=~"kube-apiserver"}`.
+3.  The MQL `absent_for 300s` is the core of the alert, which checks if a metric is missing for a specified duration. This is directly translated to the PromQL `absent()` function. The 300s duration is set in the `duration` field of the alert policy.
+4.  The `join` with `anthos_cluster_info` is converted to a multiplication (`*`) with an `on(...) group_left()` clause to ensure the alert only fires on baremetal clusters.
 
 ---
 This concludes the exhaustive list.
