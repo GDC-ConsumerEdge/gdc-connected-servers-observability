@@ -17,7 +17,7 @@ conditions:
 - conditionPrometheusQueryLanguage:
     duration: 60s
     query: |-
-      sum by (project_id, location, cluster_name) (kube_node_status_condition{condition="Ready", status="true"} == 0)
+      count by (project_id, location, cluster_name) (kube_node_status_condition{condition="Ready", status="true"} == 0)
       * on(project_id, location, cluster_name) group_left()
       (max by (project_id, location, cluster_name) (kubernetes_io:anthos_anthos_cluster_info{anthos_distribution="baremetal", monitored_resource="k8s_container"}))
       > 1

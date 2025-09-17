@@ -15,8 +15,8 @@
 combiner: OR
 conditions:
 - conditionPrometheusQueryLanguage:
-    duration: 300s
+    duration: 60s
     query: |-
-      absent(kubernetes_io:anthos_container_uptime{container_name=~"kube-scheduler"})
-  displayName: Scheduler is up - PromQL
-displayName: Scheduler down (critical) - converted to PromQL
+      count by (project_id, location, cluster_name) (kube_node_status_condition{condition="Ready", status="true"} == 0) > 1
+  displayName: Multiple nodes not ready - Simplified PromQL
+displayName: Multiple nodes not ready (critical) - Simplified PromQL

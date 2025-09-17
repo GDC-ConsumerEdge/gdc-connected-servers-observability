@@ -136,15 +136,12 @@ sum by(project_id, location, cluster_name) (increase(kubernetes_io:anthos_apiser
 
 **PromQL Query:**
 ```promql
-kubernetes_io:anthos_anthos_cluster_info{anthos_distribution="baremetal", monitored_resource="k8s_container"} unless on(project_id, location, cluster_name) kubernetes_io:anthos_container_uptime{container_name=~"kube-apiserver"}
+absent(kubernetes_io:anthos_container_uptime{container_name=~"kube-apiserver"})
 ```
 
 **Reasoning:**
-1.  The MQL `absent_for` logic is best translated using the PromQL `unless` operator to avoid false positives.
-2.  The left side of the `unless` operator selects all time series that identify a baremetal cluster via the `kubernetes_io:anthos_anthos_cluster_info` metric.
-3.  The right side selects the `kubernetes_io:anthos_container_uptime` metric for the `kube-apiserver`.
-4.  The `unless` operator returns a result only when a baremetal cluster exists on the left side but does *not* have a corresponding uptime metric on the right side, correctly identifying when the apiserver is down.
-5.  The `duration` of `300s` is applied to the alert policy itself, completing the `absent_for` logic.
+1.  The MQL `absent_for` logic is translated to the PromQL `absent()` function.
+2.  The `duration` of `300s` is applied to the alert policy itself, completing the `absent_for` logic.
 
 ---
 
@@ -177,15 +174,12 @@ kubernetes_io:anthos_anthos_cluster_info{anthos_distribution="baremetal", monito
 
 **PromQL Query:**
 ```promql
-kubernetes_io:anthos_anthos_cluster_info{anthos_distribution="baremetal", monitored_resource="k8s_container"} unless on(project_id, location, cluster_name) kubernetes_io:anthos_container_uptime{container_name=~"kube-controller-manager"}
+absent(kubernetes_io:anthos_container_uptime{container_name=~"kube-controller-manager"})
 ```
 
 **Reasoning:**
-1.  The MQL `absent_for` logic is best translated using the PromQL `unless` operator to avoid false positives.
-2.  The left side of the `unless` operator selects all time series that identify a baremetal cluster via the `kubernetes_io:anthos_anthos_cluster_info` metric.
-3.  The right side selects the `kubernetes_io:anthos_container_uptime` metric for the `kube-controller-manager`.
-4.  The `unless` operator returns a result only when a baremetal cluster exists on the left side but does *not* have a corresponding uptime metric on the right side, correctly identifying when the controller manager is down.
-5.  The `duration` of `300s` is applied to the alert policy itself, completing the `absent_for` logic.
+1.  The MQL `absent_for` logic is translated to the PromQL `absent()` function.
+2.  The `duration` of `300s` is applied to the alert policy itself, completing the `absent_for` logic.
 
 ---
 
@@ -215,9 +209,9 @@ kubernetes_io:anthos_anthos_cluster_info{anthos_distribution="baremetal", monito
 | condition t_0.value_kube_node_status_condition_mean > 0 '1'
 ```
 
-**PromQL Query:**
+**PromQL Query (with Baremetal Filter):**
 ```promql
-sum by (project_id, location, cluster_name) (kube_node_status_condition{condition="Ready", status="true"} == 0)
+count by (project_id, location, cluster_name) (kube_node_status_condition{condition="Ready", status="true"} == 0)
 * on(project_id, location, cluster_name) group_left()
 (max by (project_id, location, cluster_name) (kubernetes_io:anthos_anthos_cluster_info{anthos_distribution="baremetal", monitored_resource="k8s_container"}))
 > 1
@@ -226,8 +220,16 @@ sum by (project_id, location, cluster_name) (kube_node_status_condition{conditio
 **Reasoning:**
 1.  The MQL `fetch` and `metric` are converted to the PromQL metric name `kube_node_status_condition`.
 2.  The MQL `filter` for nodes that are not ready (`metric.condition == 'Ready' && metric.status != 'true'`) is translated to the PromQL label selector `{condition="Ready", status="true"} == 0`.
-3.  The MQL `trigger` count of 2 is achieved by summing the nodes that are not ready and alerting when the sum is greater than 1.
-4.  The `join` with `anthos_cluster_info` is converted to a multiplication (`*`). To prevent a "duplicate series" error, the right-hand side is aggregated with `max by (...)` to ensure a one-to-one match for each cluster. The `on(...) group_left()` clause ensures the labels are preserved correctly.
+3.  The MQL `trigger` count of 2 is achieved by counting the nodes that are not ready using `count by (...)` and alerting when the sum is greater than 1.
+4.  The `join` with `anthos_cluster_info` is converted to a multiplication (`*`). To prevent a "duplicate series" error and ensure a correct join with the node-level metric, the right-hand side is aggregated with `max by (...)` and the `monitored_resource` label is added to resolve ambiguity. The `on(...) group_left()` clause ensures the labels are preserved correctly.
+
+**Simplified PromQL Query (Recommended):**
+```promql
+count by (project_id, location, cluster_name) (kube_node_status_condition{condition="Ready", status="true"} == 0) > 1
+```
+
+**Reasoning for Simplification:**
+This version is the most direct and idiomatic PromQL query for this alert. It omits the join with `anthos_cluster_info` for simplicity. While the original MQL included a filter for "baremetal" clusters, this simplified query will work on *any* Kubernetes cluster, which is often more desirable for a general-purpose alert. It is more readable and less prone to join-related errors.
 
 ---
 
@@ -260,15 +262,12 @@ sum by (project_id, location, cluster_name) (kube_node_status_condition{conditio
 
 **PromQL Query:**
 ```promql
-kubernetes_io:anthos_anthos_cluster_info{anthos_distribution="baremetal", monitored_resource="k8s_container"} unless on(project_id, location, cluster_name) kubernetes_io:anthos_container_uptime{container_name=~"kube-scheduler"}
+absent(kubernetes_io:anthos_container_uptime{container_name=~"kube-scheduler"})
 ```
 
 **Reasoning:**
-1.  The MQL `absent_for` logic is best translated using the PromQL `unless` operator to avoid false positives.
-2.  The left side of the `unless` operator selects all time series that identify a baremetal cluster via the `kubernetes_io:anthos_anthos_cluster_info` metric.
-3.  The right side selects the `kubernetes_io:anthos_container_uptime` metric for the `kube-scheduler`.
-4.  The `unless` operator returns a result only when a baremetal cluster exists on the left side but does *not* have a corresponding uptime metric on the right side, correctly identifying when the scheduler is down.
-5.  The `duration` of `300s` is applied to the alert policy itself, completing the `absent_for` logic.
+1.  The MQL `absent_for` logic is translated to the PromQL `absent()` function.
+2.  The `duration` of `300s` is applied to the alert policy itself, completing the `absent_for` logic.
 
 ---
 
