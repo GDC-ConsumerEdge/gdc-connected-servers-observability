@@ -51,7 +51,7 @@ To deploy the alerts, run the following command from the `mql2promql/alerts-prom
 | `alerts/vm-workload/vmruntime-vm-down-5m.yaml`             | Yes           | `conditionMonitoringQueryLanguage` used.                              | TBD               |
 | `alerts/vm-workload/vmruntime-vm-missing-5m.yaml`          | Yes           | `conditionMonitoringQueryLanguage` used.                              | TBD               |
 | `alerts/vm-workload/vmruntime-vm-no-network-traffic-5m.yaml` | Yes           | `conditionMonitoringQueryLanguage` used.                              | TBD               |
-| `dashboards/gdc-daily-report.json`                         | Yes (Partial) | Mixed MQL (`timeSeriesQueryLanguage`) and PromQL (`prometheusQuery`). | To be validated               |
+| `dashboards/gdc-daily-report.json`                         | Yes (Partial) | Mixed MQL (`timeSeriesQueryLanguage`) and PromQL (`prometheusQuery`). | To be verified               |
 | `dashboards/gdc-external-secrets.json`                     | No            | Uses `prometheusQuery`.                                               | TBD               |
 | `dashboards/gdc-logs.json`                                 | No            | Log panel filters, not metric queries.                                | TBD               |
 | `dashboards/gdc-node-view.json`                            | Yes           | Uses `timeSeriesQueryLanguage`.                                       | TBD               |
