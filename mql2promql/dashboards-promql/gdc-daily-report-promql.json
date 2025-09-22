@@ -71,7 +71,7 @@
                 "plotType": "STACKED_AREA",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "sum by (kubernetes_vmi_label_kubevirt_vm) (rate(kubernetes_io:anthos_kubevirt_vmi_network_transmit_bytes_total{monitored_resource=\"k8s_container\",${cluster_name},cluster_name=~\"${market.value}.*\"}[2m])) > 0",
+                  "prometheusQuery": "count by (kubernetes_vmi_label_kubevirt_vm) (\n          sum by (kubernetes_vmi_label_kubevirt_vm) (\n            rate(kubernetes_io:anthos_kubevirt_vmi_network_transmit_bytes_total{monitored_resource=\"k8s_container\",${cluster_name},cluster_name=~\"${market.value}.*\"}[2m])\n          ) > 0\n        )",
                   "unitOverride": ""
                 }
               }
@@ -110,7 +110,7 @@
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "avg_over_time(kubernetes_io:anthos_node_cpu_allocatable_utilization{monitored_resource=\"k8s_node\",${cluster_name},cluster_name=~\"${market.value}.*\"}[1m]) * 100",
+                  "prometheusQuery": "avg by (node_name) (avg_over_time(kubernetes_io:anthos_node_cpu_allocatable_utilization{monitored_resource=\"k8s_node\",${cluster_name},cluster_name=~\"${market.value}.*\"}[1m])) * 100",
                   "unitOverride": ""
                 }
               }
@@ -179,7 +179,7 @@
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
                   "prometheusQuery": "sum by (node_name) (rate(kubernetes_io:anthos_node_network_received_bytes_count{monitored_resource=\"k8s_node\",${cluster_name},cluster_name=~\"${market.value}.*\",interface=~\"enp81s0f.*\"}[1m]))",
-                  "unitOverride": ""
+                  "unitOverride": "By/s"
                 }
               }
             ],
@@ -207,7 +207,7 @@
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
                   "prometheusQuery": "sum by (node_name) (rate(kubernetes_io:anthos_node_network_sent_bytes_count{monitored_resource=\"k8s_node\",${cluster_name},cluster_name=~\"${market.value}.*\",interface=~\"enp81s0f.*\"}[1m]))",
-                  "unitOverride": ""
+                  "unitOverride": "By/s"
                 }
               }
             ],
@@ -310,7 +310,7 @@
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
                   "prometheusQuery": "sum by (kubernetes_vmi_label_kubevirt_vm, interface) (rate(kubernetes_io:anthos_kubevirt_vmi_network_receive_bytes_total{monitored_resource=\"k8s_container\",${cluster_name},cluster_name=~\"${market.value}.*\"}[1m]))",
-                  "unitOverride": ""
+                  "unitOverride": "By/s"
                 }
               }
             ],
@@ -342,7 +342,7 @@
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
                   "prometheusQuery": "sum by (kubernetes_vmi_label_kubevirt_vm, interface) (rate(kubernetes_io:anthos_kubevirt_vmi_network_transmit_bytes_total{monitored_resource=\"k8s_container\",${cluster_name},cluster_name=~\"${market.value}.*\"}[1m]))",
-                  "unitOverride": ""
+                  "unitOverride": "By/s"
                 }
               }
             ],
