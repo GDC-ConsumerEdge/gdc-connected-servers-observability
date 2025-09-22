@@ -1,5 +1,5 @@
 {
-  "displayName": "GDC - Node View - converted to PromQL",
+  "displayName": "GDC - Node View - converted to PromQL WIP",
   "dashboardFilters": [
     {
       "filterType": "RESOURCE_LABEL",
@@ -15,7 +15,7 @@
     }
   ],
   "labels": {
-    "mql2promql": "mql2promql"
+    "mql2promql": "work_ip_progress"
   },
   "mosaicLayout": {
     "columns": 48,
@@ -126,7 +126,7 @@
                 "plotType": "STACKED_AREA",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "sum by (node_name) (avg_over_time(kubernetes_io:anthos_node_cpu_allocatable_utilization{monitored_resource=\"k8s_node\",${project_id},${cluster_name}}[1m]) * avg_over_time(kubernetes_io:anthos_node_cpu_allocatable_cores{monitored_resource=\"k8s_node\",${project_id},${cluster_name}}[1m]))",
+                  "prometheusQuery": "avg by (node_name) (kubernetes_io:anthos_node_cpu_allocatable_utilization{monitored_resource=\"k8s_node\",${project_id},${cluster_name}}) * on(node_name) avg by (node_name) (kubernetes_io:anthos_node_cpu_allocatable_cores{monitored_resource=\"k8s_node\",${project_id},${cluster_name}})",
                   "unitOverride": ""
                 }
               }
@@ -157,7 +157,7 @@
                 "plotType": "STACKED_AREA",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "sum by (node_name) (avg_over_time(kubernetes_io:anthos_node_memory_used_bytes{monitored_resource=\"k8s_node\",${project_id},${cluster_name}}[1m]))",
+                  "prometheusQuery": "avg by (node_name) (kubernetes_io:anthos_node_memory_used_bytes{monitored_resource=\"k8s_node\",${project_id},${cluster_name}})",
                   "unitOverride": ""
                 }
               }
@@ -189,7 +189,7 @@
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "avg by (node_name) (avg_over_time(kubernetes_io:anthos_node_cpu_allocatable_utilization{monitored_resource=\"k8s_node\",${project_id},${cluster_name}}[1m])) * 100",
+                  "prometheusQuery": "avg by (node_name) (kubernetes_io:anthos_node_cpu_allocatable_utilization{monitored_resource=\"k8s_node\",${project_id},${cluster_name}}) * 100",
                   "unitOverride": ""
                 }
               }
@@ -220,7 +220,7 @@
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "avg by (node_name) (avg_over_time(kubernetes_io:anthos_node_memory_allocatable_utilization{monitored_resource=\"k8s_node\",${project_id},${cluster_name}}[1m])) * 100",
+                  "prometheusQuery": "avg by (node_name) (kubernetes_io:anthos_node_memory_allocatable_utilization{monitored_resource=\"k8s_node\",${project_id},${cluster_name}}) * 100",
                   "unitOverride": ""
                 }
               }
