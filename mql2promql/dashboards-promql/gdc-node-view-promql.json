@@ -1,5 +1,5 @@
 {
-  "displayName": "GDC - Node View - converted to PromQL WIP",
+  "displayName": "GDC - Node View - converted to PromQL",
   "dashboardFilters": [
     {
       "filterType": "RESOURCE_LABEL",
