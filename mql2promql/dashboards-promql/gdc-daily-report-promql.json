@@ -270,8 +270,7 @@
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "# Memory utilization requires VMs have the virtio drivers installed to report correctly.\n# If a VM does not appear on this graph, confirm driver installation. \n(1 - \n(sum by (pod_name) (avg_over_time(kubernetes_io:anthos_kubevirt_vmi_memory_unused_bytes{monitored_resource=\"k8s_container\",${cluster_name},cluster_name=~\"${market.value}.*\"}[2m]))\n /\n sum by (pod_name) (avg_over_time(kubernetes_io:anthos_container_memory_limit_bytes{monitored_resource=\"k8s_container\",container_name=\"compute\",${cluster_name},cluster_name=~\"${market.value}.*\"}[2m]))
-)) * 100",
+                  "prometheusQuery": "# Memory utilization requires VMs have the virtio drivers installed to report correctly.\n# If a VM does not appear on this graph, confirm driver installation. \n(1 - \n(sum by (pod_name) (avg_over_time(kubernetes_io:anthos_kubevirt_vmi_memory_unused_bytes{monitored_resource=\"k8s_container\",${cluster_name},cluster_name=~\"${market.value}.*\"}[2m]))\n /\n sum by (pod_name) (avg_over_time(kubernetes_io:anthos_container_memory_limit_bytes{monitored_resource=\"k8s_container\",container_name=\"compute\",${cluster_name},cluster_name=~\"${market.value}.*\"}[2m])))) * 100",
                   "unitOverride": ""
                 }
               }
