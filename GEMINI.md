@@ -71,8 +71,8 @@ The required structure and format for the output files are specified in detail i
 
 For the complete and authoritative set of rules and instructions, you **must** refer to the following files:
 
-*   `mql2promql_tmp/mql2promql_conversion_prompt.md`: This file contains the comprehensive MQL-to-PromQL conversion logic, including metric naming conventions, handling of aligners, joins, filters, and specific edge cases for Google Cloud's Managed Service for Prometheus (MSP).
-*   `mql2promql_tmp/mql2promql_agent_instruction.md`: This file defines the high-level workflow, the required output formats for both the converted files (JSON/YAML) and the companion Markdown document, and the interaction model with the user.
+*   `mql2promql/mql2promql_conversion_prompt.md`: This file contains the comprehensive MQL-to-PromQL conversion logic, including metric naming conventions, handling of aligners, joins, filters, and specific edge cases for Google Cloud's Managed Service for Prometheus (MSP).
+*   `mql2promql/mql2promql_agent_instruction.md`: This file defines the high-level workflow, the required output formats for both the converted files (JSON/YAML) and the companion Markdown document, and the interaction model with the user.
 
 ### External Documentation and References
 
