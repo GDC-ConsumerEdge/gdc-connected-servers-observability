@@ -2,6 +2,26 @@
 
 This document lists Monitoring Query Language (MQL) queries found in the repository and provides proposed translations to Prometheus Query Language (PromQL).
 
+## Deployment of Converted Dashboards and Alerts
+
+To deploy the converted dashboards and alerts, you can use the provided shell scripts.
+
+### Dashboards
+
+To deploy the dashboards, run the following command from the `mql2promql/dashboards-promql` directory:
+
+```bash
+./create-dashboards-promql.sh
+```
+
+### Alerts
+
+To deploy the alerts, run the following command from the `mql2promql/alerts-promql` directory:
+
+```bash
+./create-alerts-promql.sh
+```
+
 ## Summary of Files Containing MQL Queries
 
 | File Path                                                  | Contains MQL? | Notes                                                                 | Convertion Status |
