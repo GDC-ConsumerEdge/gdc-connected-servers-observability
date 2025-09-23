@@ -23,7 +23,7 @@
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "count by (kubernetes_vmi_label_kubevirt_vm, state) (kubernetes_io:anthos_kubevirt_info)"
+                  "prometheusQuery": "kubernetes_io:anthos_kubevirt_info"
                 }
               }
             ],
@@ -55,7 +55,7 @@
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "max by (cluster_name, location, node_name, kubernetes_vmi_label_kubevirt_vm) (rate(kubernetes_io:anthos_kubevirt_vmi_vcpu_seconds{resource_type=\"k8s_container\"}[2m]))"
+                  "prometheusQuery": "max by (cluster_name, location, node_name, kubernetes_vmi_label_kubevirt_vm) (rate(kubernetes_io:anthos_kubevirt_vmi_vcpu_seconds{monitored_resource=\"k8s_container\"}[2m]))"
                 }
               }
             ],
@@ -87,7 +87,7 @@
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "sum by (cluster_name, location, node_name, kubernetes_vmi_label_kubevirt_vm, interface) (rate(kubernetes_io:anthos_kubevirt_vmi_network_transmit_bytes_total{resource_type=\"k8s_container\"}[2m]))"
+                  "prometheusQuery": "sum by (cluster_name, location, node_name, kubernetes_vmi_label_kubevirt_vm, interface) (rate(kubernetes_io:anthos_kubevirt_vmi_network_transmit_bytes_total{monitored_resource=\"k8s_container\"}[2m]))"
                 }
               }
             ],
@@ -119,7 +119,7 @@
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "sum by (cluster_name, location, node_name, kubernetes_vmi_label_kubevirt_vm, interface) (rate(kubernetes_io:anthos_kubevirt_vmi_network_receive_bytes_total{resource_type=\"k8s_container\"}[2m]))"
+                  "prometheusQuery": "sum by (cluster_name, location, node_name, kubernetes_vmi_label_kubevirt_vm, interface) (rate(kubernetes_io:anthos_kubevirt_vmi_network_receive_bytes_total{monitored_resource=\"k8s_container\"}[2m]))"
                 }
               }
             ],
@@ -152,7 +152,7 @@
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "sum by (cluster_name, location, node_name, kubernetes_vmi_label_kubevirt_vm, interface) (rate(kubernetes_io:anthos_kubevirt_vmi_network_transmit_errors_total{resource_type=\"k8s_container\"}[2m]))"
+                  "prometheusQuery": "sum by (cluster_name, location, node_name, kubernetes_vmi_label_kubevirt_vm, interface) (rate(kubernetes_io:anthos_kubevirt_vmi_network_transmit_errors_total{monitored_resource=\"k8s_container\"}[2m]))"
                 }
               }
             ],
@@ -184,7 +184,7 @@
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "sum by (cluster_name, location, node_name, kubernetes_vmi_label_kubevirt_vm, interface) (rate(kubernetes_io:anthos_kubevirt_vmi_network_receive_errors_total{resource_type=\"k8s_container\"}[2m]))"
+                  "prometheusQuery": "sum by (cluster_name, location, node_name, kubernetes_vmi_label_kubevirt_vm, interface) (rate(kubernetes_io:anthos_kubevirt_vmi_network_receive_errors_total{monitored_resource=\"k8s_container\"}[2m]))"
                 }
               }
             ],
@@ -217,7 +217,7 @@
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "sum by (cluster_name, location, node_name, kubernetes_vmi_label_kubevirt_vm, interface) (rate(kubernetes_io:anthos_kubevirt_vmi_network_transmit_packets_total{resource_type=\"k8s_container\"}[2m]))"
+                  "prometheusQuery": "sum by (cluster_name, location, node_name, kubernetes_vmi_label_kubevirt_vm, interface) (rate(kubernetes_io:anthos_kubevirt_vmi_network_transmit_packets_total{monitored_resource=\"k8s_container\"}[2m]))"
                 }
               }
             ],
@@ -249,7 +249,7 @@
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "sum by (cluster_name, location, node_name, kubernetes_vmi_label_kubevirt_vm, interface) (rate(kubernetes_io:anthos_kubevirt_vmi_network_receive_packets_total{resource_type=\"k8s_container\"}[2m]))"
+                  "prometheusQuery": "sum by (cluster_name, location, node_name, kubernetes_vmi_label_kubevirt_vm, interface) (rate(kubernetes_io:anthos_kubevirt_vmi_network_receive_packets_total{monitored_resource=\"k8s_container\"}[2m]))"
                 }
               }
             ],
@@ -282,7 +282,7 @@
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "sum by (cluster_name, location, node_name, kubernetes_vmi_label_kubevirt_vm, interface) (rate(kubernetes_io:anthos_kubevirt_vmi_network_transmit_packets_dropped_total{resource_type=\"k8s_container\"}[2m]))"
+                  "prometheusQuery": "sum by (cluster_name, location, node_name, kubernetes_vmi_label_kubevirt_vm, interface) (rate(kubernetes_io:anthos_kubevirt_vmi_network_transmit_packets_dropped_total{monitored_resource=\"k8s_container\"}[2m]))"
                 }
               }
             ],
@@ -314,7 +314,7 @@
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "sum by (cluster_name, location, node_name, kubernetes_vmi_label_kubevirt_vm, interface) (rate(kubernetes_io:anthos_kubevirt_vmi_network_receive_packets_dropped_total{resource_type=\"k8s_container\"}[2m]))"
+                  "prometheusQuery": "sum by (cluster_name, location, node_name, kubernetes_vmi_label_kubevirt_vm, interface) (rate(kubernetes_io:anthos_kubevirt_vmi_network_receive_packets_dropped_total{monitored_resource=\"k8s_container\"}[2m]))"
                 }
               }
             ],
@@ -347,7 +347,7 @@
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "sum by (cluster_name, location, node_name, kubernetes_vmi_label_kubevirt_vm, disk) (rate(kubernetes_io:anthos_kubevirt_vmi_storage_iops_write_total{resource_type=\"k8s_container\"}[2m]))"
+                  "prometheusQuery": "sum by (cluster_name, location, node_name, kubernetes_vmi_label_kubevirt_vm, disk) (rate(kubernetes_io:anthos_kubevirt_vmi_storage_iops_write_total{monitored_resource=\"k8s_container\"}[2m]))"
                 }
               }
             ],
@@ -379,7 +379,7 @@
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "sum by (cluster_name, location, node_name, kubernetes_vmi_label_kubevirt_vm, disk) (rate(kubernetes_io:anthos_kubevirt_vmi_storage_iops_read_total{resource_type=\"k8s_container\"}[2m]))"
+                  "prometheusQuery": "sum by (cluster_name, location, node_name, kubernetes_vmi_label_kubevirt_vm, disk) (rate(kubernetes_io:anthos_kubevirt_vmi_storage_iops_read_total{monitored_resource=\"k8s_container\"}[2m]))"
                 }
               }
             ],
@@ -401,11 +401,11 @@
           "timeSeriesTable": {
             "columnSettings": [
               {
-                "column": "vm_name",
+                "column": "metric.label.kubernetes_vmi_label_kubevirt_vm",
                 "visible": true
               },
               {
-                "column": "state",
+                "column": "metric.label.state",
                 "visible": true
               },
               {
