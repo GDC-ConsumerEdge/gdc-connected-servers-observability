@@ -51,7 +51,7 @@
                   "plotType": "STACKED_AREA",
                   "targetAxis": "Y1",
                   "timeSeriesQuery": {
-                    "prometheusQuery": "sum by (created_by_name) (kubernetes_io:anthos_kube_pod_status_phase_gauge{phase=\"Running\", pod=~\"(virt-launcher).*\", cluster=\"${cluster_name.value}\"} * on(pod) group_right(created_by_name) kubernetes_io:anthos_kube_pod_info_gauge{pod=~\"(virt-launcher).*\", node=~\".*01.ba.l.google.com$\", cluster=\"${cluster_name.value}\"})"
+                    "prometheusQuery": "sum by (created_by_name) (avg_over_time((kubernetes_io:anthos_kube_pod_info_gauge{pod=~\"(virt-launcher).*\", node=~\".*01.ba.l.google.com$\", cluster=\"${cluster_name.value}\"} AND on(pod) kubernetes_io:anthos_kube_pod_status_phase_gauge{phase=\"Running\", pod=~\"(virt-launcher).*\", cluster=\"${cluster_name.value}\"})[5m]))"
                   }
                 }
               ],
@@ -79,7 +79,7 @@
                   "plotType": "STACKED_AREA",
                   "targetAxis": "Y1",
                   "timeSeriesQuery": {
-                    "prometheusQuery": "sum by (created_by_name) (kubernetes_io:anthos_kube_pod_status_phase_gauge{phase=\"Running\", pod=~\"(virt-launcher).*\", cluster=\"${cluster_name.value}\"} * on(pod) group_right(created_by_name) kubernetes_io:anthos_kube_pod_info_gauge{pod=~\"(virt-launcher).*\", node=~\".*02.ba.l.google.com$\", cluster=\"${cluster_name.value}\"})"
+                    "prometheusQuery": "sum by (created_by_name) (avg_over_time((kubernetes_io:anthos_kube_pod_info_gauge{pod=~\"(virt-launcher).*\", node=~\".*02.ba.l.google.com$\", cluster=\"${cluster_name.value}\"} AND on(pod) kubernetes_io:anthos_kube_pod_status_phase_gauge{phase=\"Running\", pod=~\"(virt-launcher).*\", cluster=\"${cluster_name.value}\"})[5m]))"
                   }
                 }
               ],
@@ -107,7 +107,7 @@
                   "plotType": "STACKED_AREA",
                   "targetAxis": "Y1",
                   "timeSeriesQuery": {
-                    "prometheusQuery": "sum by (created_by_name) (kubernetes_io:anthos_kube_pod_status_phase_gauge{phase=\"Running\", pod=~\"(virt-launcher).*\", cluster=\"${cluster_name.value}\"} * on(pod) group_right(created_by_name) kubernetes_io:anthos_kube_pod_info_gauge{pod=~\"(virt-launcher).*\", node=~\".*03.ba.l.google.com$\", cluster=\"${cluster_name.value}\"})"
+                    "prometheusQuery": "sum by (created_by_name) (avg_over_time((kubernetes_io:anthos_kube_pod_info_gauge{pod=~\"(virt-launcher).*\", node=~\".*03.ba.l.google.com$\", cluster=\"${cluster_name.value}\"} AND on(pod) kubernetes_io:anthos_kube_pod_status_phase_gauge{phase=\"Running\", pod=~\"(virt-launcher).*\", cluster=\"${cluster_name.value}\"})[5m]))"
                   }
                 }
               ],
