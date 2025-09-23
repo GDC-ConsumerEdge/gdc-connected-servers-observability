@@ -59,6 +59,12 @@ To deploy the alerts, run the following command from the `mql2promql/alerts-prom
 | `dashboards/gdc-vm-distribution.json`                      | Yes           | Uses `timeSeriesQueryLanguage`.                                       | TBD               |
 | `dashboards/gdc-vm-view.json`                              | Yes (Partial) | Mixed MQL (`timeSeriesQueryLanguage`, `timeSeriesFilter`) and PromQL. | TBD               |
 
+Convertion Status:
+- N/A: Not Applicable
+- TBD: To be done
+- WIP: Work In Progress
+- To be verified
+
 ---
 
 ## Alerting
@@ -329,4 +335,15 @@ absent(kubernetes_io:anthos_container_uptime{container_name=~"kube-scheduler"})
 | Network Usage per Node | Send bytes per node | MQL | `... \| align rate(1m) \| ...` | Similar to the received bytes query, this calculates the rate of sent bytes. | PromQL | `sum by (node_name) (rate(kubernetes_io:anthos_node_network_sent_bytes_count{monitored_resource="k8s_node",${project_id},${cluster_name},interface=~"enp81s0f.*"}[1m]))` | |
 | Storage Usage per Node | Free Robin Disk Space % per Node | MQL | `{...} \| join \| value [v_0: 1 - div(t_0.value_robin_disk_rawused_sum, t_1.value_robin_disk_size_mean)]` | The MQL query calculates the free disk space percentage. The PromQL query performs the same calculation using subtraction and division. | PromQL | `1 - (sum by (node_name) (robin_disk_nslices{${project_id},${cluster_name}}) * 1073741824 / sum by (node_name) (robin_disk_size{${project_id},${cluster_name}}))` | |
 | Storage Usage per Node | Free Robin Disk Space % per Node | MQL | `{...} \| join \| value [Disk_Free: cast_units(t_1.value_robin_disk_size_mean - t_0.value_robin_disk_rawused_sum, 'By')]` | The MQL query calculates the free disk space in bytes. The PromQL query performs the same calculation using subtraction. | PromQL | `sum by (node_name) (robin_disk_size{${project_id},${cluster_name}}) - sum by (node_name) (robin_disk_nslices{${project_id},${cluster_name}}) * 1073741824` | |
+
+### `dashboards/gdc-robin-status.json`
+
+| Group | Input Query Title | Input Query Type | Source Query | LLM Reasoning | LLM Output Query Type | LLM Output PromQL Query | Comments |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| N/A | Robin Node State - ONLINE & READY | MQL | `metric.type="prometheus.googleapis.com/robin_node_state/gauge" resource.type="prometheus_target" metric.label."node_state"="ONLINE" metric.label."node_status"="Ready"` | The MQL `timeSeriesFilter` is converted to a PromQL query. The metric name is converted, and the filters are applied as label matchers. The aggregation `REDUCE_MEAN` with `groupByFields` is converted to `avg by (node_name)`. | PromQL | `avg by (node_name) (prometheus_googleapis_com:robin_node_state{node_state="ONLINE", node_status="Ready"})` | |
+| N/A | Robin Disk State - ONLINE & READY | MQL | `metric.type="prometheus.googleapis.com/robin_disk_status/gauge" resource.type="prometheus_target" metric.label."disk_state"="READY" metric.label."disk_status"="ONLINE"` | Similar to the previous query, the `timeSeriesFilter` is converted to a PromQL query with label matchers and aggregation. | PromQL | `avg by (node_name) (prometheus_googleapis_com:robin_disk_status{disk_state="READY", disk_status="ONLINE"})` | |
+| N/A | Node 1 - UNHEALTHY Services | MQL | `metric.type="prometheus.googleapis.com/robin_service_status/gauge" resource.type="prometheus_target" metric.label."node_name"="cnuc-1" metric.label."service_state"!="UP"` | The `timeSeriesFilter` is converted to a PromQL query with label matchers for the specific node and service state. | PromQL | `avg by (service_state, service_name) (prometheus_googleapis_com:robin_service_status{node_name="cnuc-1", service_state!="UP"})` | |
+| N/A | Node 2 - UNHEALTHY Services | MQL | `metric.type="prometheus.googleapis.com/robin_service_status/gauge" resource.type="prometheus_target" metric.label."node_name"="edge-2" metric.label."service_state"!="UP"` | The `timeSeriesFilter` is converted to a PromQL query with label matchers for the specific node and service state. | PromQL | `avg by (service_state, service_name) (prometheus_googleapis_com:robin_service_status{node_name="edge-2", service_state!="UP"})` | |
+| N/A | Node 3 - UNHEALTHY Services | MQL | `metric.type="prometheus.googleapis.com/robin_service_status/gauge" resource.type="prometheus_target" metric.label."node_name"="edge-3" metric.label."service_state"!="UP"` | The `timeSeriesFilter` is converted to a PromQL query with label matchers for the specific node and service state. | PromQL | `avg by (service_state, service_name) (prometheus_googleapis_com:robin_service_status{node_name="edge-3", service_state!="UP"})` | |
+| N/A | prometheus/robin_service_status/gauge [COUNT] | MQL | `metric.type="prometheus.googleapis.com/robin_service_status/gauge" resource.type="prometheus_target"` | The `timeSeriesFilter` is converted to a PromQL query. The `REDUCE_COUNT` aggregation is converted to `count by (...)`. | PromQL | `count by (service_state, service_name) (prometheus_googleapis_com:robin_service_status)` | |
 
