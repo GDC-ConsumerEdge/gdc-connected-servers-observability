@@ -286,7 +286,7 @@
             "plotType": "STACKED_AREA",
             "targetAxis": "Y1",
             "timeSeriesQuery": {
-              "prometheusQuery": "count by (node_name) (rate(kubernetes_io:anthos_pod_network_received_bytes_count{monitored_resource=\"k8s_pod\",${project_id},${cluster_name}}[1m]))"
+              "prometheusQuery": "count by (node_name) (kubernetes_io:anthos_pod_network_received_bytes_count{monitored_resource=\"k8s_pod\",${project_id},${cluster_name}})"
             }
           }
         ],
