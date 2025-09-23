@@ -23,7 +23,7 @@
                 "plotType": "LINE",
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "prometheusQuery": "kubernetes_io:anthos_kubevirt_info"
+                  "prometheusQuery": "count by (kubernetes_vmi_label_kubevirt_vm, state) (kubernetes_io:anthos_kubevirt_info)"
                 }
               }
             ],
