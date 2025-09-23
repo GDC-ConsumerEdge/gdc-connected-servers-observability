@@ -40,21 +40,21 @@ To deploy the alerts, run the following command from the `mql2promql/alerts-prom
 | `alerts/storage/robin-master-down-10m.yaml`                | Yes           | `conditionMonitoringQueryLanguage` used.                              | TBD               |
 | `alerts/storage/robin-node-offline-30m.json`               | Yes           | JSON format, uses `conditionThreshold` with MQL-like filter.        | TBD               |
 | `alerts/system/configsync-down-30m.yaml`                   | Yes           | `conditionAbsent` with MQL-like filter.                             | TBD               |
-| `alerts/system/configsync-high-apply-duration-1h.yaml`     | No            | Uses `conditionPrometheusQueryLanguage`.                              | TBD               |
-| `alerts/system/configsync-old-last-sync-2h.yaml`           | No            | Uses `conditionPrometheusQueryLanguage`.                              | TBD               |
+| `alerts/system/configsync-high-apply-duration-1h.yaml`     | No            | Uses `conditionPrometheusQueryLanguage`.                              | N/A               |
+| `alerts/system/configsync-old-last-sync-2h.yaml`           | No            | Uses `conditionPrometheusQueryLanguage`.                              | N/A               |
 | `alerts/system/coredns-down.yaml`                          | Yes           | `conditionMonitoringQueryLanguage` used.                              | TBD               |
 | `alerts/system/coredns-servfail-ratio-1-percent.yaml`      | Yes           | `conditionMonitoringQueryLanguage` used.                              | TBD               |
 | `alerts/system/externalsecrets-down-30m.yaml`              | Yes           | `conditionMonitoringQueryLanguage` used.                              | TBD               |
-| `alerts/system/externalsecrets-sync-error.yaml`            | No            | Uses `conditionPrometheusQueryLanguage`.                              | TBD               |
+| `alerts/system/externalsecrets-sync-error.yaml`            | No            | Uses `conditionPrometheusQueryLanguage`.                              | N/A               |
 | `alerts/vm-workload/vmruntime-heartbeats-active-realtime.yaml` | Yes           | `conditionMonitoringQueryLanguage` used.                              | TBD               |
 | `alerts/vm-workload/vmruntime-heartbeats-realtime.yaml`    | Yes           | `conditionMonitoringQueryLanguage` used.                              | TBD               |
 | `alerts/vm-workload/vmruntime-vm-down-5m.yaml`             | Yes           | `conditionMonitoringQueryLanguage` used.                              | TBD               |
 | `alerts/vm-workload/vmruntime-vm-missing-5m.yaml`          | Yes           | `conditionMonitoringQueryLanguage` used.                              | TBD               |
 | `alerts/vm-workload/vmruntime-vm-no-network-traffic-5m.yaml` | Yes           | `conditionMonitoringQueryLanguage` used.                              | TBD               |
 | `dashboards/gdc-daily-report.json`                         | Yes (Partial) | Mixed MQL (`timeSeriesQueryLanguage`) and PromQL (`prometheusQuery`). | To be verified               |
-| `dashboards/gdc-external-secrets.json`                     | No            | Uses `prometheusQuery`.                                               | TBD               |
-| `dashboards/gdc-logs.json`                                 | No            | Log panel filters, not metric queries.                                | TBD               |
-| `dashboards/gdc-node-view.json`                            | Yes           | Uses `timeSeriesQueryLanguage`.                                       | TBD               |
+| `dashboards/gdc-external-secrets.json`                     | No            | Uses `prometheusQuery`.                                               | N/A               |
+| `dashboards/gdc-logs.json`                                 | No            | Log panel filters, not metric queries.                                | N/A               |
+| `dashboards/gdc-node-view.json`                            | Yes           | Uses `timeSeriesQueryLanguage`.                                       | WIP               |
 | `dashboards/gdc-robin-status.json`                         | Yes (Partial) | Mixed MQL (`timeSeriesFilter` with MQL-like filter) and PromQL.     | TBD               |
 | `dashboards/gdc-vm-distribution.json`                      | Yes           | Uses `timeSeriesQueryLanguage`.                                       | TBD               |
 | `dashboards/gdc-vm-view.json`                              | Yes (Partial) | Mixed MQL (`timeSeriesQueryLanguage`, `timeSeriesFilter`) and PromQL. | TBD               |
@@ -329,5 +329,4 @@ absent(kubernetes_io:anthos_container_uptime{container_name=~"kube-scheduler"})
 | Network Usage per Node | Send bytes per node | MQL | `... \| align rate(1m) \| ...` | Similar to the received bytes query, this calculates the rate of sent bytes. | PromQL | `sum by (node_name) (rate(kubernetes_io:anthos_node_network_sent_bytes_count{monitored_resource="k8s_node",${project_id},${cluster_name},interface=~"enp81s0f.*"}[1m]))` | |
 | Storage Usage per Node | Free Robin Disk Space % per Node | MQL | `{...} \| join \| value [v_0: 1 - div(t_0.value_robin_disk_rawused_sum, t_1.value_robin_disk_size_mean)]` | The MQL query calculates the free disk space percentage. The PromQL query performs the same calculation using subtraction and division. | PromQL | `1 - (sum by (node_name) (robin_disk_nslices{${project_id},${cluster_name}}) * 1073741824 / sum by (node_name) (robin_disk_size{${project_id},${cluster_name}}))` | |
 | Storage Usage per Node | Free Robin Disk Space % per Node | MQL | `{...} \| join \| value [Disk_Free: cast_units(t_1.value_robin_disk_size_mean - t_0.value_robin_disk_rawused_sum, 'By')]` | The MQL query calculates the free disk space in bytes. The PromQL query performs the same calculation using subtraction. | PromQL | `sum by (node_name) (robin_disk_size{${project_id},${cluster_name}}) - sum by (node_name) (robin_disk_nslices{${project_id},${cluster_name}}) * 1073741824` | |
-
 
