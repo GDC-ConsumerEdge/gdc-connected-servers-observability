@@ -31,4 +31,6 @@ override.tf.json
 
 # Ignore CLI configuration files
 .terraformrc
-terraform.rcmql2promql/TROUBLESHOTING.md
+terraform.rc
+
+mql2promql/TROUBLESHOTING.md
