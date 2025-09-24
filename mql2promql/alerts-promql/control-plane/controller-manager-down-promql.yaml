@@ -17,6 +17,6 @@ conditions:
 - conditionPrometheusQueryLanguage:
     duration: 300s
     query: |-
-      absent(kubernetes_io:anthos_container_uptime{container_name=~"kube-controller-manager"})
+      absent(kubernetes_io:anthos_container_uptime{container_name=~"kube-controller-manager"}) * on(project_id, location, cluster_name) group_left() (kubernetes_io:anthos_anthos_cluster_info{monitored_resource="k8s_container", anthos_distribution="baremetal"})
   displayName: Controller manager is up - PromQL
 displayName: Controller manager down (critical) - converted to PromQL
