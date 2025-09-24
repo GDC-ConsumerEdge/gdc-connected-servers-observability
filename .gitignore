@@ -33,6 +33,6 @@ override.tf.json
 .terraformrc
 terraform.rc
 
-mql2promql/testing/TROUBLESHOTING.md
+#mql2promql/testing/TROUBLESHOTING.md
 
-mql2promql/testing/REPORT.md
+#mql2promql/testing/REPORT.md
