@@ -17,6 +17,6 @@ conditions:
 - conditionPrometheusQueryLanguage:
     duration: 300s
     query: |-
-      absent(kubernetes_io:anthos_container_uptime{container_name=~"kube-apiserver"})
+      kubernetes_io:anthos_anthos_cluster_info{monitored_resource="k8s_container", anthos_distribution="baremetal"} unless on(cluster_name, location, project_id) kubernetes_io:anthos_container_uptime{monitored_resource="k8s_container", container_name=~"kube-apiserver"}
   displayName: API server is up - PromQL
 displayName: API server down (critical) - converted to PromQL
