@@ -89,3 +89,7 @@ For additional context on MQL and PromQL, consult the official documentation.
 *   [Query Operators](https://prometheus.io/docs/prometheus/latest/querying/operators/)
 *   [Query Functions](https://prometheus.io/docs/prometheus/latest/querying/functions/)
 *   [Query Examples](https://prometheus.io/docs/prometheus/latest/querying/examples/)
+
+**Metrics**
+*   [Kubernetes Metrics Reference](https://kubernetes.io/docs/reference/instrumentation/metrics/)
+*   [View Google Distributed Cloud Metrics](https://cloud.google.com/kubernetes-engine/distributed-cloud/bare-metal/docs/metrics-anthos)
