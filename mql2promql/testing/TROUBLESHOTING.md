@@ -1,43 +1,21 @@
-I have run the comparison again between the original MQL dashboard ("GDC - VM Status") and the converted PromQL dashboard ("GDC - VM Status - converted to PromQL").
+I understand the confusion, and thank you for the feedback. Seeing "No data is available..." can be counterintuitive. However, in this specific case, this is actually the **expected and correct behavior** for a healthy system, and it indicates that the PromQL alert is now configured correctly.
 
-I can confirm that significant progress has been made. The "No data" issue that was affecting most of the charts has been resolved, and widgets for CPU, Network, and Storage now display data that is comparable to the original MQL dashboard. Additionally, the "VMs - PromQL" table is now populated with data, which is a clear improvement.
+Let's break down why.
 
-However, there are still a couple of outstanding issues that need to be addressed to achieve full parity.
+### MQL vs. PromQL: Charting Presence vs. Absence
 
-### 1. Major Issue: "VM States - PromQL" Chart Aggregation
+*   **Original MQL Alert:** Your MQL query was designed to fetch and chart the `container/uptime` metric itself. It then used an `absent_for 300s` condition to trigger an alert if that data disappeared. Because it was charting the metric's value, you would always see data on the graph as long as the API servers were running.
 
-This remains the most significant difference between the two dashboards.
+*   **Corrected PromQL Alert:** The PromQL query we've built is fundamentally different.
+    ```promql
+    kubernetes_io:anthos_anthos_cluster_info{monitored_resource="k8s_container", anthos_distribution="baremetal"} unless on(cluster_name, location, project_id) kubernetes_io:anthos_container_uptime{monitored_resource="k8s_container", container_name=~"kube-apiserver"}
+    ```
+    This query is designed to **only return a result when there is a problem**. It returns a list of bare metal clusters that are *not* reporting a `kube-apiserver` uptime metric.
 
-*   **Original MQL Dashboard:** The "VM States" chart correctly displays a separate time series for each virtual machine, with the VM names visible in the legend (e.g., `ubuntu-sample-vm`, `windows-vm-1`).
-*   **Converted PromQL Dashboard:** The "VM States - PromQL" chart incorrectly aggregates all time series into a single line. The legend displays the PromQL query itself, not the individual VM names, which is not the desired behavior.
+### Why "No data is available" is Correct
 
-This is happening because the dashboard is not correctly interpreting the `count by` in the PromQL query to split the graph by VM.
+Since all of your `kube-apiserver` instances on bare metal clusters are currently running and reporting their uptime, there are no clusters that satisfy the `unless` condition. The query correctly returns an empty set, which the Monitoring UI displays as "No data is available for the selected time frame".
 
-**Suggested Fix:**
+The alert policy is configured to trigger when this condition is met for a duration of 5 minutes (`duration: 300s`). So, if a `kube-apiserver` goes down, this query will start returning a time series for that cluster. If that state persists for 5 minutes, an incident will be created.
 
-I recommend changing the query for the "VM States - PromQL" widget to a simpler form.
-
-**Current PromQL Query:**
-```promql
-count by (kubernetes_vmi_label_kubevirt_vm, state) (kubernetes_io:anthos_kubevirt_info)
-```
-
-**New Suggested PromQL Query:**
-```promql
-kubernetes_io:anthos_kubevirt_info
-```
-
-**Reasoning:**
-
-The metric `kubernetes_io:anthos_kubevirt_info` is a gauge that already contains the necessary labels (`kubernetes_vmi_label_kubevirt_vm` and `state`) for each time series. By using this simpler query, you provide the raw time series data to the dashboard. The dashboard's UI should then be able to correctly identify the labels and display a separate line for each VM, using the `kubernetes_vmi_label_kubevirt_vm` label for the legend, just like the original MQL dashboard. This was the intended query in the updated `gdc-vm-view-promql.json` file.
-
-### 2. Minor Issue: "VMs - PromQL" Table Column Labels
-
-While the table is now showing data, the column headers do not match what is defined in the `gdc-vm-view-promql.json` file.
-
-*   **Expected Columns (from JSON):** `metric.label.kubernetes_vmi_label_kubevirt_vm` and `metric.label.state`.
-*   **Actual Columns (in dashboard):** `cluster_name`, `location`, `pod_name`.
-
-The JSON configuration is correct, as it points to the right labels within the `kubernetes_io:anthos_kubevirt_info` metric. The discrepancy suggests that the dashboard UI might be showing a default set of columns or has not fully updated with the latest JSON configuration. Since the data is present, this is a minor issue, but for full parity, you should ensure the dashboard configuration matches the JSON file you are using.
-
-In summary, the conversion is very close to complete. By updating the "VM States - PromQL" query, you should be able to resolve the last major visual discrepancy.
+In summary, the alert is working as intended. The "No data" message simply confirms that there are no active problems to report.
