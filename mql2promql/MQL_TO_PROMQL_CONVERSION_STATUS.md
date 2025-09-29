@@ -1,12 +1,12 @@
 # MQL to PromQL Conversion Guide
 
-This document lists Monitoring Query Language (MQL) queries found in the [Alerts](../alerts/) and [Dashboards](../dashboards/) repositories and provides status on the translations to Prometheus Query Language (PromQL).
+This document lists Monitoring Query Language (MQL) queries found in the original [Alerts](../alerts/) and [Dashboards](../dashboards/) repositories and provides status on the translations to Prometheus Query Language (PromQL).
 
 ## Summary of Files Containing MQL Queries
 
 | File Path                                                  | Contains MQL? | Notes                                                                 | Conversion Status |
 | :--------------------------------------------------------- | :------------ | :-------------------------------------------------------------------- | :---------------- |
-| `dashboards/gdc-daily-report.json`                         | Yes (Partial) | Mixed MQL (`timeSeriesQueryLanguage`) and PromQL (`prometheusQuery`). | To be verified               |
+| `dashboards/gdc-daily-report.json` [doc](./docs/dashboards/gdc-daily-report-promql-doc.md)                         | Yes (Partial) | Mixed MQL (`timeSeriesQueryLanguage`) and PromQL (`prometheusQuery`). | To be verified               |
 | `dashboards/gdc-external-secrets.json`                     | No            | Uses `prometheusQuery`.                                               | N/A               |
 | `dashboards/gdc-logs.json`                                 | No            | Log panel filters, not metric queries.                                | N/A               |
 | `dashboards/gdc-node-view.json`                            | Yes           | Uses `timeSeriesQueryLanguage`.                                       | WIP               |
