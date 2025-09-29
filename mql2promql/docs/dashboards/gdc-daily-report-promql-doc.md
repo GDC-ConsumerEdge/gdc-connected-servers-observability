@@ -2,7 +2,7 @@
 
 This document explains the proposed translations to Prometheus Query Language (PromQL) of the `dashboards/gdc-daily-report.json` dashboard and the Testing Results
 
-### `dashboards/gdc-daily-report.json`
+## `dashboards/gdc-daily-report.json`
 
 This section details the conversion of widgets from the "GDC - Daily Report" dashboard from Monitoring Query Language (MQL) to Prometheus Query Language (PromQL). The goal was to create a dashboard with feature parity using only PromQL queries, compatible with Google Cloud's Managed Service for Prometheus.
 
