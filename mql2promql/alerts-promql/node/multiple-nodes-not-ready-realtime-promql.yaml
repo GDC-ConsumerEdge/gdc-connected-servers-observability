@@ -17,9 +17,10 @@ conditions:
 - conditionPrometheusQueryLanguage:
     duration: 60s
     query: |-
-      count by (project_id, location, cluster_name) (kube_node_status_condition{condition="Ready", status="true"} == 0)
-      * on(project_id, location, cluster_name) group_left()
-      (max by (project_id, location, cluster_name) (kubernetes_io:anthos_anthos_cluster_info{anthos_distribution="baremetal", monitored_resource="k8s_container"}))
-      > 1
+      count(
+        (count by (project_id, location, cluster_name) (kubernetes_io:anthos_kube_node_status_condition_gauge{condition="Ready", status!="true", monitored_resource="k8s_node"}) > 0)
+        * on(project_id, location, cluster_name) group_left()
+        (max by (project_id, location, cluster_name) (kubernetes_io:anthos_anthos_cluster_info{anthos_distribution="baremetal", monitored_resource="k8s_container"}))
+      ) >= 2
   displayName: Multiple nodes not ready - PromQL
 displayName: Multiple nodes not ready (critical) - converted to PromQL
