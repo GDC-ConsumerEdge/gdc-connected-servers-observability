@@ -1,8 +1,10 @@
 # MQL to PromQL Conversion Guide - GDC VM View 
 
-This document explains the proposed translations to Prometheus Query Language (PromQL) of the `gdc-vm-view.json` dashboard and the Testing Results
+This document explains the proposed translations to Prometheus Query Language (PromQL) of the `gdc-vm-distribution.json` dashboard and the Testing Results
 
 ## `dashboards/gdc-vm-view.json`
+
+### `dashboards/gdc-vm-view.json`
 
 | Group | Input Query Title | Input Query Type | Source Query | LLM Reasoning | LLM Output Query Type | LLM Output PromQL Query | Comments |
 | --- | --- | --- | --- | --- | --- | --- | --- |
