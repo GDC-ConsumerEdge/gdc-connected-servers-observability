@@ -4,8 +4,6 @@ This document explains the proposed translations to Prometheus Query Language (P
 
 ## `dashboards/gdc-vm-view.json`
 
-### `dashboards/gdc-vm-view.json`
-
 | Group | Input Query Title | Input Query Type | Source Query | LLM Reasoning | LLM Output Query Type | LLM Output PromQL Query | Comments |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | N/A | VM States | MQL | `fetch k8s_container :: kubernetes.io/anthos/kubevirt_vmi_phase_count | group_by 1m, [value_kubevirt_vmi_phase_count_mean: mean(value.kubevirt_vmi_phase_count)] | every 1m | group_by [metric.phase], [value_kubevirt_vmi_phase_count_mean_aggregate: aggregate(value_kubevirt_vmi_phase_count_mean)]` | The MQL query aggregates the `kubevirt_vmi_phase_count` metric by phase. The PromQL equivalent uses `count by (state) (kubevirt_info)` which provides a similar breakdown of VM states. | PromQL | `count by (state) (kubevirt_info)` | |
