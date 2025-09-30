@@ -1,16 +1,13 @@
-# MQL to PromQL Conversion Guide - Multiple Nodes Not Ready (Realtime)
+### MQL to PromQL Conversion Validation: Multiple Nodes Not Ready (Realtime)
 
-This document explains the proposed translations to Prometheus Query Language (PromQL) of the `alerts/node/multiple-nodes-not-ready-realtime.yaml` alert.
+This report summarizes the conversion of the `Multiple nodes not ready (critical)` alert policy from MQL to PromQL.
 
-## `alerts/node/multiple-nodes-not-ready-realtime.yaml`
+**1. Original Alert Definition:**
 
-| Group | Input Query Title | Input Query Type | Source Query | LLM Reasoning | LLM Output Query Type | LLM Output PromQL Query | Comments |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| N/A | Multiple nodes not ready (critical) | MQL | `fetch prometheus_target \| metric 'kubernetes.io/anthos/kube_node_status_condition/gauge' \| filter (metric.condition == 'Ready' && metric.status != 'true') \| ...` | The MQL query joins not-ready nodes with baremetal clusters and triggers if the count of clusters is >= 2. The PromQL query replicates this by counting not-ready nodes per cluster, using `label_replace` to align cluster labels for the join, filtering for baremetal clusters using a `*` join, and then counting the resulting clusters to check if the count is `>= 2`. | PromQL | `count((label_replace(count by (project_id, location, cluster) ({"__name__"="kubernetes.io/anthos/kube_node_status_condition/gauge","condition"="Ready","status"!="true"}) > 0, "cluster_name", "$1", "cluster", "(.*)")) * on(cluster_name) group_left() (max by (project_id, location, cluster_name) ({"__name__"="kubernetes.io/anthos/anthos_cluster_info", "monitored_resource"="k8s_container", "anthos_distribution"="baremetal"}))) >= 2` | The chart visualization differs. MQL shows the underlying metric per cluster, while PromQL shows the count of clusters meeting the condition. This is acceptable as it accurately reflects the alert condition. |
+`alerts/node/multiple-nodes-not-ready-realtime.yaml`
 
----
+**2. Original MQL Query:**
 
-**MQL Query:**
 ```mql
 { t_0:
   fetch prometheus_target
@@ -33,13 +30,22 @@ This document explains the proposed translations to Prometheus Query Language (P
 | window 1m
 | condition t_0.value_kube_node_status_condition_mean > 0 '1'
 ```
+*(Source: `multiple-nodes-not-ready-realtime.yaml`)*
+The alert policy trigger is `count: 2` and duration is `60s`.
 
-**PromQL Query:**
+**3. Goal of the Alert ("the Why"):**
+
+The alert is designed to trigger if **two or more** baremetal clusters have at least one node that is not in a 'Ready' state for more than 60 seconds. It identifies widespread node health issues across the baremetal fleet.
+
+**4. Converted PromQL Query:**
+
 ```promql
 count((label_replace(count by (project_id, location, cluster) ({"__name__"="kubernetes.io/anthos/kube_node_status_condition/gauge","condition"="Ready","status"!="true"}) > 0, "cluster_name", "$1", "cluster", "(.*)")) * on(cluster_name) group_left() (max by (project_id, location, cluster_name) ({"__name__"="kubernetes.io/anthos/anthos_cluster_info", "monitored_resource"="k8s_container", "anthos_distribution"="baremetal"}))) >= 2
 ```
+*(Source: `multiple-nodes-not-ready-realtime-promql.yaml`)*
 
-**Reasoning:**
+**5. Reasoning for Conversion ("the How"):**
+
 The MQL query joins two sets of data: nodes that are not ready and clusters that are baremetal. The PromQL query replicates this logic:
 
 1.  **Identify Not Ready Nodes:** `{"__name__"="kubernetes.io/anthos/kube_node_status_condition/gauge","condition"="Ready","status"!="true"}` selects the node status metric for nodes not in a ready state.
@@ -49,8 +55,7 @@ The MQL query joins two sets of data: nodes that are not ready and clusters that
 5.  **Join:** The `* on(cluster_name) group_left()` performs the join, keeping only clusters that are both baremetal and have not-ready nodes.
 6.  **Trigger Condition:** `count(...) >= 2` counts the number of resulting cluster series and evaluates to true if the count is two or more, matching the MQL trigger condition.
 
----
-## Validation
+**6. Validation:**
 
 *   **a) Observations:** The original MQL alert chart displays the mean of the gauge for each cluster, likely resulting in values between 0 and 1. The PromQL alert chart in the GCM UI shows the result of the `count()` function, which is the number of clusters meeting the criteria. The chart ranges from 2 to 6, indicating the number of clusters with not-ready nodes at different times.
 
