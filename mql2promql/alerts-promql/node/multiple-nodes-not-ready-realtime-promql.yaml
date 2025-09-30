@@ -4,7 +4,7 @@
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+# http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,6 +16,6 @@ combiner: OR
 conditions:
 - conditionPrometheusQueryLanguage:
     duration: 60s
-    query: 'count((label_replace(count by (project_id, location, cluster) ({"__name__"="kubernetes.io/anthos/kube_node_status_condition/gauge","condition"="Ready","status"!="true"}) > 0, "cluster_name", "$1", "cluster", "(.*)")) * on(cluster_name) group_left() (max by (project_id, location, cluster_name) ({"__name__"="kubernetes.io/anthos/anthos_cluster_info", "monitored_resource"="k8s_container", "anthos_distribution"="baremetal"}))) >= 2'
-  displayName: Multiple nodes not ready - PromQL
-displayName: Multiple nodes not ready (critical) - converted to PromQL
+    query: '(label_replace(count by (project_id, location, cluster) ({"__name__"="kubernetes.io/anthos/kube_node_status_condition/gauge","condition"="Ready","status"!="true"}), "cluster_name", "$1", "cluster", "(.*)")) * on(cluster_name) group_left() (max by (project_id, location, cluster_name) ({"__name__"="kubernetes.io/anthos/anthos_cluster_info", "monitored_resource"="k8s_container", "anthos_distribution"="baremetal"})) >= 2'
+  displayName: Multiple nodes not ready In Cluster - PromQL
+displayName: Multiple nodes not ready In Cluster (critical) - converted to PromQL
