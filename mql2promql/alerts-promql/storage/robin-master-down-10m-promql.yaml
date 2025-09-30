@@ -5,5 +5,5 @@ conditions:
       for: 600s
       expr: |-
         absent(robin_node_state{node_role="MANAGER_MASTER"})
-    displayName: Robin master not online more than 10 minutes
-displayName: Robin master not online for more than 10 minutes (critical)
+    displayName: Robin master not online more than 10 minutes - PromQL
+displayName: Robin master not online for more than 10 minutes (critical) - converted to PromQL
