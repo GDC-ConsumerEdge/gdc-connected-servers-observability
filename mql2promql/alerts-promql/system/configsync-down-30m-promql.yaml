@@ -1,0 +1,9 @@
+combiner: OR
+enabled: false
+conditions:
+- conditionPrometheusQueryLanguage:
+    duration: 1800s
+    query: |-
+      absent(external_googleapis_com:prometheus_config_sync_resource_count{monitored_resource="k8s_container"})
+  displayName: ConfigSync is up - PromQL
+displayName: ConfigSync down for 30 minutes (critical) - converted to PromQL
