@@ -1,0 +1,9 @@
+combiner: OR
+conditions:
+- conditionPrometheusQueryLanguage:
+    alertRule:
+      for: 1800s
+      expr: |-
+        avg_over_time(robin_node_state[30m]) < 1
+    displayName: Prometheus Target - prometheus/robin_node_state/gauge
+displayName: robin-node-not-online-30m
