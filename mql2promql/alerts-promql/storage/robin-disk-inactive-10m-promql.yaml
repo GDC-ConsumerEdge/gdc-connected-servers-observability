@@ -1,0 +1,9 @@
+combiner: OR
+conditions:
+- conditionPrometheusQueryLanguage:
+    alertRule:
+      for: 600s
+      expr: |-
+        robin_disk_status < 1
+    displayName: Robin disk no status more than 10 minutes
+displayName: Robin disk no status for more than 10 minutes (critical)
