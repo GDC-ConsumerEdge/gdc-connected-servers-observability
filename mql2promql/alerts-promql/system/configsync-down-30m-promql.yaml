@@ -2,8 +2,8 @@ combiner: OR
 enabled: false
 conditions:
 - conditionPrometheusQueryLanguage:
-    duration: 1800s
+    duration: 60s
     query: |-
-      absent(external_googleapis_com:prometheus_config_sync_resource_count{monitored_resource="k8s_container"})
+      sum by (cluster_name) (count_over_time(external_googleapis_com:prometheus_config_sync_resource_count{monitored_resource="k8s_container"}[30m])) == 0
   displayName: ConfigSync is up - PromQL
 displayName: ConfigSync down for 30 minutes (critical) - converted to PromQL
