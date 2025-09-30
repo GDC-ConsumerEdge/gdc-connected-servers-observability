@@ -16,6 +16,6 @@ combiner: OR
 conditions:
 - conditionPrometheusQueryLanguage:
     duration: 3600s
-    query: '(sum by (pod, namespace, cluster, location, project_id) (kubernetes_io:anthos_kube_pod_status_phase_gauge{phase=~"Pending|Unknown|Failed", pod!~"^(bm-system||robin-prejob).*", monitored_resource="prometheus_target"}) > 0) and on(cluster, location, project_id) (max by (cluster, location, project_id) (label_replace(kubernetes_io:anthos_anthos_cluster_info{anthos_distribution="baremetal", monitored_resource="k8s_container"}, "cluster", "$1", "cluster_name", "(.*)"))) > 0'
+    query: '(sum by (pod, namespace, cluster, location, project_id) (kubernetes_io:anthos_kube_pod_status_phase_gauge{phase=~"Pending|Unknown|Failed", pod!~"^(bm-system||robin-prejob).*", }) > 0) and on(cluster, location, project_id) (max by (cluster, location, project_id) (label_replace(kubernetes_io:anthos_anthos_cluster_info{anthos_distribution="baremetal", monitored_resource="k8s_container"}, "cluster", "$1", "cluster_name", "(.*)"))) > 0'
   displayName: Pod not ready for more than one hour - PromQL
 displayName: Pod not ready for more than one hour (critical) - converted to PromQL
