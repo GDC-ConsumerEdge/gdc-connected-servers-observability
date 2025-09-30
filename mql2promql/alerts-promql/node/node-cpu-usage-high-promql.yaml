@@ -16,15 +16,6 @@ combiner: OR
 conditions:
 - conditionPrometheusQueryLanguage:
     duration: 600s
-    query: |-
-      (
-        (sum by (node, cluster, location, project_id) (kubernetes_io:anthos_kube_node_status_allocatable_gauge{resource="cpu"}))
-        /
-        (sum by (node, cluster, location, project_id) (kubernetes_io:anthos_kube_node_status_capacity_gauge{resource="cpu"}))
-      )
-      * on(cluster, location, project_id) group_left()
-      (
-        max by (cluster, location, project_id) (label_replace(kubernetes_io:anthos_anthos_cluster_info{anthos_distribution="baremetal", monitored_resource="k8s_container"}, "cluster", "$1", "cluster_name", "(.*)"))
-      ) < 0.2
+    query: '(sum by(node, cluster, location, project_id) (kubernetes_io:anthos_kube_node_status_allocatable_gauge{resource="cpu"}) / sum by(node, cluster, location, project_id) (kubernetes_io:anthos_kube_node_status_capacity_gauge{resource="cpu"})) and on(cluster, location, project_id) (max by(cluster, location, project_id) (label_replace(kubernetes_io:anthos_anthos_cluster_info{anthos_distribution="baremetal", monitored_resource="k8s_container"}, "cluster", "$1", "cluster_name", "(.*)"))) < 0.2'
   displayName: Node allocatable cpu cores percent - PromQL
 displayName: Node cpu usage exceeds 80 percent (critical) - converted to PromQL
