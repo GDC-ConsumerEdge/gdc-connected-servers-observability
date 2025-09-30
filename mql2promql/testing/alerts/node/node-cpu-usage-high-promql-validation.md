@@ -1,15 +1,3 @@
-# MQL to PromQL Conversion Guide - Node CPU Usage High
-
-This document explains the proposed translations to Prometheus Query Language (PromQL) of the `alerts/node/node-cpu-usage-high.yaml` alert.
-
-## `alerts/node/node-cpu-usage-high.yaml`
-
-| Group | Input Query Title | Input Query Type | Source Query | LLM Reasoning | LLM Output Query Type | LLM Output PromQL Query | Comments |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| N/A | Node allocatable cpu cores percent | MQL | `fetch prometheus_target \| metric 'kubernetes.io/anthos/kube_node_status_allocatable/gauge' \| ...` | The MQL query calculates the ratio of allocatable CPU to capacity and filters for baremetal clusters. The PromQL query replicates this using division, an `and on()` join to filter, and `label_replace` to align cluster labels for the join. | PromQL | `(sum by(node, cluster, location, project_id) (kubernetes_io:anthos_kube_node_status_allocatable_gauge{resource="cpu"}) / sum by(node, cluster, location, project_id) (kubernetes_io:anthos_kube_node_status_capacity_gauge{resource="cpu"})) and on(cluster, location, project_id) (max by(cluster, location, project_id) (label_replace(kubernetes_io:anthos_anthos_cluster_info{anthos_distribution="baremetal", monitored_resource="k8s_container"}, "cluster", "$1", "cluster_name", "(.*)"))) < 0.2` | The GCM UI shows a threshold line for the MQL alert but not for the PromQL alert. This is a cosmetic difference and does not affect functionality. |
-
----
-
 ### MQL to PromQL Conversion Validation: Node CPU Usage High
 
 This report summarizes the conversion of the `Node cpu usage exceeds 80 percent (critical)` alert policy from MQL to PromQL.
