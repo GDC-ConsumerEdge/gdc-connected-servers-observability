@@ -10,10 +10,6 @@ This document explains the proposed translations to Prometheus Query Language (P
 
 ---
 
-### MQL to PromQL Conversion Validation: Node CPU Usage High
-
-This report summarizes the conversion of the `Node cpu usage exceeds 80 percent (critical)` alert policy from MQL to PromQL.
-
 #### 1. Original Alert Definition
 
 -   **Name:** `Node cpu usage exceeds 80 percent (critical)`
