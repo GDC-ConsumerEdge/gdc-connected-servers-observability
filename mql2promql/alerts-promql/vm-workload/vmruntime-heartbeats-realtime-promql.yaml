@@ -17,7 +17,5 @@ conditions:
 - conditionPrometheusQueryLanguage:
     duration: "0s"
     query: "count_over_time(kubernetes_io:anthos_anthos_baremetal_cluster_heartbeat_for_kubevirt_metrics{monitored_resource=\"k8s_container\"}[5m]) == 0"
-#    trigger:
-#      count: 1
   displayName: VMRuntime Heartbeat Absent for 5m - PromQL
 displayName: VMRuntime Missing Heartbeat (critical) - converted to PromQL
