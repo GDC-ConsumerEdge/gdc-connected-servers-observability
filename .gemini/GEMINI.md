@@ -80,3 +80,7 @@ This plan outlines a systematic approach for converting a single MQL-based alert
 
 - When converting MQL to PromQL for alert YAML files, ensure the 'displayName' field for a condition is a sibling to 'conditionPrometheusQueryLanguage', not nested under it. Pay close attention to YAML indentation.
 - When creating conversion documentation, avoid duplicating titles within the same document. Ensure that the main title and any section titles are unique and clearly differentiate content.
+- When converting an MQL alert YAML file to PromQL, the following modifications are mandatory:
+1.  **Root `displayName`**: The main `displayName` at the root of the YAML file must be appended with the suffix ` - converted to PromQL`.
+2.  **Condition `displayName`**: The `displayName` nested under the `conditions` block must be appended with the suffix ` - PromQL`.
+3.  **License Header**: Ensure that the standard Google LLC copyright and license disclaimer is present at the beginning of the file.
