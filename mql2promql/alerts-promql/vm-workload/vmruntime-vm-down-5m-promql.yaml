@@ -16,6 +16,6 @@ combiner: OR
 conditions:
 - conditionPrometheusQueryLanguage:
     duration: "0s"
-    query: "avg_over_time(kubernetes_io:anthos_kubevirt_info{monitored_resource=\"k8s_container\", state!=\"ACTIVE\"}[5m]) > 0"
+    query: "min_over_time(kubernetes_io:anthos_kubevirt_info{monitored_resource=\"k8s_container\", state!=\"ACTIVE\"}[5m]) > 0"
   displayName: VM is active - PromQL
 displayName: VM inactive for greater than 5m (critical) - converted to PromQL
