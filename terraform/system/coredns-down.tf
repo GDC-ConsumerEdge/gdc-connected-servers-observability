@@ -24,7 +24,7 @@ resource "google_monitoring_alert_policy" "coredns-down-alert" {
   conditions {
     display_name = "CoreDNS is up"
     condition_prometheus_query_language {
-      query    = "(max by (cluster, location, project_id) (label_replace(kubernetes_io:anthos_anthos_cluster_info{anthos_distribution=\"baremetal\", monitored_resource=\"k8_container\"}, \"cluster\", \"$1\", \"cluster_name\", \"(.*)\"))) unless (avg by (cluster, location, project_id) (kubernetes_io:anthos_container_uptime{container_name=~\"coredns\", monitored_resource=\"k8s_container\"}))"
+      query    = "(max by (cluster, location, project_id) (label_replace(kubernetes_io:anthos_anthos_cluster_info{anthos_distribution=\"baremetal\", monitored_resource=\"k8s_container\"}, \"cluster\", \"$1\", \"cluster_name\", \"(.*)\"))) unless (avg by (cluster, location, project_id) (kubernetes_io:anthos_container_uptime{container_name=~\"coredns\", monitored_resource=\"k8s_container\"}))"
       duration = "300s"
       trigger {
         count = 1
