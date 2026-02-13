@@ -16,6 +16,6 @@ combiner: OR
 conditions:
 - conditionPrometheusQueryLanguage:
     duration: 300s
-    query: '(max by (cluster, location, project_id) (label_replace(kubernetes_io:anthos_anthos_cluster_info{anthos_distribution="baremetal", monitored_resource="k_container"}, "cluster", "$1", "cluster_name", "(.*)"))) unless (avg by (cluster, location, project_id) (kubernetes_io:anthos_container_uptime{container_name=~"coredns", monitored_resource="k8s_container"}))'
+    query: '(max by (cluster, location, project_id) (label_replace(kubernetes_io:anthos_anthos_cluster_info{anthos_distribution="baremetal", monitored_resource="k8_container"}, "cluster", "$1", "cluster_name", "(.*)"))) unless (avg by (cluster, location, project_id) (kubernetes_io:anthos_container_uptime{container_name=~"coredns", monitored_resource="k8s_container"}))'
   displayName: CoreDNS is up
 displayName: CoreDNS down (critical)
