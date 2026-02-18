@@ -22,5 +22,5 @@ conditions:
       sum by(project_id, location, cluster_name) (increase(kubernetes_io:anthos_apiserver_aggregated_request_total{container_name=~"kube-apiserver"}[5m]))
       * on(project_id, location, cluster_name) group_left() (kubernetes_io:anthos_anthos_cluster_info{anthos_distribution="baremetal", monitored_resource="k8s_container"}))
       > 0.05
-  displayName: 'API server error count ratio: 500s error-response counts / all response counts -'
+  displayName: 'API server error count ratio: 500s error-response counts / all response counts'
 displayName: API server error count ratio exceeds 5 percent 
