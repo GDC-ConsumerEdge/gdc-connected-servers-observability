@@ -14,20 +14,8 @@
 
 combiner: OR
 conditions:
-- conditionMonitoringQueryLanguage:
-    duration: 0s
-    query: |-
-      fetch k8s_container
-      | metric 'kubernetes.io/anthos/kubevirt_vmi_vcpu_seconds'
-      | filter metric.kubernetes_vmi_label_kubevirt_vm =~ ".*"
-      | align rate(1m)
-      | every 1m
-      | group_by [metric.kubernetes_vmi_label_kubevirt_vm, resource.cluster_name],
-        [value_kubevirt_vmi_vcpu_seconds_aggregate:
-          aggregate(value.kubevirt_vmi_vcpu_seconds)]
-      | condition val() > 0 '1'
-      | absent_for 300s
-    trigger:
-      count: 1
-  displayName: VM is offline
-displayName: VM offline for greater than 5m (critical)
+- conditionPrometheusQueryLanguage:
+    duration: "0s"
+    query: "(sum by(kubernetes_vmi_label_kubevirt_vm, cluster_name) (count_over_time(kubernetes_io:anthos_kubevirt_vmi_vcpu_seconds{monitored_resource=\"k8s_container\"}[15m])) > 0) unless on(kubernetes_vmi_label_kubevirt_vm, cluster_name) (sum by(kubernetes_vmi_label_kubevirt_vm, cluster_name) (count_over_time(kubernetes_io:anthos_kubevirt_vmi_vcpu_seconds{monitored_resource=\"k8s_container\"}[5m])) > 0)"
+  displayName: VM is offline 
+displayName: VM offline for greater than 5m (critical) 

@@ -14,20 +14,7 @@
 
 combiner: OR
 conditions:
-- conditionMonitoringQueryLanguage:
-    duration: 0s
-    query: |-
-      fetch k8s_container
-      | metric 'kubernetes.io/anthos/anthos_baremetal_cluster_heartbeat_for_kubevirt_metrics'
-      | group_by 1m,
-      [value_anthos_baremetal_cluster_heartbeat_for_kubevirt_metrics_mean:
-        mean(value.anthos_baremetal_cluster_heartbeat_for_kubevirt_metrics)]
-      | every 1m
-      | group_by [resource.cluster_name],
-      [value_anthos_baremetal_cluster_heartbeat_for_kubevirt_metrics_mean_mean:
-        mean(value_anthos_baremetal_cluster_heartbeat_for_kubevirt_metrics_mean)] 
-      | absent_for 5m
-    trigger:
-      count: 1
-  displayName: VMRuntime Heartbeat is up
-displayName: VMRuntime Missing Heartbeat (critical)
+- conditionPrometheusQueryLanguage:
+    query: "sum by(cluster_name) (count_over_time(kubernetes_io:anthos_anthos_baremetal_cluster_heartbeat_for_kubevirt_metrics{monitored_resource=\"k8s_container\"}[5m])) == 0"
+  displayName: VMRuntime Heartbeat is up 
+displayName: VMRuntime Missing Heartbeat (critical) 
