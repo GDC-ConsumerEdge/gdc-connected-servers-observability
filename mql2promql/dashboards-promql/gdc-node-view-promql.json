@@ -1,0 +1,448 @@
+{
+  "displayName": "GDC - Node View - converted to PromQL",
+  "dashboardFilters": [
+    {
+      "filterType": "RESOURCE_LABEL",
+      "labelKey": "project_id",
+      "stringValue": "",
+      "templateVariable": "project_id"
+    },
+    {
+      "filterType": "RESOURCE_LABEL",
+      "labelKey": "cluster_name",
+      "stringValue": "",
+      "templateVariable": "cluster_name"
+    }
+  ],
+  "labels": {
+    "mql2promql": "work_ip_progress"
+  },
+  "mosaicLayout": {
+    "columns": 48,
+    "tiles": [
+      {
+        "height": 8,
+        "widget": {
+          "scorecard": {
+            "blankView": {},
+            "thresholds": [],
+            "timeSeriesQuery": {
+              "prometheusQuery": "count(kubernetes_io:anthos_node_cpu_total_cores{monitored_resource=\"k8s_node\",${project_id},${cluster_name}})",
+              "unitOverride": ""
+            }
+          },
+          "title": "Total Nodes - PromQL"
+        },
+        "width": 8
+      },
+      {
+        "height": 8,
+        "widget": {
+          "scorecard": {
+            "blankView": {},
+            "thresholds": [],
+            "timeSeriesQuery": {
+              "prometheusQuery": "sum(kubernetes_io:anthos_node_cpu_total_cores{monitored_resource=\"k8s_node\",${project_id},${cluster_name}})",
+              "unitOverride": ""
+            }
+          },
+          "title": "Total Cores - PromQL"
+        },
+        "width": 8,
+        "xPos": 8
+      },
+      {
+        "height": 8,
+        "widget": {
+          "scorecard": {
+            "blankView": {},
+            "thresholds": [],
+            "timeSeriesQuery": {
+              "prometheusQuery": "sum(kubernetes_io:anthos_node_cpu_allocatable_cores{monitored_resource=\"k8s_node\",${project_id},${cluster_name}})",
+              "unitOverride": ""
+            }
+          },
+          "title": "Allocatable Cores - PromQL"
+        },
+        "width": 8,
+        "xPos": 16
+      },
+      {
+        "height": 8,
+        "widget": {
+          "scorecard": {
+            "blankView": {},
+            "thresholds": [],
+            "timeSeriesQuery": {
+              "prometheusQuery": "sum(kubernetes_io:anthos_node_memory_total_bytes{monitored_resource=\"k8s_node\",${project_id},${cluster_name}})",
+              "unitOverride": ""
+            }
+          },
+          "title": "Total Memory - PromQL"
+        },
+        "width": 8,
+        "xPos": 24
+      },
+      {
+        "height": 8,
+        "widget": {
+          "scorecard": {
+            "blankView": {},
+            "thresholds": [],
+            "timeSeriesQuery": {
+              "prometheusQuery": "sum(kubernetes_io:anthos_node_memory_allocatable_bytes{monitored_resource=\"k8s_node\",${project_id},${cluster_name}})",
+              "unitOverride": ""
+            }
+          },
+          "title": "Allocatable Memory - PromQL"
+        },
+        "width": 8,
+        "xPos": 32
+      },
+      {
+        "height": 32,
+        "widget": {
+          "collapsibleGroup": {
+            "collapsed": false
+          },
+          "title": "CPU and Memory"
+        },
+        "width": 48,
+        "yPos": 8
+      },
+      {
+        "height": 16,
+        "widget": {
+          "title": "CPU Usage per Node - PromQL",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "measures": [],
+                "plotType": "STACKED_AREA",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "avg by (node_name) (kubernetes_io:anthos_node_cpu_allocatable_utilization{monitored_resource=\"k8s_node\",${project_id},${cluster_name}}) * on(node_name) avg by (node_name) (kubernetes_io:anthos_node_cpu_allocatable_cores{monitored_resource=\"k8s_node\",${project_id},${cluster_name}})",
+                  "unitOverride": ""
+                }
+              }
+            ],
+            "thresholds": [],
+            "yAxis": {
+              "label": "",
+              "scale": "LINEAR"
+            }
+          }
+        },
+        "width": 24,
+        "yPos": 8
+      },
+      {
+        "height": 16,
+        "widget": {
+          "title": "Memory Usage per Node - PromQL",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "measures": [],
+                "plotType": "STACKED_AREA",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "avg by (node_name) (kubernetes_io:anthos_node_memory_used_bytes{monitored_resource=\"k8s_node\",${project_id},${cluster_name}})",
+                  "unitOverride": ""
+                }
+              }
+            ],
+            "thresholds": [],
+            "yAxis": {
+              "label": "",
+              "scale": "LINEAR"
+            }
+          }
+        },
+        "width": 24,
+        "xPos": 24,
+        "yPos": 8
+      },
+      {
+        "height": 16,
+        "widget": {
+          "title": "CPU Util % per Node - PromQL",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "measures": [],
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "avg by (node_name) (kubernetes_io:anthos_node_cpu_allocatable_utilization{monitored_resource=\"k8s_node\",${project_id},${cluster_name}}) * 100",
+                  "unitOverride": ""
+                }
+              }
+            ],
+            "thresholds": [],
+            "yAxis": {
+              "label": "",
+              "scale": "LINEAR"
+            }
+          }
+        },
+        "width": 24,
+        "yPos": 24
+      },
+      {
+        "height": 16,
+        "widget": {
+          "title": "Memory Util % per Node - PromQL",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "measures": [],
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "avg by (node_name) (kubernetes_io:anthos_node_memory_allocatable_utilization{monitored_resource=\"k8s_node\",${project_id},${cluster_name}}) * 100",
+                  "unitOverride": ""
+                }
+              }
+            ],
+            "thresholds": [],
+            "yAxis": {
+              "label": "",
+              "scale": "LINEAR"
+            }
+          }
+        },
+        "width": 24,
+        "xPos": 24,
+        "yPos": 24
+      },
+      {
+        "height": 16,
+        "widget": {
+          "collapsibleGroup": {
+            "collapsed": false
+          },
+          "title": "Pod and Container Count"
+        },
+        "width": 48,
+        "yPos": 56
+      },
+{
+    "height": 16,
+    "widget": {
+      "title": "Number of Containers per Node - PromQL",
+      "xyChart": {
+        "chartOptions": {
+          "mode": "COLOR"
+        },
+        "dataSets": [
+          {
+            "plotType": "STACKED_AREA",
+            "targetAxis": "Y1",
+            "timeSeriesQuery": {
+              "prometheusQuery": "count by (node_name) (present_over_time(kubernetes_io:anthos_container_cpu_core_usage_time{monitored_resource=\"k8s_container\",${project_id},${cluster_name}}[1m]))"
+            }
+          }
+        ],
+        "yAxis": {
+          "scale": "LINEAR"
+        }
+      }
+    },
+    "width": 24,
+    "xPos": 24,
+    "yPos": 56
+},
+{
+    "height": 16,
+    "widget": {
+      "title": "Number of Pods per Node - PromQL",
+      "xyChart": {
+        "chartOptions": {
+          "mode": "COLOR"
+        },
+        "dataSets": [
+          {
+            "plotType": "STACKED_AREA",
+            "targetAxis": "Y1",
+            "timeSeriesQuery": {
+              "prometheusQuery": "count by (node_name) (kubernetes_io:anthos_pod_network_received_bytes_count{monitored_resource=\"k8s_pod\",${project_id},${cluster_name}})"
+            }
+          }
+        ],
+        "yAxis": {
+          "scale": "LINEAR"
+        }
+      }
+    },
+    "width": 24,
+    "yPos": 56
+},
+      {
+        "height": 16,
+        "widget": {
+          "collapsibleGroup": {
+            "collapsed": false
+          },
+          "title": "Network Usage per Node"
+        },
+        "width": 48,
+        "yPos": 40
+      },
+      {
+        "height": 16,
+        "widget": {
+          "title": "Received bytes per node - PromQL",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "measures": [],
+                "plotType": "STACKED_AREA",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum by (node_name) (rate(kubernetes_io:anthos_node_network_received_bytes_count{monitored_resource=\"k8s_node\",${project_id},${cluster_name},interface=~\"enp81s0f.*\"}[1m]))",
+                  "unitOverride": ""
+                }
+              }
+            ],
+            "thresholds": [],
+            "yAxis": {
+              "label": "",
+              "scale": "LINEAR"
+            }
+          }
+        },
+        "width": 24,
+        "yPos": 40
+      },
+      {
+        "height": 16,
+        "widget": {
+          "title": "Send bytes per node - PromQL",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "measures": [],
+                "plotType": "STACKED_AREA",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum by (node_name) (rate(kubernetes_io:anthos_node_network_sent_bytes_count{monitored_resource=\"k8s_node\",${project_id},${cluster_name},interface=~\"enp81s0f.*\"}[1m]))",
+                  "unitOverride": ""
+                }
+              }
+            ],
+            "thresholds": [],
+            "yAxis": {
+              "label": "",
+              "scale": "LINEAR"
+            }
+          }
+        },
+        "width": 24,
+        "xPos": 24,
+        "yPos": 40
+      },
+      {
+        "height": 16,
+        "widget": {
+          "collapsibleGroup": {
+            "collapsed": false
+          },
+          "title": "Storage Usage per Node"
+        },
+        "width": 48,
+        "yPos": 72
+      },
+      {
+        "height": 16,
+        "widget": {
+          "title": "Free Robin Disk Space % per Node - PromQL",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "LINE",
+                "targetAxis": "Y2",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "1 - (sum by (node_name) (external_googleapis_com:prometheus_robin_disk_nslices{monitored_resource=\"k8s_container\",${project_id},${cluster_name}}) * 1073741824 / sum by (node_name) (external_googleapis_com:prometheus_robin_disk_size{monitored_resource=\"k8s_container\",${project_id},${cluster_name}}))",
+                  "unitOverride": ""
+                }
+              }
+            ],
+            "thresholds": [
+              {
+                "label": "",
+                "targetAxis": "Y2",
+                "value": 0.2
+              }
+            ],
+            "y2Axis": {
+              "label": "% Disk Free",
+              "scale": "LINEAR"
+            }
+          }
+        },
+        "width": 24,
+        "yPos": 72
+      },
+      {
+        "height": 16,
+        "widget": {
+          "title": "Free Robin Disk Space % per Node - PromQL",
+          "timeSeriesTable": {
+            "dataSets": [
+              {
+                "timeSeriesQuery": {
+                  "outputFullDuration": true,
+                  "prometheusQuery": "sum by (node_name) (external_googleapis_com:prometheus_robin_disk_size{monitored_resource=\"k8s_container\",${project_id},${cluster_name}}) - sum by (node_name) (external_googleapis_com:prometheus_robin_disk_nslices{monitored_resource=\"k8s_container\",${project_id},${cluster_name}}) * 1073741824"
+                }
+              }
+            ],
+            "displayColumnType": false,
+            "metricVisualization": "NUMBER",
+            "opsAnalyticsSettings": {
+              "maxRows": "0",
+              "pageSize": "0",
+              "showFilterBar": false
+            }
+          }
+        },
+        "width": 24,
+        "xPos": 24,
+        "yPos": 72
+      }
+    ]
+  }
+}

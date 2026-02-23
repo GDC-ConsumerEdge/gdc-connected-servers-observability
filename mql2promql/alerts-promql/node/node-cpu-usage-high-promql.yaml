@@ -1,0 +1,21 @@
+# Copyright 2025 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+combiner: OR
+conditions:
+- conditionPrometheusQueryLanguage:
+    duration: 600s
+    query: '(sum by(node, cluster, location, project_id) (kubernetes_io:anthos_kube_node_status_allocatable_gauge{resource="cpu"}) / sum by(node, cluster, location, project_id) (kubernetes_io:anthos_kube_node_status_capacity_gauge{resource="cpu"})) and on(cluster, location, project_id) (max by(cluster, location, project_id) (label_replace(kubernetes_io:anthos_anthos_cluster_info{anthos_distribution="baremetal", monitored_resource="k8s_container"}, "cluster", "$1", "cluster_name", "(.*)"))) < 0.2'
+  displayName: Node allocatable cpu cores percent - PromQL
+displayName: Node cpu usage exceeds 80 percent (critical) - converted to PromQL

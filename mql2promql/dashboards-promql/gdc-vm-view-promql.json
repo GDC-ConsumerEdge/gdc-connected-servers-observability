@@ -1,0 +1,473 @@
+{
+  "dashboardFilters": [],
+  "displayName": "GDC - VM status - converted to PromQL",
+  "labels": {
+    "mql2promql": "wip"
+  },
+  "mosaicLayout": {
+    "columns": 48,
+    "tiles": [
+      {
+        "height": 16,
+        "widget": {
+          "title": "VM States - PromQL",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "measures": [],
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "group by (created_by_name) (kubernetes_io:anthos_kube_pod_info_gauge{pod=~\"(virt-launcher).*\"} AND on(pod) kubernetes_io:anthos_kube_pod_status_phase_gauge{phase=\"Running\", pod=~\"(virt-launcher).*\"})"
+                }
+              }
+            ],
+            "thresholds": [],
+            "timeshiftDuration": "0s",
+            "yAxis": {
+              "label": "",
+              "scale": "LINEAR"
+            }
+          }
+        },
+        "width": 12,
+        "xPos": 12
+      },
+      {
+        "height": 16,
+        "widget": {
+          "title": "CPU usage per VM - PromQL",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "measures": [],
+                "minAlignmentPeriod": "120s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "max by (cluster_name, location, node_name, kubernetes_vmi_label_kubevirt_vm) (rate(kubernetes_io:anthos_kubevirt_vmi_vcpu_seconds{monitored_resource=\"k8s_container\"}[2m]))"
+                }
+              }
+            ],
+            "thresholds": [],
+            "timeshiftDuration": "0s",
+            "yAxis": {
+              "label": "",
+              "scale": "LINEAR"
+            }
+          }
+        },
+        "width": 24,
+        "xPos": 24
+      },
+      {
+        "height": 16,
+        "widget": {
+          "title": "Network TX Bytes/s per VM per interface - PromQL",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "measures": [],
+                "minAlignmentPeriod": "120s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum by (cluster_name, location, node_name, kubernetes_vmi_label_kubevirt_vm, interface) (rate(kubernetes_io:anthos_kubevirt_vmi_network_transmit_bytes_total{monitored_resource=\"k8s_container\"}[2m]))"
+                }
+              }
+            ],
+            "thresholds": [],
+            "timeshiftDuration": "0s",
+            "yAxis": {
+              "label": "",
+              "scale": "LINEAR"
+            }
+          }
+        },
+        "width": 24,
+        "yPos": 16
+      },
+      {
+        "height": 16,
+        "widget": {
+          "title": "Network RX Bytes/s per VM per interface - PromQL",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "measures": [],
+                "minAlignmentPeriod": "120s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum by (cluster_name, location, node_name, kubernetes_vmi_label_kubevirt_vm, interface) (rate(kubernetes_io:anthos_kubevirt_vmi_network_receive_bytes_total{monitored_resource=\"k8s_container\"}[2m]))"
+                }
+              }
+            ],
+            "thresholds": [],
+            "timeshiftDuration": "0s",
+            "yAxis": {
+              "label": "",
+              "scale": "LINEAR"
+            }
+          }
+        },
+        "width": 24,
+        "xPos": 24,
+        "yPos": 16
+      },
+      {
+        "height": 16,
+        "widget": {
+          "title": "Network TX Errors/s per VM per interface - PromQL",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "measures": [],
+                "minAlignmentPeriod": "120s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum by (cluster_name, location, node_name, kubernetes_vmi_label_kubevirt_vm, interface) (rate(kubernetes_io:anthos_kubevirt_vmi_network_transmit_errors_total{monitored_resource=\"k8s_container\"}[2m]))"
+                }
+              }
+            ],
+            "thresholds": [],
+            "timeshiftDuration": "0s",
+            "yAxis": {
+              "label": "",
+              "scale": "LINEAR"
+            }
+          }
+        },
+        "width": 24,
+        "yPos": 32
+      },
+      {
+        "height": 16,
+        "widget": {
+          "title": "Network RX Errors/s per VM per interface - PromQL",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "measures": [],
+                "minAlignmentPeriod": "120s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum by (cluster_name, location, node_name, kubernetes_vmi_label_kubevirt_vm, interface) (rate(kubernetes_io:anthos_kubevirt_vmi_network_receive_errors_total{monitored_resource=\"k8s_container\"}[2m]))"
+                }
+              }
+            ],
+            "thresholds": [],
+            "timeshiftDuration": "0s",
+            "yAxis": {
+              "label": "",
+              "scale": "LINEAR"
+            }
+          }
+        },
+        "width": 24,
+        "xPos": 24,
+        "yPos": 32
+      },
+      {
+        "height": 16,
+        "widget": {
+          "title": "Network TX Packets/s per VM per interface - PromQL",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "measures": [],
+                "minAlignmentPeriod": "120s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum by (cluster_name, location, node_name, kubernetes_vmi_label_kubevirt_vm, interface) (rate(kubernetes_io:anthos_kubevirt_vmi_network_transmit_packets_total{monitored_resource=\"k8s_container\"}[2m]))"
+                }
+              }
+            ],
+            "thresholds": [],
+            "timeshiftDuration": "0s",
+            "yAxis": {
+              "label": "",
+              "scale": "LINEAR"
+            }
+          }
+        },
+        "width": 24,
+        "yPos": 48
+      },
+      {
+        "height": 16,
+        "widget": {
+          "title": "Network RX Packets/s per VM per interface - PromQL",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "measures": [],
+                "minAlignmentPeriod": "120s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum by (cluster_name, location, node_name, kubernetes_vmi_label_kubevirt_vm, interface) (rate(kubernetes_io:anthos_kubevirt_vmi_network_receive_packets_total{monitored_resource=\"k8s_container\"}[2m]))"
+                }
+              }
+            ],
+            "thresholds": [],
+            "timeshiftDuration": "0s",
+            "yAxis": {
+              "label": "",
+              "scale": "LINEAR"
+            }
+          }
+        },
+        "width": 24,
+        "xPos": 24,
+        "yPos": 48
+      },
+      {
+        "height": 16,
+        "widget": {
+          "title": "Network TX Packets dropped/s per VM per interface - PromQL",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "measures": [],
+                "minAlignmentPeriod": "120s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum by (cluster_name, location, node_name, kubernetes_vmi_label_kubevirt_vm, interface) (rate(kubernetes_io:anthos_kubevirt_vmi_network_transmit_packets_dropped_total{monitored_resource=\"k8s_container\"}[2m]))"
+                }
+              }
+            ],
+            "thresholds": [],
+            "timeshiftDuration": "0s",
+            "yAxis": {
+              "label": "",
+              "scale": "LINEAR"
+            }
+          }
+        },
+        "width": 24,
+        "yPos": 64
+      },
+      {
+        "height": 16,
+        "widget": {
+          "title": "Network RX Packets dropped/s per VM per interface - PromQL",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "measures": [],
+                "minAlignmentPeriod": "120s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum by (cluster_name, location, node_name, kubernetes_vmi_label_kubevirt_vm, interface) (rate(kubernetes_io:anthos_kubevirt_vmi_network_receive_packets_dropped_total{monitored_resource=\"k8s_container\"}[2m]))"
+                }
+              }
+            ],
+            "thresholds": [],
+            "timeshiftDuration": "0s",
+            "yAxis": {
+              "label": "",
+              "scale": "LINEAR"
+            }
+          }
+        },
+        "width": 24,
+        "xPos": 24,
+        "yPos": 64
+      },
+      {
+        "height": 16,
+        "widget": {
+          "title": "Storage write iops per VM per disk - PromQL",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "measures": [],
+                "minAlignmentPeriod": "120s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum by (cluster_name, location, node_name, kubernetes_vmi_label_kubevirt_vm, disk) (rate(kubernetes_io:anthos_kubevirt_vmi_storage_iops_write_total{monitored_resource=\"k8s_container\"}[2m]))"
+                }
+              }
+            ],
+            "thresholds": [],
+            "timeshiftDuration": "0s",
+            "yAxis": {
+              "label": "",
+              "scale": "LINEAR"
+            }
+          }
+        },
+        "width": 24,
+        "yPos": 80
+      },
+      {
+        "height": 16,
+        "widget": {
+          "title": "Storage read iops per VM per disk - PromQL",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "measures": [],
+                "minAlignmentPeriod": "120s",
+                "plotType": "LINE",
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "prometheusQuery": "sum by (cluster_name, location, node_name, kubernetes_vmi_label_kubevirt_vm, disk) (rate(kubernetes_io:anthos_kubevirt_vmi_storage_iops_read_total{monitored_resource=\"k8s_container\"}[2m]))"
+                }
+              }
+            ],
+            "thresholds": [],
+            "timeshiftDuration": "0s",
+            "yAxis": {
+              "label": "",
+              "scale": "LINEAR"
+            }
+          }
+        },
+        "width": 24,
+        "xPos": 24,
+        "yPos": 80
+      },
+      {
+        "height": 16,
+        "widget": {
+          "timeSeriesTable": {
+            "columnSettings": [
+              {
+                "column": "metric.label.kubernetes_vmi_label_kubevirt_vm",
+                "visible": true
+              },
+              {
+                "column": "metric.label.state",
+                "visible": true
+              },
+              {
+                "column": "value",
+                "visible": false
+              }
+            ],
+            "dataSets": [
+              {
+                "timeSeriesQuery": {
+                  "prometheusQuery": "kubernetes_io:anthos_kubevirt_info"
+                }
+              }
+            ],
+            "metricVisualization": "NUMBER"
+          },
+          "title": "VMs - PromQL"
+        },
+        "width": 12
+      },
+      {
+        "height": 16,
+        "widget": {
+          "logsPanel": {
+            "filter": "resource.type=\"k8s_container\"\nresource.labels.cluster_name=\"clus-lab-1\"\nresource.labels.namespace_name=\"vm-workloads\"",
+            "resourceNames": [
+            ]
+          },
+          "title": "Nebula VM Logs"
+        },
+        "width": 24,
+        "yPos": 96
+      },
+      {
+        "height": 16,
+        "widget": {
+          "logsPanel": {
+            "filter": "resource.type=\"k8s_container\"\nresource.labels.cluster_name=\"clus-lab-2\"\nresource.labels.namespace_name=\"vm-workloads\"",
+            "resourceNames": [
+             ]
+          },
+          "title": "Captain America VM Logs"
+        },
+        "width": 24,
+        "xPos": 24,
+        "yPos": 96
+      },
+      {
+        "height": 16,
+        "widget": {
+          "incidentList": {
+            "monitoredResources": [],
+            "policyNames": [
+              "alertPolicies/8875308465663576159",
+              "alertPolicies/538578941852527739"
+            ]
+          },
+          "title": "Incidents"
+        },
+        "width": 24,
+        "yPos": 112
+      }
+    ]
+  }
+}
