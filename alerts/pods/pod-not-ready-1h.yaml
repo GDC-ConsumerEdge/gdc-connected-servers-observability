@@ -14,31 +14,8 @@
 
 combiner: OR
 conditions:
-- conditionMonitoringQueryLanguage:
+- conditionPrometheusQueryLanguage:
     duration: 3600s
-    query: |-
-      { t_0:
-          fetch prometheus_target
-          | metric 'kubernetes.io/anthos/kube_pod_status_phase/gauge'
-          | filter (metric.phase =~ 'Pending|Unknown|Failed')
-          | filter (metric.pod !~ '^(bm-system||robin-prejob).*')
-          | group_by [resource.project_id, resource.location, resource.cluster,
-               resource.namespace, metric.pod],
-              [value_kube_pod_status_phase_mean: mean(value.gauge)]
-          | every 1m
-      ; t_1:
-          fetch k8s_container::kubernetes.io/anthos/anthos_cluster_info
-          | filter (metric.anthos_distribution = 'baremetal')
-          | align mean_aligner()
-          | group_by [resource.project_id, resource.location, cluster: resource.cluster_name],
-              [value_anthos_cluster_info_aggregate:
-                 aggregate(value.anthos_cluster_info)]
-          | every 1m }
-      | join
-      | value [t_0.value_kube_pod_status_phase_mean]
-      | window 1m
-      | condition t_0.value_kube_pod_status_phase_mean > 0 '1'
-    trigger:
-      count: 1
-  displayName: Pod not ready for more than one hour
-displayName: Pod not ready for more than one hour (critical)
+    query: '(sum by (pod, namespace, cluster, location, project_id) (kubernetes_io:anthos_kube_pod_status_phase_gauge{phase=~"Pending|Unknown|Failed", pod!~"^(bm-system||robin-prejob).*", }) > 0) and on(cluster, location, project_id) (max by (cluster, location, project_id) (label_replace(kubernetes_io:anthos_anthos_cluster_info{anthos_distribution="baremetal", monitored_resource="k8s_container"}, "cluster", "$1", "cluster_name", "(.*)"))) > 0'
+  displayName: Pod not ready for more than one hour 
+displayName: Pod not ready for more than one hour (critical) 
