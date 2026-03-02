@@ -1,0 +1,245 @@
+{
+  "displayName": "GDC - Environmental Monitoring",
+  "dashboardFilters": [
+    {
+      "comparator": "COMPARATOR_UNSPECIFIED",
+      "filterType": "RESOURCE_LABEL",
+      "labelKey": "cluster_name",
+      "stringValue": "",
+      "templateVariable": "cluster_name",
+      "valueType": "STRING"
+    },
+    {
+      "comparator": "COMPARATOR_UNSPECIFIED",
+      "filterType": "RESOURCE_LABEL",
+      "labelKey": "machine_id",
+      "stringValue": "",
+      "templateVariable": "machine_id",
+      "valueType": "STRING"
+    },
+    {
+      "comparator": "COMPARATOR_UNSPECIFIED",
+      "filterType": "RESOURCE_LABEL",
+      "labelKey": "project_id",
+      "stringValue": "",
+      "templateVariable": "project_id",
+      "valueType": "STRING"
+    }
+  ],
+  "description": "",
+  "labels": {},
+  "mosaicLayout": {
+    "columns": 48,
+    "tiles": [
+      {
+        "height": 16,
+        "width": 24,
+        "widget": {
+          "title": "Low Power Servers (likely needing remediation)",
+          "id": "",
+          "timeSeriesTable": {
+            "columnSettings": [],
+            "dataSets": [
+              {
+                "minAlignmentPeriod": "60s",
+                "tableTemplate": "",
+                "timeSeriesQuery": {
+                  "outputFullDuration": false,
+                  "prometheusQuery": "(\n  avg by (machine_id) (\n    avg_over_time({\n      __name__=\"edgecontainer.googleapis.com/machine/power_consumption\",\n      monitored_resource=\"edgecontainer.googleapis.com/Machine\",\n      machine_id=~\"${machine_id.value}\"\n    }[${__interval}])\n  ) < 125\n)\n* on (machine_id) group_left(cluster_name)\n(\n  label_replace(\n    max by (cluster_name, machine_name) (\n      last_over_time({\n        __name__=\"edgecontainer.googleapis.com/node/current_node_version\",\n        monitored_resource=\"edgecontainer.googleapis.com/Node\",\n        cluster_name=~\"${cluster_name.value}\"\n      }[5m])\n    ),\n    \"machine_id\", \"$1\", \"machine_name\", \".*/machines/(.*)\"\n  )\n)",
+                  "unitOverride": ""
+                }
+              }
+            ],
+            "displayColumnType": false,
+            "metricVisualization": "NUMBER"
+          }
+        }
+      },
+      {
+        "xPos": 24,
+        "height": 16,
+        "width": 24,
+        "widget": {
+          "title": "Machine Restarts",
+          "id": "",
+          "xyChart": {
+            "chartOptions": {
+              "displayHorizontal": false,
+              "mode": "COLOR",
+              "showLegend": false
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "legendTemplate": "",
+                "measures": [],
+                "plotType": "LINE",
+                "sort": [],
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "outputFullDuration": false,
+                  "prometheusQuery": "(\n  sum by (machine_id) (\n    rate({\n      __name__=\"edgecontainer.googleapis.com/machine/restart_count\",\n      monitored_resource=\"edgecontainer.googleapis.com/Machine\",\n      machine_id=~\"${machine_id.value}\"\n    }[${__interval}])\n  )\n)\n* on (machine_id) group_left(cluster_name)\n(\n  label_replace(\n    max by (cluster_name, machine_name) (\n      last_over_time({\n        __name__=\"edgecontainer.googleapis.com/node/current_node_version\",\n        monitored_resource=\"edgecontainer.googleapis.com/Node\",\n        cluster_name=~\"${cluster_name.value}\"\n      }[5m])\n    ),\n    \"machine_id\", \"$1\", \"machine_name\", \".*/machines/(.*)\"\n  )\n)",
+                  "unitOverride": ""
+                }
+              }
+            ],
+            "thresholds": [],
+            "yAxis": {
+              "label": "",
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "yPos": 16,
+        "height": 16,
+        "width": 24,
+        "widget": {
+          "title": "Cluster - Ambient Temp Violations exceeds 40C for 96 hrs",
+          "id": "",
+          "timeSeriesTable": {
+            "columnSettings": [
+              {
+                "column": "cluster_name",
+                "visible": true
+              },
+              {
+                "column": "machine_id",
+                "visible": false
+              },
+              {
+                "column": "value",
+                "visible": true
+              }
+            ],
+            "dataSets": [
+              {
+                "minAlignmentPeriod": "60s",
+                "tableTemplate": "",
+                "timeSeriesQuery": {
+                  "outputFullDuration": false,
+                  "prometheusQuery": "avg by (cluster_name) (\n  (\n    # Get temperatures for machines in alert state\n    sum by (machine_id) (\n      min_over_time({\n        __name__=\"edgecontainer.googleapis.com/machine/ambient_temperature\",\n        monitored_resource=\"edgecontainer.googleapis.com/Machine\",\n        machine_id=~\"${machine_id.value}\"\n      }[96h])\n    ) > 40\n  )\n  * on (machine_id) group_left(cluster_name)\n  (\n    label_replace(\n      max by (cluster_name, machine_name) (\n        last_over_time({\n          __name__=\"edgecontainer.googleapis.com/node/current_node_version\",\n          monitored_resource=\"edgecontainer.googleapis.com/Node\",\n          cluster_name=~\"${cluster_name.value}\"\n        }[5m])\n      ),\n      \"machine_id\", \"$1\", \"machine_name\", \".*/machines/(.*)\"\n    )\n  )\n)",
+                  "unitOverride": ""
+                }
+              }
+            ],
+            "displayColumnType": false,
+            "metricVisualization": "NUMBER"
+          }
+        }
+      },
+      {
+        "yPos": 16,
+        "xPos": 24,
+        "height": 16,
+        "width": 24,
+        "widget": {
+          "title": "Cluster - Ambient Temp Violations",
+          "id": "",
+          "timeSeriesTable": {
+            "columnSettings": [
+              {
+                "column": "cluster_name",
+                "visible": true
+              },
+              {
+                "column": "machine_id",
+                "visible": false
+              },
+              {
+                "column": "value",
+                "visible": true
+              }
+            ],
+            "dataSets": [
+              {
+                "minAlignmentPeriod": "60s",
+                "tableTemplate": "",
+                "timeSeriesQuery": {
+                  "outputFullDuration": true,
+                  "prometheusQuery": "avg by (cluster_name) (\n  (\n    # Get temperatures for machines in alert state\n    sum by (machine_id) (\n      avg_over_time({\n        __name__=\"edgecontainer.googleapis.com/machine/ambient_temperature\",\n        monitored_resource=\"edgecontainer.googleapis.com/Machine\",\n        machine_id=~\"${machine_id.value}\"\n      }[${__interval}])\n    ) > 40\n    or \n    sum by (machine_id) (\n      avg_over_time({\n        __name__=\"edgecontainer.googleapis.com/machine/ambient_temperature\",\n        monitored_resource=\"edgecontainer.googleapis.com/Machine\",\n        machine_id=~\"${machine_id.value}\"\n      }[${__interval}])\n    ) < 10\n  )\n  * on (machine_id) group_left(cluster_name)\n  (\n    label_replace(\n      max by (cluster_name, machine_name) (\n        last_over_time({\n          __name__=\"edgecontainer.googleapis.com/node/current_node_version\",\n          monitored_resource=\"edgecontainer.googleapis.com/Node\",\n          cluster_name=~\"${cluster_name.value}\"\n        }[5m])\n      ),\n      \"machine_id\", \"$1\", \"machine_name\", \".*/machines/(.*)\"\n    )\n  )\n)",
+                  "unitOverride": ""
+                }
+              }
+            ],
+            "displayColumnType": false,
+            "metricVisualization": "NUMBER"
+          }
+        }
+      },
+      {
+        "yPos": 32,
+        "height": 8,
+        "width": 14,
+        "widget": {
+          "title": "Populate Machine List Helper - Do Not Remove",
+          "id": "",
+          "timeSeriesTable": {
+            "columnSettings": [],
+            "dataSets": [
+              {
+                "minAlignmentPeriod": "600s",
+                "tableTemplate": "",
+                "timeSeriesQuery": {
+                  "outputFullDuration": false,
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "600s",
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "groupByFields": [
+                        "resource.label.\"machine_id\""
+                      ],
+                      "perSeriesAligner": "ALIGN_MEAN"
+                    },
+                    "filter": "metric.type=\"edgecontainer.googleapis.com/machine/power_consumption\" resource.type=\"edgecontainer.googleapis.com/Machine\" ${machine_id} ${project_id}"
+                  },
+                  "unitOverride": ""
+                }
+              }
+            ],
+            "displayColumnType": false,
+            "metricVisualization": "NUMBER"
+          }
+        }
+      },
+      {
+        "yPos": 32,
+        "xPos": 14,
+        "height": 8,
+        "width": 14,
+        "widget": {
+          "title": "Populate Cluster List Helper - Do Not Remove",
+          "id": "",
+          "timeSeriesTable": {
+            "columnSettings": [],
+            "dataSets": [
+              {
+                "minAlignmentPeriod": "600s",
+                "tableTemplate": "",
+                "timeSeriesQuery": {
+                  "outputFullDuration": false,
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "600s",
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "groupByFields": [
+                        "resource.label.\"cluster_name\""
+                      ],
+                      "perSeriesAligner": "ALIGN_MEAN"
+                    },
+                    "filter": "metric.type=\"edgecontainer.googleapis.com/node/current_node_version\" resource.type=\"edgecontainer.googleapis.com/Node\" ${cluster_name} ${project_id}"
+                  },
+                  "unitOverride": ""
+                }
+              }
+            ],
+            "displayColumnType": false,
+            "metricVisualization": "NUMBER"
+          }
+        }
+      }
+    ]
+  }
+}

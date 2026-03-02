@@ -1,0 +1,282 @@
+{
+  "displayName": "GDC - Cluster View",
+  "dashboardFilters": [
+    {
+      "filterType": "RESOURCE_LABEL",
+      "labelKey": "cluster_name",
+      "stringValue": "",
+      "templateVariable": "cluster_name",
+      "valueType": "STRING"
+    },
+    {
+      "filterType": "RESOURCE_LABEL",
+      "labelKey": "project_id",
+      "stringValue": "",
+      "templateVariable": "project_id",
+      "valueType": "STRING"
+    }
+  ],
+  "description": "",
+  "labels": {},
+  "mosaicLayout": {
+    "columns": 48,
+    "tiles": [
+      {
+        "height": 18,
+        "width": 24,
+        "widget": {
+          "title": "Fleet Connectivity to GCP %",
+          "id": "",
+          "scorecard": {
+            "breakdowns": [],
+            "dimensions": [],
+            "gaugeView": {
+              "lowerBound": 0,
+              "upperBound": 100
+            },
+            "measures": [],
+            "thresholds": [
+              {
+                "color": "YELLOW",
+                "direction": "BELOW",
+                "label": "",
+                "targetAxis": "TARGET_AXIS_UNSPECIFIED",
+                "value": 95
+              },
+              {
+                "color": "RED",
+                "direction": "BELOW",
+                "label": "",
+                "targetAxis": "TARGET_AXIS_UNSPECIFIED",
+                "value": 70
+              }
+            ],
+            "timeSeriesQuery": {
+              "outputFullDuration": true,
+              "prometheusQuery": "(\n \n  sum(\n    count_over_time(\n      (\n        count_over_time(\n          {\n            __name__=\"kubernetes.io/anthos/node/cpu/allocatable_cores\",\n            cluster_name=~\"${cluster_name.value}\",\n            project_id=~\"${project_id.value}\"\n          }[5m] # have we seen anything in the last 5 mins as a heartbeat\n        ) \n      )[${__interval}:5m]  # how many ups have we seen in 5 min chunks over the interval\n    )\n  )\n  or vector(0)\n)\n/\n(\n  ### DENOMINATOR: (Total Inventory) * (Max possible 5m intervals)\n  (\n    sum(\n      count by (node_name) (\n        last_over_time(\n          {\n            __name__=\"kubernetes.io/anthos/node/cpu/allocatable_cores\",\n            cluster_name=~\"${cluster_name.value}\",\n            project_id=~\"${project_id.value}\"\n          }[10d] # we decided to place this hardcoded as a value of how many days should we consider that a cluster is part of the inventory\n        )\n      )\n    )\n  )\n  * ### Calculates how many 5m steps exist in the current dashboard interval\n  ### e.g., if interval is 1h, this returns 12.\n  count_over_time(vector(1)[${__interval}:5m])\n)\n* 100",
+              "unitOverride": ""
+            }
+          }
+        }
+      },
+      {
+        "xPos": 24,
+        "height": 18,
+        "width": 24,
+        "widget": {
+          "title": "Version Count",
+          "id": "",
+          "pieChart": {
+            "chartType": "DONUT",
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "measures": [],
+                "sliceNameTemplate": "",
+                "timeSeriesQuery": {
+                  "outputFullDuration": false,
+                  "prometheusQuery": "count by (version) (\n  max by (cluster_name, version) (\n    avg_over_time(\n      {\n        __name__=\"edgecontainer.googleapis.com/edge_cluster/current_cluster_version\",\n        monitored_resource=\"edgecontainer.googleapis.com/EdgeCluster\",\n        cluster_name=~\"${cluster_name.value}\"\n      }[24h]\n    )\n  )\n)",
+                  "unitOverride": ""
+                }
+              }
+            ],
+            "showLabels": false,
+            "showTotal": false,
+            "sliceAggregatedThreshold": 0
+          }
+        }
+      },
+      {
+        "yPos": 18,
+        "height": 18,
+        "width": 24,
+        "widget": {
+          "title": "Cluster Version",
+          "id": "",
+          "timeSeriesTable": {
+            "columnSettings": [
+              {
+                "column": "cluster_name",
+                "visible": true
+              },
+              {
+                "column": "version",
+                "visible": true
+              },
+              {
+                "column": "value",
+                "visible": false
+              }
+            ],
+            "dataSets": [
+              {
+                "minAlignmentPeriod": "60s",
+                "tableTemplate": "",
+                "timeSeriesQuery": {
+                  "outputFullDuration": false,
+                  "prometheusQuery": "count by (version, cluster_name) (\n  avg_over_time({\n    __name__=\"edgecontainer.googleapis.com/edge_cluster/current_cluster_version\",\n    monitored_resource=\"edgecontainer.googleapis.com/EdgeCluster\",\n    cluster_name=~\"${cluster_name.value}\"\n  }[24h])\n)",
+                  "unitOverride": ""
+                }
+              }
+            ],
+            "displayColumnType": false,
+            "metricVisualization": "NUMBER"
+          }
+        }
+      },
+      {
+        "yPos": 18,
+        "xPos": 24,
+        "height": 18,
+        "width": 24,
+        "widget": {
+          "title": "Cluster currently being upgraded within 24h",
+          "id": "",
+          "timeSeriesTable": {
+            "columnSettings": [
+              {
+                "column": "cluster_name",
+                "visible": true
+              },
+              {
+                "column": "status",
+                "visible": true
+              },
+              {
+                "column": "value",
+                "visible": false
+              },
+              {
+                "column": "current_node_version",
+                "visible": false
+              }
+            ],
+            "dataSets": [
+              {
+                "minAlignmentPeriod": "60s",
+                "tableTemplate": "",
+                "timeSeriesQuery": {
+                  "outputFullDuration": false,
+                  "prometheusQuery": "(\n  # ---------------------------------------------------------------------\n  # PART A: Clusters in explicit failure states\n  # Result Status: RECONCILING, PROVISIONING, or ERROR\n  # ---------------------------------------------------------------------\n  max by (status, cluster_name) (\n    last_over_time({\n      __name__=\"edgecontainer.googleapis.com/edge_cluster/lifecycle_status\",\n      monitored_resource=\"edgecontainer.googleapis.com/EdgeCluster\",\n      status=~\"RECONCILING|PROVISIONING|ERROR\",\n      cluster_name=~\"${cluster_name.value}\"\n    }[24h])\n  )\n)\nOR on (cluster_name) (\n  # ---------------------------------------------------------------------\n  # PART B: Clusters that are RUNNING but have Version Drift\n  # Result Status: Overwritten to \"UPGRADE_PAUSED\"\n  # ---------------------------------------------------------------------\n  label_replace(\n    (\n      # 1. Calculate Drift (Node != Cluster)\n      (\n        max by (cluster_name, current_node_version) (\n          last_over_time({\n            __name__=\"edgecontainer.googleapis.com/node/current_node_version\",\n            monitored_resource=\"edgecontainer.googleapis.com/Node\"\n          }[24h])\n        )\n        unless on (cluster_name, current_node_version)\n        label_replace(\n          max by (cluster_name, version) (\n            last_over_time({\n              __name__=\"edgecontainer.googleapis.com/edge_cluster/current_cluster_version\",\n              monitored_resource=\"edgecontainer.googleapis.com/EdgeCluster\"\n            }[24h])\n          ),\n          \"current_node_version\", \"$1\", \"version\", \"(.*)\"\n        )\n      )\n      # 2. Guard: Ensure it's technically RUNNING, and pull that label in\n      * on (cluster_name) group_left(status)\n      max by (cluster_name, status) (\n        last_over_time({\n          __name__=\"edgecontainer.googleapis.com/edge_cluster/lifecycle_status\",\n          monitored_resource=\"edgecontainer.googleapis.com/EdgeCluster\",\n          status=\"RUNNING\",\n          cluster_name=~\"${cluster_name.value}\"\n        }[24h])\n      )\n    ),\n    # 3. Rename \"RUNNING\" to \"UPGRADE_PAUSED\" for readability\n    \"status\", \"UPGRADE_PAUSED\", \"status\", \".*\"\n  )\n)",
+                  "unitOverride": ""
+                }
+              }
+            ],
+            "displayColumnType": false,
+            "metricVisualization": "NUMBER"
+          }
+        }
+      },
+      {
+        "yPos": 36,
+        "height": 16,
+        "width": 24,
+        "widget": {
+          "title": "Incidents",
+          "id": "",
+          "incidentList": {
+            "groupBy": "GROUP_BY_TYPE_UNSPECIFIED",
+            "monitoredResources": [],
+            "policyNames": [],
+            "userLabels": {}
+          }
+        }
+      },
+      {
+        "yPos": 36,
+        "xPos": 24,
+        "height": 16,
+        "width": 24,
+        "widget": {
+          "title": "Cluster with one or more node down in last 10 days",
+          "id": "",
+          "timeSeriesTable": {
+            "columnSettings": [
+              {
+                "column": "cluster_name",
+                "visible": true
+              },
+              {
+                "column": "version",
+                "visible": false
+              },
+              {
+                "column": "value",
+                "visible": false
+              },
+              {
+                "column": "monitored_resource",
+                "visible": false
+              },
+              {
+                "column": "project_id",
+                "visible": false
+              },
+              {
+                "column": "node_name",
+                "visible": true
+              },
+              {
+                "column": "location",
+                "visible": true
+              },
+              {
+                "column": "status",
+                "visible": false
+              }
+            ],
+            "dataSets": [
+              {
+                "minAlignmentPeriod": "60s",
+                "tableTemplate": "",
+                "timeSeriesQuery": {
+                  "outputFullDuration": false,
+                  "prometheusQuery": "(\n  max_over_time(kubernetes_io:anthos_node_cpu_core_usage_time{monitored_resource=\"k8s_node\", project_id=~\"${project_id.value}\"}[10d]) \n  unless \n  kubernetes_io:anthos_node_cpu_core_usage_time{monitored_resource=\"k8s_node\", project_id=~\"${project_id.value}\"}\n)\nand on(cluster_name)\n(\n  count by (cluster_name) (\n    kubernetes_io:anthos_node_cpu_core_usage_time{monitored_resource=\"k8s_node\", project_id=~\"${project_id.value}\"}\n  ) < 3\n)",
+                  "unitOverride": ""
+                }
+              }
+            ],
+            "displayColumnType": false,
+            "metricVisualization": "NUMBER"
+          }
+        }
+      },
+      {
+        "yPos": 52,
+        "height": 8,
+        "width": 14,
+        "widget": {
+          "title": "Populate Cluster List Helper - Do Not Remove",
+          "id": "",
+          "timeSeriesTable": {
+            "columnSettings": [],
+            "dataSets": [
+              {
+                "minAlignmentPeriod": "600s",
+                "tableTemplate": "",
+                "timeSeriesQuery": {
+                  "outputFullDuration": false,
+                  "timeSeriesFilter": {
+                    "aggregation": {
+                      "alignmentPeriod": "600s",
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "groupByFields": [
+                        "resource.label.\"cluster_name\""
+                      ],
+                      "perSeriesAligner": "ALIGN_MEAN"
+                    },
+                    "filter": "metric.type=\"kubernetes.io/anthos/node/cpu/total_cores\" resource.type=\"k8s_node\" ${cluster_name} ${project_id}"
+                  },
+                  "unitOverride": ""
+                }
+              }
+            ],
+            "displayColumnType": false,
+            "metricVisualization": "NUMBER"
+          }
+        }
+      }
+    ]
+  }
+}
