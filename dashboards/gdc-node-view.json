@@ -1,130 +1,158 @@
 {
+  "displayName": "GDC - Node View",
   "dashboardFilters": [
     {
+      "comparator": "COMPARATOR_UNSPECIFIED",
+      "filterType": "RESOURCE_LABEL",
+      "labelKey": "cluster_name",
+      "stringValue": "None",
+      "templateVariable": "cluster_name",
+      "valueType": "STRING"
+    },
+    {
+      "comparator": "COMPARATOR_UNSPECIFIED",
       "filterType": "RESOURCE_LABEL",
       "labelKey": "project_id",
       "stringValue": "",
-      "templateVariable": "project_id"
-    },
-    {
-      "filterType": "RESOURCE_LABEL",
-      "labelKey": "cluster_name",
-      "stringValue": "",
-      "templateVariable": "cluster_name"
+      "templateVariable": "project_id",
+      "valueType": "STRING"
     }
   ],
-  "displayName": "GDC - Node View",
+  "description": "",
   "labels": {},
   "mosaicLayout": {
     "columns": 48,
     "tiles": [
       {
         "height": 8,
-        "widget": {
-          "scorecard": {
-            "blankView": {},
-            "thresholds": [],
-            "timeSeriesQuery": {
-              "timeSeriesQueryLanguage": "fetch k8s_node\n| metric 'kubernetes.io/anthos/node/cpu/total_cores'\n| ${project_id}\n| ${cluster_name}\n| group_by 10m, [value_total_cores_mean: mean(value.total_cores)]\n| every 10m\n| group_by [], [row_count: row_count()]",
-              "unitOverride": ""
-            }
-          },
-          "title": "Total Nodes"
-        },
-        "width": 8
-      },
-      {
-        "height": 8,
-        "widget": {
-          "scorecard": {
-            "blankView": {},
-            "thresholds": [],
-            "timeSeriesQuery": {
-              "timeSeriesQueryLanguage": "fetch k8s_node\n| metric 'kubernetes.io/anthos/node/cpu/total_cores'\n| ${project_id}\n| ${cluster_name}\n| group_by 1m, [value_total_cores_mean: mean(value.total_cores)]\n| every 1m\n| group_by [],\n    [value_total_cores_mean_aggregate: aggregate(value_total_cores_mean)]",
-              "unitOverride": ""
-            }
-          },
-          "title": "Total Cores"
-        },
         "width": 8,
-        "xPos": 8
-      },
-      {
-        "height": 8,
         "widget": {
+          "title": "Total Nodes",
+          "id": "",
           "scorecard": {
             "blankView": {},
+            "breakdowns": [],
+            "dimensions": [],
+            "measures": [],
             "thresholds": [],
             "timeSeriesQuery": {
-              "timeSeriesQueryLanguage": "fetch k8s_node\n| metric 'kubernetes.io/anthos/node/cpu/allocatable_cores'\n| ${project_id}\n| ${cluster_name}\n| group_by 1m, [value_allocatable_cores_mean: mean(value.allocatable_cores)]\n| every 1m\n| group_by [],\n    [value_allocatable_cores_mean_aggregate:\n       aggregate(value_allocatable_cores_mean)]",
+              "outputFullDuration": false,
+              "prometheusQuery": "count(\n  count by (node_name) (\n    avg_over_time({\n      __name__=\"kubernetes.io/anthos/node/cpu/total_cores\",\n      monitored_resource=\"k8s_node\",\n      cluster_name=~\"${cluster_name.value}\",\n      project_id=~\"${project_id.value}\"\n    }[10m])\n  )\n)",
               "unitOverride": ""
             }
-          },
-          "title": "Allocatable Cores"
-        },
-        "width": 8,
-        "xPos": 16
+          }
+        }
       },
       {
+        "xPos": 8,
         "height": 8,
+        "width": 8,
         "widget": {
+          "title": "Total Cores",
+          "id": "",
           "scorecard": {
             "blankView": {},
+            "breakdowns": [],
+            "dimensions": [],
+            "measures": [],
             "thresholds": [],
             "timeSeriesQuery": {
-              "timeSeriesQueryLanguage": "fetch k8s_node\n| metric 'kubernetes.io/anthos/node/memory/total_bytes'\n| ${project_id}\n| ${cluster_name}\n| group_by 1m, [value_total_bytes_mean: mean(value.total_bytes)]\n| every 1m\n| group_by [],\n    [value_total_bytes_mean_aggregate: aggregate(value_total_bytes_mean)]",
+              "outputFullDuration": false,
+              "prometheusQuery": "sum(\n  avg_over_time({\n    __name__=\"kubernetes.io/anthos/node/cpu/total_cores\",\n    monitored_resource=\"k8s_node\",\n    cluster_name=~\"${cluster_name.value}\",\n    project_id=~\"${project_id.value}\"\n  }[1m])\n)",
               "unitOverride": ""
             }
-          },
-          "title": "Total Memory"
-        },
-        "width": 8,
-        "xPos": 24
+          }
+        }
       },
       {
+        "xPos": 16,
         "height": 8,
+        "width": 8,
         "widget": {
+          "title": "Allocatable Cores",
+          "id": "",
           "scorecard": {
             "blankView": {},
+            "breakdowns": [],
+            "dimensions": [],
+            "measures": [],
             "thresholds": [],
             "timeSeriesQuery": {
-              "timeSeriesQueryLanguage": "fetch k8s_node\n| metric 'kubernetes.io/anthos/node/memory/allocatable_bytes'\n| ${project_id}\n| ${cluster_name}\n| group_by 1m, [value_allocatable_bytes_mean: mean(value.allocatable_bytes)]\n| every 1m\n| group_by [],\n    [value_allocatable_bytes_mean_aggregate:\n       aggregate(value_allocatable_bytes_mean)]",
+              "outputFullDuration": false,
+              "prometheusQuery": "sum(\n  avg_over_time({\n    __name__=\"kubernetes.io/anthos/node/cpu/allocatable_cores\",\n    monitored_resource=\"k8s_node\",\n    cluster_name=~\"${cluster_name.value}\",\n    project_id=~\"${project_id.value}\"\n  }[1m])\n)",
               "unitOverride": ""
             }
-          },
-          "title": "Allocatable Memory"
-        },
+          }
+        }
+      },
+      {
+        "xPos": 24,
+        "height": 8,
         "width": 8,
-        "xPos": 32
-      },
-      {
-        "height": 32,
         "widget": {
-          "collapsibleGroup": {
-            "collapsed": false
-          },
-          "title": "CPU and Memory"
-        },
-        "width": 48,
-        "yPos": 8
+          "title": "Total Memory (GB)",
+          "id": "",
+          "scorecard": {
+            "blankView": {},
+            "breakdowns": [],
+            "dimensions": [],
+            "measures": [],
+            "thresholds": [],
+            "timeSeriesQuery": {
+              "outputFullDuration": false,
+              "prometheusQuery": "sum(\n  avg_over_time({\n    __name__=\"kubernetes.io/anthos/node/memory/total_bytes\",\n    monitored_resource=\"k8s_node\",\n    cluster_name=~\"${cluster_name.value}\",\n    project_id=~\"${project_id.value}\"\n  }[1m])\n) / 1073741824",
+              "unitOverride": ""
+            }
+          }
+        }
       },
       {
+        "xPos": 32,
+        "height": 8,
+        "width": 8,
+        "widget": {
+          "title": "Allocatable Memory (GB)",
+          "id": "",
+          "scorecard": {
+            "blankView": {},
+            "breakdowns": [],
+            "dimensions": [],
+            "measures": [],
+            "thresholds": [],
+            "timeSeriesQuery": {
+              "outputFullDuration": false,
+              "prometheusQuery": "sum(\n  avg_over_time({\n    __name__=\"kubernetes.io/anthos/node/memory/allocatable_bytes\",\n    monitored_resource=\"k8s_node\",\n    cluster_name=~\"${cluster_name.value}\",\n    project_id=~\"${project_id.value}\"\n  }[1m])\n) / 1073741824",
+              "unitOverride": ""
+            }
+          }
+        }
+      },
+      {
+        "yPos": 8,
         "height": 16,
+        "width": 24,
         "widget": {
           "title": "CPU Usage per Node",
+          "id": "",
           "xyChart": {
             "chartOptions": {
-              "mode": "COLOR"
+              "displayHorizontal": false,
+              "mode": "COLOR",
+              "showLegend": false
             },
             "dataSets": [
               {
                 "breakdowns": [],
                 "dimensions": [],
+                "legendTemplate": "",
                 "measures": [],
+                "minAlignmentPeriod": "60s",
                 "plotType": "STACKED_AREA",
+                "sort": [],
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "timeSeriesQueryLanguage": "{ fetch k8s_node\n  | metric 'kubernetes.io/anthos/node/cpu/allocatable_utilization'\n| ${project_id}\n| ${cluster_name}\n  | group_by 1m,\n      [value_allocatable_utilization_mean: mean(value.allocatable_utilization)]\n  | every 1m\n; fetch k8s_node\n  | metric 'kubernetes.io/anthos/node/cpu/allocatable_cores'\n| ${project_id}\n| ${cluster_name}\n  | group_by 1m, [value_allocatable_core_mean: mean(value.allocatable_cores)]\n  | every 1m }\n| join\n| value [scaled_util: val(0) * val(1)]\n",
+                  "outputFullDuration": false,
+                  "prometheusQuery": "sum by (node_name) (\n  avg_over_time({\n    __name__=\"kubernetes.io/anthos/node/cpu/allocatable_utilization\",\n    monitored_resource=\"k8s_node\",\n    cluster_name=~\"${cluster_name.value}\",\n    project_id=~\"${project_id.value}\"\n  }[1m])\n)\n*\nsum by (node_name) (\n  avg_over_time({\n    __name__=\"kubernetes.io/anthos/node/cpu/allocatable_cores\",\n    monitored_resource=\"k8s_node\",\n    cluster_name=~\"${cluster_name.value}\",\n    project_id=~\"${project_id.value}\"\n  }[1m])\n)",
                   "unitOverride": ""
                 }
               }
@@ -135,27 +163,47 @@
               "scale": "LINEAR"
             }
           }
-        },
-        "width": 24,
-        "yPos": 8
+        }
       },
       {
-        "height": 16,
+        "yPos": 8,
+        "height": 32,
+        "width": 48,
         "widget": {
-          "title": "Memory Usage per Node",
+          "title": "CPU and Memory",
+          "collapsibleGroup": {
+            "collapsed": false
+          },
+          "id": ""
+        }
+      },
+      {
+        "yPos": 8,
+        "xPos": 24,
+        "height": 16,
+        "width": 24,
+        "widget": {
+          "title": "Memory Usage per Node (GB)",
+          "id": "",
           "xyChart": {
             "chartOptions": {
-              "mode": "COLOR"
+              "displayHorizontal": false,
+              "mode": "COLOR",
+              "showLegend": false
             },
             "dataSets": [
               {
                 "breakdowns": [],
                 "dimensions": [],
+                "legendTemplate": "",
                 "measures": [],
+                "minAlignmentPeriod": "60s",
                 "plotType": "STACKED_AREA",
+                "sort": [],
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "timeSeriesQueryLanguage": "       fetch k8s_node\n| metric 'kubernetes.io/anthos/node/memory/used_bytes'\n| ${project_id}\n| ${cluster_name}\n| group_by 1m,\n    [value_used_bytes_mean: mean(value.used_bytes)]\n| every 1m\n| group_by [resource.node_name],\n    [value_used_bytes_mean_aggregate:\n       aggregate(value_used_bytes_mean)]",
+                  "outputFullDuration": false,
+                  "prometheusQuery": "sum by (node_name) (\n  avg_over_time({\n    __name__=\"kubernetes.io/anthos/node/memory/used_bytes\",\n    monitored_resource=\"k8s_node\",\n    cluster_name=~\"${cluster_name.value}\",\n    project_id=~\"${project_id.value}\"\n  }[1m])\n) / 1073741824",
                   "unitOverride": ""
                 }
               }
@@ -166,28 +214,34 @@
               "scale": "LINEAR"
             }
           }
-        },
-        "width": 24,
-        "xPos": 24,
-        "yPos": 8
+        }
       },
       {
+        "yPos": 24,
         "height": 16,
+        "width": 24,
         "widget": {
           "title": "CPU Util % per Node",
+          "id": "",
           "xyChart": {
             "chartOptions": {
-              "mode": "COLOR"
+              "displayHorizontal": false,
+              "mode": "COLOR",
+              "showLegend": false
             },
             "dataSets": [
               {
                 "breakdowns": [],
                 "dimensions": [],
+                "legendTemplate": "",
                 "measures": [],
+                "minAlignmentPeriod": "60s",
                 "plotType": "LINE",
+                "sort": [],
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "timeSeriesQueryLanguage": "fetch k8s_node\n| metric 'kubernetes.io/anthos/node/cpu/allocatable_utilization'\n| ${project_id}\n| ${cluster_name}\n| group_by 1m,    [value_allocatable_utilization_mean: mean(value.allocatable_utilization)]\n| every 1m\n| scale '%'",
+                  "outputFullDuration": false,
+                  "prometheusQuery": "avg_over_time({\n  __name__=\"kubernetes.io/anthos/node/cpu/allocatable_utilization\",\n  monitored_resource=\"k8s_node\",\n  cluster_name=~\"${cluster_name.value}\",\n  project_id=~\"${project_id.value}\"\n}[1m]) * 100",
                   "unitOverride": ""
                 }
               }
@@ -198,27 +252,35 @@
               "scale": "LINEAR"
             }
           }
-        },
-        "width": 24,
-        "yPos": 24
+        }
       },
       {
+        "yPos": 24,
+        "xPos": 24,
         "height": 16,
+        "width": 24,
         "widget": {
           "title": "Memory Util % per Node",
+          "id": "",
           "xyChart": {
             "chartOptions": {
-              "mode": "COLOR"
+              "displayHorizontal": false,
+              "mode": "COLOR",
+              "showLegend": false
             },
             "dataSets": [
               {
                 "breakdowns": [],
                 "dimensions": [],
+                "legendTemplate": "",
                 "measures": [],
+                "minAlignmentPeriod": "60s",
                 "plotType": "LINE",
+                "sort": [],
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "timeSeriesQueryLanguage": "fetch k8s_node\n| metric 'kubernetes.io/anthos/node/memory/allocatable_utilization'\n| ${project_id}\n| ${cluster_name}\n| group_by 1m,\n    [value_allocatable_utilization_mean: mean(value.allocatable_utilization)]\n| every 1m\n| group_by [resource.node_name],\n    [value_allocatable_utilization_mean_aggregate:\n       aggregate(value_allocatable_utilization_mean)]\n| scale '%'",
+                  "outputFullDuration": false,
+                  "prometheusQuery": "sum by (node_name) (\n  avg_over_time({\n    __name__=\"kubernetes.io/anthos/node/memory/allocatable_utilization\",\n    monitored_resource=\"k8s_node\",\n    cluster_name=~\"${cluster_name.value}\",\n    project_id=~\"${project_id.value}\"\n  }[1m])\n) * 100",
                   "unitOverride": ""
                 }
               }
@@ -229,99 +291,34 @@
               "scale": "LINEAR"
             }
           }
-        },
+        }
+      },
+      {
+        "yPos": 40,
+        "height": 16,
         "width": 24,
-        "xPos": 24,
-        "yPos": 24
-      },
-      {
-        "height": 16,
-        "widget": {
-          "collapsibleGroup": {
-            "collapsed": false
-          },
-          "title": "Pod and Container Count"
-        },
-        "width": 48,
-        "yPos": 56
-      },
-      {
-        "height": 16,
-        "widget": {
-          "timeSeriesTable": {
-            "columnSettings": [
-              {
-                "column": "value",
-                "visible": false
-              }
-            ],
-            "dataSets": [
-              {
-                "timeSeriesQuery": {
-                  "timeSeriesQueryLanguage": "fetch k8s_container\n| metric 'kubernetes.io/anthos/container/cpu/core_usage_time'\n| ${project_id}\n| ${cluster_name}\n| align rate(1m)\n| every 1m\n| group_by\n    [resource.project_id, resource.location, resource.cluster_name,\n     resource.namespace_name, resource.pod_name, resource.container_name,\n     metadata.system.node_name],\n    [value_core_usage_time_mean: pick_any(value.core_usage_time)]\n| group_by [metadata.system.node_name], [row_count()]"
-                }
-              }
-            ],
-            "metricVisualization": "NUMBER"
-          },
-          "title": "Number of Containers per Node"
-        },
-        "width": 24,
-        "xPos": 24,
-        "yPos": 56
-      },
-      {
-        "height": 16,
-        "widget": {
-          "timeSeriesTable": {
-            "columnSettings": [
-              {
-                "column": "value",
-                "visible": false
-              }
-            ],
-            "dataSets": [
-              {
-                "timeSeriesQuery": {
-                  "timeSeriesQueryLanguage": "fetch k8s_pod\n| metric 'kubernetes.io/anthos/pod/network/received_bytes_count'\n| ${project_id}\n| ${cluster_name}\n| align rate(1m)\n| every 1m\n| group_by [resource.project_id, resource.location, resource.cluster_name, resource.namespace_name, resource.pod_name, metadata.system.node_name],\n    [value_received_bytes_count_mean: pick_any(value.received_bytes_count)]\n    | group_by [metadata.system.node_name], [row_count()]\n"
-                }
-              }
-            ],
-            "metricVisualization": "NUMBER"
-          },
-          "title": "Number of Pods per Node"
-        },
-        "width": 24,
-        "yPos": 56
-      },
-      {
-        "height": 16,
-        "widget": {
-          "collapsibleGroup": {
-            "collapsed": false
-          },
-          "title": "Network Usage per Node"
-        },
-        "width": 48,
-        "yPos": 40
-      },
-      {
-        "height": 16,
         "widget": {
           "title": "Received bytes per node",
+          "id": "",
           "xyChart": {
             "chartOptions": {
-              "mode": "COLOR"
+              "displayHorizontal": false,
+              "mode": "COLOR",
+              "showLegend": false
             },
             "dataSets": [
               {
                 "breakdowns": [],
                 "dimensions": [],
+                "legendTemplate": "",
                 "measures": [],
+                "minAlignmentPeriod": "60s",
                 "plotType": "STACKED_AREA",
+                "sort": [],
                 "targetAxis": "Y1",
                 "timeSeriesQuery": {
-                  "timeSeriesQueryLanguage": "fetch k8s_node\n| metric 'kubernetes.io/anthos/node/network/received_bytes_count'\n| ${project_id}\n| ${cluster_name}\n| filter (metric.interface =~ 'enp81s0f.*')\n| align rate(1m)\n| every 1m\n| group_by [resource.node_name],\n    [value_received_bytes_count_aggregate:\n       aggregate(value.received_bytes_count)]",
+                  "outputFullDuration": false,
+                  "prometheusQuery": "sum by (node_name) (\n  rate({\n    __name__=\"kubernetes.io/anthos/node/network/received_bytes_count\",\n    monitored_resource=\"k8s_node\",\n    cluster_name=~\"${cluster_name.value}\",\n    project_id=~\"${project_id.value}\",\n    interface=~\"enp81s0f.*\"\n  }[1m])\n)",
                   "unitOverride": ""
                 }
               }
@@ -332,76 +329,177 @@
               "scale": "LINEAR"
             }
           }
-        },
-        "width": 24,
-        "yPos": 40
+        }
       },
       {
+        "yPos": 40,
         "height": 16,
+        "width": 48,
         "widget": {
-          "title": "Send bytes per node",
-          "xyChart": {
-            "chartOptions": {
-              "mode": "COLOR"
-            },
-            "dataSets": [
-              {
-                "breakdowns": [],
-                "dimensions": [],
-                "measures": [],
-                "plotType": "STACKED_AREA",
-                "targetAxis": "Y1",
-                "timeSeriesQuery": {
-                  "timeSeriesQueryLanguage": "fetch k8s_node\n| metric 'kubernetes.io/anthos/node/network/sent_bytes_count'\n| ${project_id}\n| ${cluster_name}\n| filter (metric.interface =~ 'enp81s0f.*')\n| align rate(1m)\n| every 1m\n| group_by [resource.node_name],\n    [value_sent_bytes_count_aggregate:\n       aggregate(value.sent_bytes_count)]",
-                  "unitOverride": ""
-                }
-              }
-            ],
-            "thresholds": [],
-            "yAxis": {
-              "label": "",
-              "scale": "LINEAR"
-            }
-          }
-        },
-        "width": 24,
-        "xPos": 24,
-        "yPos": 40
-      },
-      {
-        "height": 16,
-        "widget": {
+          "title": "Network Usage per Node",
           "collapsibleGroup": {
             "collapsed": false
           },
-          "title": "Storage Usage per Node"
-        },
-        "width": 48,
-        "yPos": 72
+          "id": ""
+        }
       },
       {
+        "yPos": 40,
+        "xPos": 24,
         "height": 16,
+        "width": 24,
         "widget": {
-          "title": "Free Robin Disk Space % per Node",
+          "title": "Send bytes per node",
+          "id": "",
           "xyChart": {
             "chartOptions": {
-              "mode": "COLOR"
+              "displayHorizontal": false,
+              "mode": "COLOR",
+              "showLegend": false
             },
             "dataSets": [
               {
+                "breakdowns": [],
+                "dimensions": [],
+                "legendTemplate": "",
+                "measures": [],
+                "minAlignmentPeriod": "60s",
+                "plotType": "STACKED_AREA",
+                "sort": [],
+                "targetAxis": "Y1",
+                "timeSeriesQuery": {
+                  "outputFullDuration": false,
+                  "prometheusQuery": "sum by (node_name) (\n  rate({\n    __name__=\"kubernetes.io/anthos/node/network/sent_bytes_count\",\n    monitored_resource=\"k8s_node\",\n    cluster_name=~\"${cluster_name.value}\",\n    project_id=~\"${project_id.value}\",\n    interface=~\"enp81s0f.*\"\n  }[1m])\n)",
+                  "unitOverride": ""
+                }
+              }
+            ],
+            "thresholds": [],
+            "yAxis": {
+              "label": "",
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "yPos": 56,
+        "height": 16,
+        "width": 24,
+        "widget": {
+          "title": "Number of Pods per Cluster",
+          "id": "",
+          "timeSeriesTable": {
+            "columnSettings": [
+              {
+                "column": "value",
+                "visible": true
+              },
+              {
+                "column": "cluster",
+                "visible": true
+              }
+            ],
+            "dataSets": [
+              {
+                "minAlignmentPeriod": "60s",
+                "tableTemplate": "",
+                "timeSeriesQuery": {
+                  "outputFullDuration": false,
+                  "prometheusQuery": "count(\n  max by (cluster, node, pod) (\n    rate({\n      __name__=\"kubernetes.io/anthos/container_network_receive_bytes_total/counter\",\n      cluster=~\"${cluster_name.value}\",\n      project_id=~\"${project_id.value}\"\n    }[${__interval}])\n  )\n) by (cluster, node)",
+                  "unitOverride": ""
+                }
+              }
+            ],
+            "displayColumnType": false,
+            "metricVisualization": "NUMBER"
+          }
+        }
+      },
+      {
+        "yPos": 56,
+        "height": 16,
+        "width": 48,
+        "widget": {
+          "title": "Pod and Container Count",
+          "collapsibleGroup": {
+            "collapsed": false
+          },
+          "id": ""
+        }
+      },
+      {
+        "yPos": 56,
+        "xPos": 24,
+        "height": 16,
+        "width": 24,
+        "widget": {
+          "title": "Number of Containers per Cluster",
+          "id": "",
+          "timeSeriesTable": {
+            "columnSettings": [
+              {
+                "column": "value",
+                "visible": true
+              },
+              {
+                "column": "cluster",
+                "visible": true
+              }
+            ],
+            "dataSets": [
+              {
+                "minAlignmentPeriod": "60s",
+                "tableTemplate": "",
+                "timeSeriesQuery": {
+                  "outputFullDuration": false,
+                  "prometheusQuery": "count(\n  max by (cluster, node, pod, container) (\n    rate({\n      __name__=\"kubernetes.io/anthos/container_network_receive_bytes_total/counter\",\n      cluster=~\"${cluster_name.value}\",\n      project_id=~\"${project_id.value}\"\n    }[${__interval}])\n  )\n) by (cluster, node)",
+                  "unitOverride": ""
+                }
+              }
+            ],
+            "displayColumnType": false,
+            "metricVisualization": "NUMBER"
+          }
+        }
+      },
+      {
+        "yPos": 72,
+        "height": 16,
+        "width": 24,
+        "widget": {
+          "title": "Free Robin Disk Space % per Node",
+          "id": "",
+          "xyChart": {
+            "chartOptions": {
+              "displayHorizontal": false,
+              "mode": "COLOR",
+              "showLegend": false
+            },
+            "dataSets": [
+              {
+                "breakdowns": [],
+                "dimensions": [],
+                "legendTemplate": "",
+                "measures": [],
+                "minAlignmentPeriod": "60s",
                 "plotType": "LINE",
+                "sort": [],
                 "targetAxis": "Y2",
                 "timeSeriesQuery": {
-                  "timeSeriesQueryLanguage": "{fetch k8s_container\n| metric 'external.googleapis.com/prometheus/robin_disk_nslices'\n| ${project_id}\n| ${cluster_name}\n| group_by [node_name],   [value_robin_disk_rawused_sum: mul(sum(value.robin_disk_nslices), 1073741824)]\n| every 1m\n;\nfetch k8s_container\n| metric 'external.googleapis.com/prometheus/robin_disk_size'\n| ${project_id}\n| ${cluster_name}\n| group_by [node_name],   [value_robin_disk_size_mean: sum(value.robin_disk_size)]\n| every 1m\n}\n| join\n| value [v_0: 1 - div(t_0.value_robin_disk_rawused_sum, t_1.value_robin_disk_size_mean)]",
+                  "outputFullDuration": false,
+                  "prometheusQuery": "(1 - (\n  sum by (node_name) (\n    avg_over_time({\n      __name__=\"external.googleapis.com/prometheus/robin_disk_nslices\",\n      monitored_resource=\"k8s_container\",\n      cluster_name=~\"${cluster_name.value}\",\n      project_id=~\"${project_id.value}\"\n    }[1m])\n  ) * 1073741824\n  /\n  sum by (node_name) (\n    avg_over_time({\n      __name__=\"external.googleapis.com/prometheus/robin_disk_size\",\n      monitored_resource=\"k8s_container\",\n      cluster_name=~\"${cluster_name.value}\",\n      project_id=~\"${project_id.value}\"\n    }[1m])\n  )\n) )*100",
                   "unitOverride": ""
                 }
               }
             ],
             "thresholds": [
               {
+                "color": "COLOR_UNSPECIFIED",
+                "direction": "DIRECTION_UNSPECIFIED",
                 "label": "",
                 "targetAxis": "Y2",
-                "value": 0.2
+                "value": 20
               }
             ],
             "y2Axis": {
@@ -409,35 +507,90 @@
               "scale": "LINEAR"
             }
           }
-        },
-        "width": 24,
-        "yPos": 72
+        }
       },
       {
+        "yPos": 72,
         "height": 16,
+        "width": 48,
         "widget": {
-          "title": "Free Robin Disk Space % per Node",
+          "title": "Storage Usage per Node",
+          "collapsibleGroup": {
+            "collapsed": false
+          },
+          "id": ""
+        }
+      },
+      {
+        "yPos": 72,
+        "xPos": 24,
+        "height": 16,
+        "width": 24,
+        "widget": {
+          "title": "Free Robin Disk Space per Node (GB)",
+          "id": "",
           "timeSeriesTable": {
+            "columnSettings": [],
             "dataSets": [
               {
+                "minAlignmentPeriod": "60s",
+                "tableTemplate": "",
                 "timeSeriesQuery": {
-                  "outputFullDuration": true,
-                  "timeSeriesQueryLanguage": "{fetch k8s_container\n| metric 'external.googleapis.com/prometheus/robin_disk_nslices'\n| ${project_id}\n| ${cluster_name}\n| group_by [Node: node_name],   [value_robin_disk_rawused_sum: mul(sum(value.robin_disk_nslices), 1073741824)]\n| every 1m\n;\nfetch k8s_container\n| metric 'external.googleapis.com/prometheus/robin_disk_size'\n| ${project_id}\n| ${cluster_name}\n| group_by [Node: node_name],   [value_robin_disk_size_mean: mean(value.robin_disk_size)]\n| every 1m\n}\n| join\n| value [Disk_Free: cast_units(t_1.value_robin_disk_size_mean - t_0.value_robin_disk_rawused_sum, 'By')]"
+                  "outputFullDuration": false,
+                  "prometheusQuery": "(\n  sum by (node_name) (\n    avg_over_time({\n      __name__=\"external.googleapis.com/prometheus/robin_disk_size\",\n      monitored_resource=\"k8s_container\",\n      cluster_name=~\"${cluster_name.value}\",\n      project_id=~\"${project_id.value}\"\n    }[1m])\n  )\n  -\n  sum by (node_name) (\n    avg_over_time({\n      __name__=\"external.googleapis.com/prometheus/robin_disk_nslices\",\n      monitored_resource=\"k8s_container\",\n      cluster_name=~\"${cluster_name.value}\",\n      project_id=~\"${project_id.value}\"\n    }[1m])\n  ) * 1073741824\n) / 1073741824",
+                  "unitOverride": ""
                 }
               }
             ],
             "displayColumnType": false,
-            "metricVisualization": "NUMBER",
-            "opsAnalyticsSettings": {
-              "maxRows": "0",
-              "pageSize": "0",
-              "showFilterBar": false
+            "metricVisualization": "NUMBER"
+          }
+        }
+      },
+      {
+        "yPos": 88,
+        "height": 16,
+        "width": 24,
+        "widget": {
+          "title": "Incidents",
+          "id": "",
+          "incidentList": {
+            "groupBy": "GROUP_BY_TYPE_UNSPECIFIED",
+            "monitoredResources": [],
+            "policyNames": [],
+            "userLabels": {}
+          }
+        }
+      },
+      {
+        "yPos": 88,
+        "xPos": 24,
+        "height": 8,
+        "width": 13,
+        "widget": {
+          "title": "Populate Cluster List - Do Not Remove",
+          "id": "",
+          "scorecard": {
+            "blankView": {},
+            "breakdowns": [],
+            "dimensions": [],
+            "measures": [],
+            "thresholds": [],
+            "timeSeriesQuery": {
+              "outputFullDuration": false,
+              "timeSeriesFilter": {
+                "aggregation": {
+                  "alignmentPeriod": "600s",
+                  "crossSeriesReducer": "REDUCE_COUNT",
+                  "groupByFields": [],
+                  "perSeriesAligner": "ALIGN_MEAN"
+                },
+                "filter": "metric.type=\"kubernetes.io/anthos/node/cpu/total_cores\" resource.type=\"k8s_node\" ${cluster_name} ${project_id}"
+              },
+              "unitOverride": ""
             }
           }
-        },
-        "width": 24,
-        "xPos": 24,
-        "yPos": 72
+        }
       }
     ]
   }
